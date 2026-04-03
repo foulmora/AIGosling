@@ -2,140 +2,74 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AIGosling</title>
+  <script src="https://cdn.jsdelivr.net/npm/notion-client@latest/build/index.min.js"></script>
   <style>
     body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
       background: #000;
       color: #fff;
-    }
-
-    header {
-      position: fixed;
-      width: 100%;
-      top: 0;
-      display: flex;
-      justify-content: space-between;
-      padding: 20px 40px;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(10px);
-    }
-
-    header a {
-      color: #fff;
-      text-decoration: none;
-      margin-left: 20px;
-      font-size: 14px;
-    }
-
-    section {
-      padding: 120px 40px;
-      max-width: 1000px;
-      margin: auto;
-    }
-
-    .hero {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .hero h1 {
-      font-size: 64px;
-      margin: 0;
-    }
-
-    .hero p {
-      font-size: 20px;
-      color: #aaa;
-      margin-top: 20px;
-      max-width: 500px;
-    }
-
-    .btn {
-      margin-top: 30px;
-      display: inline-block;
-      padding: 10px 20px;
-      border: 1px solid #fff;
-      text-decoration: none;
-      color: #fff;
-    }
-
-    .works {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .card {
-      border: 1px solid #222;
-      padding: 20px;
-    }
-
-    .card img {
-      width: 100%;
-    }
-
-    footer {
-      text-align: center;
+      font-family: Arial;
       padding: 40px;
-      color: #666;
+    }
+    h1 {
+      font-size: 48px;
+    }
+    .card {
+      border: 1px solid #333;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    iframe {
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div><strong>AIGosling</strong></div>
-  <div>
-    <a href="#works">Works</a>
-    <a href="#tutorials">Tutorials</a>
-    <a href="#about">About</a>
-  </div>
-</header>
+<h1>AIGosling</h1>
+<p>I create cinematic stories with AI.</p>
 
-<section class="hero">
-  <h1>AIGosling</h1>
-  <p>I create cinematic stories with artificial intelligence.</p>
-  <a class="btn" href="#works">View Works</a>
-</section>
+<h2>Works</h2>
+<div id="works"></div>
 
-<section id="works">
-  <h2>Works</h2>
-  <div class="works">
-    <div class="card">
-      <img src="https://via.placeholder.com/500x300">
-      <h3>Project One</h3>
-      <p>AI-generated short film.</p>
-    </div>
+<h2>Tutorials</h2>
+<div id="tutorials"></div>
 
-    <div class="card">
-      <img src="https://via.placeholder.com/500x300">
-      <h3>Project Two</h3>
-      <p>Experimental visuals with AI.</p>
-    </div>
-  </div>
-</section>
+<script>
+const DATABASE_ID = "76ee4301fc614ed996c203820d960f1d";
 
-<section id="tutorials">
-  <h2>Tutorials</h2>
-  <p>Coming soon: I will share how I create AI films, prompts, and workflows.</p>
-</section>
+async function loadData() {
+  const res = await fetch(`https://notion-api.splitbee.io/v1/table/${DATABASE_ID}`);
+  const data = await res.json();
 
-<section id="about">
-  <h2>About</h2>
-  <p>
-    I am AIGosling, an AI filmmaker exploring new forms of storytelling.
-    Blending technology and emotion to create cinematic experiences.
-  </p>
-</section>
+  const works = document.getElementById("works");
+  const tutorials = document.getElementById("tutorials");
 
-<footer>
-  © 2026 AIGosling
-</footer>
+  data.forEach(item => {
+    const title = item.Title || "No Title";
+    const video = item.Video;
+    const desc = item.Description || "";
+    const type = item.Type;
+
+    const el = document.createElement("div");
+    el.className = "card";
+
+    el.innerHTML = `
+      <h3>${title}</h3>
+      <p>${desc}</p>
+      ${video ? `<iframe width="100%" height="200" src="${video.replace("watch?v=", "embed/")}" frameborder="0"></iframe>` : ""}
+    `;
+
+    if (type === "Works") {
+      works.appendChild(el);
+    } else {
+      tutorials.appendChild(el);
+    }
+  });
+}
+
+loadData();
+</script>
 
 </body>
 </html>
