@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIGosling</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #000;
+      color: #fff;
+    }
+
+    header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+    }
+
+    header a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 14px;
+    }
+
+    section {
+      padding: 120px 40px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero h1 {
+      font-size: 64px;
+      margin: 0;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: #aaa;
+      margin-top: 20px;
+      max-width: 500px;
+    }
+
+    .btn {
+      margin-top: 30px;
+      display: inline-block;
+      padding: 10px 20px;
+      border: 1px solid #fff;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .works {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      border: 1px solid #222;
+      padding: 20px;
+    }
+
+    .card img {
+      width: 100%;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div><strong>AIGosling</strong></div>
+  <div>
+    <a href="#works">Works</a>
+    <a href="#tutorials">Tutorials</a>
+    <a href="#about">About</a>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>AIGosling</h1>
+  <p>I create cinematic stories with artificial intelligence.</p>
+  <a class="btn" href="#works">View Works</a>
+</section>
+
+<section id="works">
+  <h2>Works</h2>
+  <div class="works">
+    <div class="card">
+      <img src="https://via.placeholder.com/500x300">
+      <h3>Project One</h3>
+      <p>AI-generated short film.</p>
+    </div>
+
+    <div class="card">
+      <img src="https://via.placeholder.com/500x300">
+      <h3>Project Two</h3>
+      <p>Experimental visuals with AI.</p>
+    </div>
+  </div>
+</section>
+
+<section id="tutorials">
+  <h2>Tutorials</h2>
+  <p>Coming soon: I will share how I create AI films, prompts, and workflows.</p>
+</section>
+
+<section id="about">
+  <h2>About</h2>
+  <p>
+    I am AIGosling, an AI filmmaker exploring new forms of storytelling.
+    Blending technology and emotion to create cinematic experiences.
+  </p>
+</section>
+
+<footer>
+  © 2026 AIGosling
+</footer>
+
+</body>
+</html>
