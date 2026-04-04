@@ -16,12 +16,48 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            width: 100%;
+        }
+
+        /* 登录页面样式 */
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 60px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .login-container h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-container p {
+            color: #777;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        /* 后台管理页面样式 */
+        .admin-container {
+            display: none;
         }
 
         .header {
@@ -31,17 +67,37 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
             margin-bottom: 30px;
+            backdrop-filter: blur(10px);
         }
 
         .header h1 {
             color: #667eea;
             font-size: 2.5rem;
             margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .header p {
             color: #777;
             font-size: 1.1rem;
+        }
+
+        .header .logout-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .header .logout-btn:hover {
+            background: #ff3742;
         }
 
         .content {
@@ -55,6 +111,7 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .form-section h2, .list-section h2 {
@@ -83,7 +140,7 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .form-group input:focus,
@@ -108,6 +165,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
         }
 
         .btn:hover {
@@ -170,6 +228,12 @@
             background: #ff3742;
         }
 
+        .error-message {
+            color: #ff4757;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 768px) {
             .content {
                 grid-template-columns: 1fr;
@@ -182,84 +246,155 @@
             .form-section, .list-section {
                 padding: 20px;
             }
+
+            .login-container {
+                padding: 40px 20px;
+                margin: 0 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- 登录页面 -->
     <div class="container">
-        <div class="header">
+        <div class="login-container" id="login-container">
             <h1>AI Gosling 后台管理</h1>
-            <p>管理您的作品和教程</p>
+            <p>请输入账号和密码登录</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">账号</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div class="error-message" id="login-error"></div>
+                <button type="submit" class="btn">登录</button>
+            </form>
         </div>
 
-        <div class="content">
-            <!-- 作品表单 -->
-            <div class="form-section">
-                <h2>添加新作品</h2>
-                <form id="work-form">
-                    <div class="form-group">
-                        <label for="work-title">标题</label>
-                        <input type="text" id="work-title" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="work-description">描述</label>
-                        <textarea id="work-description" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="work-cover">封面图片URL</label>
-                        <input type="text" id="work-cover" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="work-tags">标签 (用逗号分隔)</label>
-                        <input type="text" id="work-tags" required>
-                    </div>
-                    <button type="submit" class="btn">添加作品</button>
-                </form>
+        <!-- 后台管理页面 -->
+        <div class="admin-container" id="admin-container">
+            <div class="header">
+                <h1>AI Gosling 后台管理</h1>
+                <p>管理您的作品和教程</p>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
             </div>
 
-            <!-- 教程表单 -->
-            <div class="form-section">
-                <h2>添加新教程</h2>
-                <form id="tutorial-form">
-                    <div class="form-group">
-                        <label for="tutorial-title">标题</label>
-                        <input type="text" id="tutorial-title" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tutorial-description">描述</label>
-                        <textarea id="tutorial-description" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="tutorial-cover">封面图片URL</label>
-                        <input type="text" id="tutorial-cover" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tutorial-tags">标签 (用逗号分隔)</label>
-                        <input type="text" id="tutorial-tags" required>
-                    </div>
-                    <button type="submit" class="btn">添加教程</button>
-                </form>
-            </div>
-
-            <!-- 作品列表 -->
-            <div class="list-section">
-                <h2>作品列表</h2>
-                <div id="works-list">
-                    <!-- 作品将在这里动态生成 -->
+            <div class="content">
+                <!-- 作品表单 -->
+                <div class="form-section">
+                    <h2>添加新作品</h2>
+                    <form id="work-form">
+                        <div class="form-group">
+                            <label for="work-title">标题</label>
+                            <input type="text" id="work-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="work-description">描述</label>
+                            <textarea id="work-description" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="work-cover">封面图片URL</label>
+                            <input type="text" id="work-cover" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="work-tags">标签 (用逗号分隔)</label>
+                            <input type="text" id="work-tags" required>
+                        </div>
+                        <button type="submit" class="btn">添加作品</button>
+                    </form>
                 </div>
-            </div>
 
-            <!-- 教程列表 -->
-            <div class="list-section">
-                <h2>教程列表</h2>
-                <div id="tutorials-list">
-                    <!-- 教程将在这里动态生成 -->
+                <!-- 教程表单 -->
+                <div class="form-section">
+                    <h2>添加新教程</h2>
+                    <form id="tutorial-form">
+                        <div class="form-group">
+                            <label for="tutorial-title">标题</label>
+                            <input type="text" id="tutorial-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tutorial-description">描述</label>
+                            <textarea id="tutorial-description" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="tutorial-cover">封面图片URL</label>
+                            <input type="text" id="tutorial-cover" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tutorial-tags">标签 (用逗号分隔)</label>
+                            <input type="text" id="tutorial-tags" required>
+                        </div>
+                        <button type="submit" class="btn">添加教程</button>
+                    </form>
+                </div>
+
+                <!-- 作品列表 -->
+                <div class="list-section">
+                    <h2>作品列表</h2>
+                    <div id="works-list">
+                        <!-- 作品将在这里动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 教程列表 -->
+                <div class="list-section">
+                    <h2>教程列表</h2>
+                    <div id="tutorials-list">
+                        <!-- 教程将在这里动态生成 -->
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // 登录功能
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const loginContainer = document.getElementById('login-container');
+        const adminContainer = document.getElementById('admin-container');
+
+        // 检查是否已登录
+        if (localStorage.getItem('aigosling_admin_logged_in') === 'true') {
+            showAdminPanel();
+        }
+
+        // 登录表单提交
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // 验证账号密码
+            if (username === 'AIGosling' && password === '357459654') {
+                // 登录成功
+                localStorage.setItem('aigosling_admin_logged_in', 'true');
+                showAdminPanel();
+            } else {
+                // 登录失败
+                loginError.textContent = '账号或密码错误，请重新输入';
+            }
+        });
+
+        // 显示后台管理面板
+        function showAdminPanel() {
+            loginContainer.style.display = 'none';
+            adminContainer.style.display = 'block';
+            loadData();
+        }
+
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('aigosling_admin_logged_in');
+            adminContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+            document.getElementById('login-form').reset();
+            loginError.textContent = '';
+        }
+
         // 加载数据
         function loadData() {
             const works = JSON.parse(localStorage.getItem('aigosling_works') || '[]');
@@ -278,6 +413,11 @@
         function renderWorks(works) {
             const worksList = document.getElementById('works-list');
             worksList.innerHTML = '';
+            
+            if (works.length === 0) {
+                worksList.innerHTML = '<div class="card"><p>暂无作品，请添加新作品</p></div>';
+                return;
+            }
             
             works.forEach((work, index) => {
                 const workCard = document.createElement('div');
@@ -298,6 +438,11 @@
         function renderTutorials(tutorials) {
             const tutorialsList = document.getElementById('tutorials-list');
             tutorialsList.innerHTML = '';
+            
+            if (tutorials.length === 0) {
+                tutorialsList.innerHTML = '<div class="card"><p>暂无教程，请添加新教程</p></div>';
+                return;
+            }
             
             tutorials.forEach((tutorial, index) => {
                 const tutorialCard = document.createElement('div');
@@ -365,9 +510,6 @@
             renderTutorials(tutorials);
             this.reset();
         });
-
-        // 加载数据
-        loadData();
     </script>
 </body>
 </html>
