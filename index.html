@@ -1,75 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AIGosling</title>
-  <script src="https://cdn.jsdelivr.net/npm/notion-client@latest/build/index.min.js"></script>
-  <style>
-    body {
-      background: #000;
-      color: #fff;
-      font-family: Arial;
-      padding: 40px;
-    }
-    h1 {
-      font-size: 48px;
-    }
-    .card {
-      border: 1px solid #333;
-      padding: 20px;
-      margin-top: 20px;
-    }
-    iframe {
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIGosling</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin: 40px 0 20px;
+            color: #333;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .works-grid, .tutorials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .work-card, .tutorial-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .work-card:hover, .tutorial-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .admin-link {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-link:hover {
+            background: #764ba2;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            header {
+                padding: 40px 0;
+            }
+
+            .works-grid, .tutorials-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
+    <a href="admin.html" class="admin-link">管理后台</a>
 
-<h1>AIGosling</h1>
-<p>I create cinematic stories with AI.</p>
+    <header>
+        <div class="container">
+            <h1>AIGosling</h1>
+            <p class="tagline">I create cinematic stories with AI.</p>
+        </div>
+    </header>
 
-<h2>Works</h2>
-<div id="works"></div>
+    <div class="container">
+        <h2>Works</h2>
+        <div class="works-grid" id="works-grid">
+            <!-- 作品将通过 JavaScript 动态加载 -->
+        </div>
 
-<h2>Tutorials</h2>
-<div id="tutorials"></div>
+        <h2>Tutorials</h2>
+        <div class="tutorials-grid" id="tutorials-grid">
+            <!-- 教程将通过 JavaScript 动态加载 -->
+        </div>
+    </div>
 
-<script>
-const DATABASE_ID = "76ee4301fc614ed996c203820d960f1d";
+    <script>
+        // 从本地存储加载数据
+        function loadData() {
+            const works = JSON.parse(localStorage.getItem('aigosling_works') || '[]');
+            const tutorials = JSON.parse(localStorage.getItem('aigosling_tutorials') || '[]');
 
-async function loadData() {
-  const res = await fetch(`https://notion-api.splitbee.io/v1/table/${DATABASE_ID}`);
-  const data = await res.json();
+            renderWorks(works);
+            renderTutorials(tutorials);
+        }
 
-  const works = document.getElementById("works");
-  const tutorials = document.getElementById("tutorials");
+        // 渲染作品
+        function renderWorks(works) {
+            const grid = document.getElementById('works-grid');
+            grid.innerHTML = '';
 
-  data.forEach(item => {
-    const title = item.Title || "No Title";
-    const video = item.Video;
-    const desc = item.Description || "";
-    const type = item.Type;
+            works.forEach(work => {
+                const card = document.createElement('div');
+                card.className = 'work-card';
+                card.innerHTML = `
+                    <img src="${work.cover || 'https://via.placeholder.com/300x200'}" alt="${work.title}" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">${work.title}</h3>
+                        <p class="card-description">${work.description}</p>
+                        <div class="card-tags">
+                            ${work.tags ? work.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
 
-    const el = document.createElement("div");
-    el.className = "card";
+        // 渲染教程
+        function renderTutorials(tutorials) {
+            const grid = document.getElementById('tutorials-grid');
+            grid.innerHTML = '';
 
-    el.innerHTML = `
-      <h3>${title}</h3>
-      <p>${desc}</p>
-      ${video ? `<iframe width="100%" height="200" src="${video.replace("watch?v=", "embed/")}" frameborder="0"></iframe>` : ""}
-    `;
+            tutorials.forEach(tutorial => {
+                const card = document.createElement('div');
+                card.className = 'tutorial-card';
+                card.innerHTML = `
+                    <img src="${tutorial.cover || 'https://via.placeholder.com/300x200'}" alt="${tutorial.title}" class="card-image">
+                    <div class="card-content">
+                        <h3 class="card-title">${tutorial.title}</h3>
+                        <p class="card-description">${tutorial.description}</p>
+                        <div class="card-tags">
+                            ${tutorial.tags ? tutorial.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
 
-    if (type === "Works") {
-      works.appendChild(el);
-    } else {
-      tutorials.appendChild(el);
-    }
-  });
-}
-
-loadData();
-</script>
-
+        // 页面加载时加载数据
+        window.addEventListener('DOMContentLoaded', loadData);
+    </script>
 </body>
 </html>
