@@ -3,215 +3,571 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIGosling</title>
+    <title>AI GOSLING</title>
+    <script>
+        if (window.location.pathname.includes('/admin')) {
+            window.location.href = 'admin.html';
+        }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#0a0a0a',
+                        light: '#ffffff'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background-color: #f5f5f5;
+            background-color: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        
+        .side-line {
+            position: fixed;
+            left: 80px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, #333, transparent);
         }
-
-        header {
-            text-align: center;
-            padding: 60px 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            margin-bottom: 40px;
+        
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
         }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
+        
+        .work-item, .tutorial-item {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
         }
-
-        h2 {
-            font-size: 2rem;
-            margin: 40px 0 20px;
-            color: #333;
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .works-grid, .tutorials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .work-card, .tutorial-card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        
+        .work-item::before, .tutorial-item::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #fff;
+            transform: scaleY(0);
+            transform-origin: top;
             transition: transform 0.3s ease;
         }
-
-        .work-card:hover, .tutorial-card:hover {
-            transform: translateY(-5px);
+        
+        .work-item:hover::before, .tutorial-item:hover::before {
+            transform: scaleY(1);
         }
-
-        .card-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+        
+        .work-item:hover, .tutorial-item:hover {
+            padding-left: 2rem;
         }
-
-        .card-content {
-            padding: 20px;
+        
+        .work-item:hover h3, .tutorial-item:hover h3 {
+            color: #fff;
         }
-
-        .card-title {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: #333;
+        
+        .grid-item {
+            position: relative;
+            overflow: hidden;
         }
-
-        .card-description {
-            color: #666;
-            margin-bottom: 15px;
+        
+        .grid-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, #0a0a0a 0%, transparent 50%);
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
         }
-
-        .card-tags {
+        
+        .grid-item:hover::after {
+            opacity: 0.6;
+        }
+        
+        .grid-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .grid-item img {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .image-scroll-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .image-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .image-scroll {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            gap: 0;
+            height: 100%;
         }
-
-        .tag {
-            background: #f0f0f0;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            color: #666;
+        
+        .image-scroll .grid-item {
+            flex-shrink: 0;
+            width: 75%;
+            height: 100%;
         }
-
-        .admin-link {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #667eea;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        
+        .nav-link {
+            position: relative;
+            overflow: hidden;
         }
-
-        .admin-link:hover {
-            background: #764ba2;
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #fff;
+            transition: width 0.3s ease;
         }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            header {
-                padding: 40px 0;
-            }
-
-            .works-grid, .tutorials-grid {
-                grid-template-columns: 1fr;
-            }
+        
+        .nav-link:hover::after {
+            width: 100%;
         }
     </style>
 </head>
-<body>
-    <a href="admin.html" class="admin-link">管理后台</a>
-
-    <header>
-        <div class="container">
-            <h1>AIGosling</h1>
-            <p class="tagline">I create cinematic stories with AI.</p>
+<body class="relative">
+    <div class="side-line hidden lg:block"></div>
+    
+    <aside class="fixed left-0 top-0 bottom-0 w-16 lg:w-20 flex flex-col items-center justify-between py-8 z-40 bg-dark/80 backdrop-blur-sm">
+        <div class="text-xs tracking-[0.3em] text-gray-600 vertical-text hidden lg:block">
+            AI GOSLING
         </div>
-    </header>
-
-    <div class="container">
-        <h2>Works</h2>
-        <div class="works-grid" id="works-grid">
-            <!-- 作品将通过 JavaScript 动态加载 -->
+        
+        <div class="flex flex-col space-y-6">
+            <a href="https://v.douyin.com/l1ZxVndn95I" target="_blank" class="text-gray-500 hover:text-white transition-colors" title="抖音">
+                <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor">
+                    <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+                </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+            </a>
+            <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                <i class="fa fa-youtube-play text-lg"></i>
+            </a>
         </div>
-
-        <h2>Tutorials</h2>
-        <div class="tutorials-grid" id="tutorials-grid">
-            <!-- 教程将通过 JavaScript 动态加载 -->
+        
+        <div class="flex flex-col items-center space-y-4">
+            <button id="lang-toggle" class="text-xs tracking-[0.2em] text-gray-600 hover:text-white transition-colors uppercase">
+                中 / 英
+            </button>
+            <div class="text-xs tracking-[0.3em] text-gray-600 vertical-text hidden lg:block">
+                2026
+            </div>
+        </div>
+    </aside>
+    
+    <main class="lg:ml-20">
+        <section class="min-h-screen flex flex-col lg:flex-row">
+            <div class="lg:w-1/2 flex items-center justify-center p-8 lg:p-16">
+                <div class="max-w-xl">
+                    <div class="text-xs tracking-[0.4em] text-gray-500 uppercase mb-6" data-i18n="creative-director">
+                        Creative Director
+                    </div>
+                    <h1 class="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8">
+                        AI<br>GOSLING
+                    </h1>
+                    <p class="text-gray-400 text-lg leading-relaxed max-w-md" data-i18n="hero-desc">
+                        Exploring the intersection of artificial intelligence and cinematic expression. Building original IP rooted in China.
+                    </p>
+                    <div class="mt-12 flex items-center gap-8">
+                        <a href="#works" class="nav-link text-sm tracking-[0.2em] text-gray-300 uppercase hover:text-white transition-colors" data-i18n="view-works">
+                            View Works
+                            <i class="fa fa-long-arrow-right ml-2"></i>
+                        </a>
+                        <a href="#tutorials" class="nav-link text-sm tracking-[0.2em] text-gray-300 uppercase hover:text-white transition-colors" data-i18n="view-tutorials">
+                            View Tutorials
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="lg:w-1/2 image-scroll-container">
+                <div class="image-scroll h-full">
+                    <div class="grid-item h-full">
+                        <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cinematic%20portrait%2C%20neon%20lights%2C%20dark%20mood%2C%20film%20grain&image_size=square_hd" alt="Work 1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="grid-item h-full">
+                        <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=abstract%20cyberpunk%20city%2C%20rainy%20night%2C%20neon%20reflections&image_size=square_hd" alt="Work 2" class="w-full h-full object-cover">
+                    </div>
+                    <div class="grid-item h-full">
+                        <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=film%20camera%20close%20up%2C%20vintage%20aesthetic%2C%20dark%20tones&image_size=square_hd" alt="Work 3" class="w-full h-full object-cover">
+                    </div>
+                    <div class="grid-item h-full">
+                        <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=abstract%20shapes%2C%20minimal%20art%2C%20black%20and%20white&image_size=square_hd" alt="Work 4" class="w-full h-full object-cover">
+                    </div>
+                    <div class="grid-item h-full">
+                        <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cinematic%20portrait%2C%20neon%20lights%2C%20dark%20mood%2C%20film%20grain&image_size=square_hd" alt="Work 5" class="w-full h-full object-cover">
+                    </div>
+                    <div class="grid-item h-full">
+                        <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=abstract%20cyberpunk%20city%2C%20rainy%20night%2C%20neon%20reflections&image_size=square_hd" alt="Work 6" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="works" class="py-24 lg:py-32 px-8 lg:px-16">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16">
+                    <div>
+                        <div class="text-xs tracking-[0.4em] text-gray-500 uppercase mb-4" data-i18n="selected-works">
+                            01 / Selected Works
+                        </div>
+                        <h2 class="text-5xl md:text-6xl font-black tracking-tight" data-i18n="visual-archives">
+                            Visual<br>Archives
+                        </h2>
+                    </div>
+                    <p class="text-gray-500 max-w-md mt-6 lg:mt-0" data-i18n="works-desc">
+                        A curated collection of AI-generated films and experiments.
+                    </p>
+                </div>
+                
+                <div id="works-container" class="space-y-0">
+                </div>
+            </div>
+        </section>
+        
+        <section id="tutorials" class="py-24 lg:py-32 px-8 lg:px-16 bg-white/[0.02]">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16">
+                    <div>
+                        <div class="text-xs tracking-[0.4em] text-gray-500 uppercase mb-4" data-i18n="behind-scenes">
+                            02 / Behind The Scenes
+                        </div>
+                        <h2 class="text-5xl md:text-6xl font-black tracking-tight" data-i18n="process-logs">
+                            Process<br>Logs
+                        </h2>
+                    </div>
+                    <p class="text-gray-500 max-w-md mt-6 lg:mt-0" data-i18n="tutorials-desc">
+                        Documentation, tutorials, and insights into the creative process.
+                    </p>
+                </div>
+                
+                <div id="tutorials-container" class="space-y-0">
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-24 lg:py-32 px-8 lg:px-16">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                    <div>
+                        <div class="text-xs tracking-[0.4em] text-gray-500 uppercase mb-4" data-i18n="about">
+                            About
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-black tracking-tight mb-8" data-i18n="gen-ai-creative">
+                            Gen AI<br>Creative Director
+                        </h2>
+                        <div class="space-y-6 text-gray-400 text-lg leading-relaxed">
+                            <p data-i18n="about-p1">
+                                Over a decade of experience in film and television production. Now pushing the boundaries of what's possible at the intersection of AI and visual storytelling.
+                            </p>
+                            <p data-i18n="about-p2">
+                                Creating authentic, culturally rooted original content from China. Every aspect — from character design to world-building — is crafted with deep respect for local heritage and modern innovation.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="py-12 px-8 lg:px-16 border-t border-gray-800">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div class="text-sm text-gray-600" data-i18n="copyright">
+                        © 2026 AI GOSLING. All rights reserved.
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <a href="https://v.douyin.com/l1ZxVndn95I" target="_blank" class="text-gray-500 hover:text-white transition-colors" title="抖音">
+                            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                            <svg viewBox="0 0 24 24" class="w-4 h-4" fill="currentColor">
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-white transition-colors">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    
+    <div id="detail-modal" class="fixed inset-0 bg-dark z-50 hidden overflow-y-auto">
+        <div class="min-h-screen">
+            <div class="max-w-5xl mx-auto px-8 lg:px-16 py-12">
+                <button id="close-modal" class="text-gray-500 hover:text-white text-3xl mb-12 transition-colors">
+                    <i class="fa fa-times"></i>
+                </button>
+                <div id="modal-content">
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // 从本地存储加载数据
-        function loadData() {
+        function loadContent() {
             const works = JSON.parse(localStorage.getItem('aigosling_works') || '[]');
             const tutorials = JSON.parse(localStorage.getItem('aigosling_tutorials') || '[]');
-
             renderWorks(works);
             renderTutorials(tutorials);
         }
 
-        // 渲染作品
         function renderWorks(works) {
-            const grid = document.getElementById('works-grid');
-            grid.innerHTML = '';
-
-            works.forEach(work => {
-                const card = document.createElement('div');
-                card.className = 'work-card';
-                card.innerHTML = `
-                    <img src="${work.cover || 'https://via.placeholder.com/300x200'}" alt="${work.title}" class="card-image">
-                    <div class="card-content">
-                        <h3 class="card-title">${work.title}</h3>
-                        <p class="card-description">${work.description}</p>
-                        <div class="card-tags">
-                            ${work.tags ? work.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+            const worksContainer = document.getElementById('works-container');
+            worksContainer.innerHTML = '';
+            if (works.length === 0) {
+                worksContainer.innerHTML = '<p class="text-gray-500 text-xl py-12">No works available yet.</p>';
+                return;
+            }
+            works.forEach((work, index) => {
+                const workItem = document.createElement('div');
+                workItem.className = 'work-item border-t border-gray-800 py-8 lg:py-12 pl-2';
+                workItem.innerHTML = `
+                    <div class="flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-8">
+                        <div class="text-xs tracking-[0.3em] text-gray-600 lg:w-24 lg:flex-shrink-0">
+                            ${String(index + 1).padStart(2, '0')}
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                                <div>
+                                    <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-600 tracking-tight mb-4">
+                                        ${work.title}
+                                    </h3>
+                                    <p class="text-gray-500 text-lg max-w-2xl">
+                                        ${work.description}
+                                    </p>
+                                </div>
+                                <div class="flex flex-col items-start lg:items-end gap-4">
+                                    ${work.video ? `
+                                        <span class="text-xs tracking-[0.2em] text-gray-500 uppercase flex items-center gap-2">
+                                            <i class="fa fa-video-camera"></i> Video
+                                        </span>
+                                    ` : ''}
+                                    <div class="flex flex-wrap gap-2">
+                                        ${work.tags && work.tags.length > 0 ? work.tags.slice(0, 3).map(tag => `<span class="text-xs tracking-[0.15em] text-gray-600 border border-gray-700 px-3 py-1 uppercase">${tag}</span>`).join('') : ''}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
-                grid.appendChild(card);
+                workItem.addEventListener('click', () => openDetailModal('work', work));
+                worksContainer.appendChild(workItem);
             });
         }
 
-        // 渲染教程
         function renderTutorials(tutorials) {
-            const grid = document.getElementById('tutorials-grid');
-            grid.innerHTML = '';
-
-            tutorials.forEach(tutorial => {
-                const card = document.createElement('div');
-                card.className = 'tutorial-card';
-                card.innerHTML = `
-                    <img src="${tutorial.cover || 'https://via.placeholder.com/300x200'}" alt="${tutorial.title}" class="card-image">
-                    <div class="card-content">
-                        <h3 class="card-title">${tutorial.title}</h3>
-                        <p class="card-description">${tutorial.description}</p>
-                        <div class="card-tags">
-                            ${tutorial.tags ? tutorial.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+            const tutorialsContainer = document.getElementById('tutorials-container');
+            tutorialsContainer.innerHTML = '';
+            if (tutorials.length === 0) {
+                tutorialsContainer.innerHTML = '<p class="text-gray-500 text-xl py-12">No tutorials available yet.</p>';
+                return;
+            }
+            tutorials.forEach((tutorial, index) => {
+                const tutorialItem = document.createElement('div');
+                tutorialItem.className = 'tutorial-item border-t border-gray-800 py-8 lg:py-12 pl-2';
+                tutorialItem.innerHTML = `
+                    <div class="flex flex-col lg:flex-row lg:items-start gap-4 lg:gap-8">
+                        <div class="text-xs tracking-[0.3em] text-gray-600 lg:w-24 lg:flex-shrink-0">
+                            ${String(index + 1).padStart(2, '0')}
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                                <div>
+                                    <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-gray-600 tracking-tight mb-4">
+                                        ${tutorial.title}
+                                    </h3>
+                                    <p class="text-gray-500 text-lg max-w-2xl">
+                                        ${tutorial.description}
+                                    </p>
+                                </div>
+                                <div class="flex flex-col items-start lg:items-end gap-4">
+                                    ${tutorial.video ? `
+                                        <span class="text-xs tracking-[0.2em] text-gray-500 uppercase flex items-center gap-2">
+                                            <i class="fa fa-video-camera"></i> Video
+                                        </span>
+                                    ` : ''}
+                                    <div class="flex flex-wrap gap-2">
+                                        ${tutorial.tags && tutorial.tags.length > 0 ? tutorial.tags.slice(0, 3).map(tag => `<span class="text-xs tracking-[0.15em] text-gray-600 border border-gray-700 px-3 py-1 uppercase">${tag}</span>`).join('') : ''}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
-                grid.appendChild(card);
+                tutorialItem.addEventListener('click', () => openDetailModal('tutorial', tutorial));
+                tutorialsContainer.appendChild(tutorialItem);
             });
         }
 
-        // 页面加载时加载数据
-        window.addEventListener('DOMContentLoaded', loadData);
+        function openDetailModal(type, item) {
+            const modal = document.getElementById('detail-modal');
+            const modalContent = document.getElementById('modal-content');
+            const isWork = type === 'work';
+            modalContent.innerHTML = `
+                <div class="space-y-12">
+                    <div>
+                        <div class="text-xs tracking-[0.3em] text-gray-500 uppercase mb-4">
+                            ${isWork ? 'WORK' : 'TUTORIAL'}
+                        </div>
+                        <h1 class="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
+                            ${item.title}
+                        </h1>
+                    </div>
+                    ${item.video ? `
+                        <div class="aspect-video bg-gray-900">
+                            <video src="${item.video}" controls class="w-full h-full object-cover"></video>
+                        </div>
+                    ` : item.cover ? `
+                        <div class="aspect-video">
+                            <img src="${item.cover}" alt="${item.title}" class="w-full h-full object-cover">
+                        </div>
+                    ` : ''}
+                    <div class="max-w-3xl">
+                        <p class="text-gray-300 text-xl leading-relaxed">
+                            ${item.description}
+                        </p>
+                    </div>
+                    ${item.tags && item.tags.length > 0 ? `
+                        <div class="flex flex-wrap gap-3 pt-8 border-t border-gray-800">
+                            ${item.tags.map(tag => `<span class="text-xs tracking-[0.2em] text-gray-400 border border-gray-600 px-4 py-2 uppercase">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetailModal() {
+            const modal = document.getElementById('detail-modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('close-modal').addEventListener('click', closeDetailModal);
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDetailModal();
+            }
+        });
+
+        const translations = {
+            en: {
+                'creative-director': 'Creative Director',
+                'hero-desc': 'Exploring the intersection of artificial intelligence and cinematic expression. Building original IP rooted in China.',
+                'view-works': 'View Works',
+                'view-tutorials': 'View Tutorials',
+                'selected-works': '01 / Selected Works',
+                'visual-archives': 'Visual Archives',
+                'works-desc': 'A curated collection of AI-generated films and experiments.',
+                'behind-scenes': '02 / Behind The Scenes',
+                'process-logs': 'Process Logs',
+                'tutorials-desc': 'Documentation, tutorials, and insights into the creative process.',
+                'about': 'About',
+                'gen-ai-creative': 'Gen AI Creative Director',
+                'about-p1': 'Over a decade of experience in film and television production. Now pushing the boundaries of what\'s possible at the intersection of AI and visual storytelling.',
+                'about-p2': 'Creating authentic, culturally rooted original content from China. Every aspect — from character design to world-building — is crafted with deep respect for local heritage and modern innovation.',
+                'no-works': 'No works available yet.',
+                'no-tutorials': 'No tutorials available yet.',
+                'work': 'WORK',
+                'tutorial': 'TUTORIAL',
+                'video': 'Video',
+                'copyright': '© 2026 AI GOSLING. All rights reserved.'
+            },
+            zh: {
+                'creative-director': '创意总监',
+                'hero-desc': '探索人工智能与电影表达的交汇点。打造植根于中国的原创IP。',
+                'view-works': '查看作品',
+                'view-tutorials': '查看教程',
+                'selected-works': '01 / 精选作品',
+                'visual-archives': '视觉档案',
+                'works-desc': '精心策划的AI生成电影和实验作品合集。',
+                'behind-scenes': '02 / 幕后花絮',
+                'process-logs': '创作日志',
+                'tutorials-desc': '关于创作过程的文档、教程和见解。',
+                'about': '关于',
+                'gen-ai-creative': 'AI创意总监',
+                'about-p1': '拥有超过十年的影视制作经验。现在正在探索人工智能与视觉叙事交汇点的无限可能。',
+                'about-p2': '创造来自中国的真实、有文化根基的原创内容。从角色设计到世界观构建，每一个方面都饱含对本土传统和现代创新的深度尊重。',
+                'no-works': '暂无作品。',
+                'no-tutorials': '暂无教程。',
+                'work': '作品',
+                'tutorial': '教程',
+                'video': '视频',
+                'copyright': '© 2026 AI GOSLING。保留所有权利。'
+            }
+        };
+
+        let currentLang = 'en';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'zh' : 'en';
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            const t = translations[currentLang];
+            document.querySelector('[data-i18n="creative-director"]').textContent = t['creative-director'];
+            document.querySelector('[data-i18n="hero-desc"]').textContent = t['hero-desc'];
+            document.querySelector('[data-i18n="view-works"]').textContent = t['view-works'];
+            document.querySelector('[data-i18n="view-tutorials"]').textContent = t['view-tutorials'];
+            document.querySelector('[data-i18n="selected-works"]').textContent = t['selected-works'];
+            document.querySelector('[data-i18n="visual-archives"]').innerHTML = t['visual-archives'].replace(' ', '<br>');
+            document.querySelector('[data-i18n="works-desc"]').textContent = t['works-desc'];
+            document.querySelector('[data-i18n="behind-scenes"]').textContent = t['behind-scenes'];
+            document.querySelector('[data-i18n="process-logs"]').innerHTML = t['process-logs'].replace(' ', '<br>');
+            document.querySelector('[data-i18n="tutorials-desc"]').textContent = t['tutorials-desc'];
+            document.querySelector('[data-i18n="about"]').textContent = t['about'];
+            document.querySelector('[data-i18n="gen-ai-creative"]').innerHTML = t['gen-ai-creative'].replace(' ', '<br>');
+            document.querySelector('[data-i18n="about-p1"]').textContent = t['about-p1'];
+            document.querySelector('[data-i18n="about-p2"]').textContent = t['about-p2'];
+            document.querySelector('[data-i18n="copyright"]').textContent = t['copyright'];
+            document.getElementById('lang-toggle').textContent = currentLang === 'en' ? '中 / 英' : 'EN / 中';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadContent();
+            document.getElementById('lang-toggle').addEventListener('click', toggleLanguage);
+        });
     </script>
 </body>
 </html>
