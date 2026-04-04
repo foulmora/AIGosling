@@ -3,512 +3,537 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Gosling - 后台管理</title>
+    <title>AI GOSLING - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#0a0a0a',
+                        light: '#ffffff'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            width: 100%;
+        
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
         }
-
-        /* 登录页面样式 */
-        .login-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 60px;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            max-width: 500px;
-            margin: 0 auto;
-            text-align: center;
-            backdrop-filter: blur(10px);
+        
+        .input-field {
+            background: transparent;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
         }
-
-        .login-container h1 {
-            color: #667eea;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .login-container p {
-            color: #777;
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-        }
-
-        /* 后台管理页面样式 */
-        .admin-container {
-            display: none;
-        }
-
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-        }
-
-        .header h1 {
-            color: #667eea;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .header p {
-            color: #777;
-            font-size: 1.1rem;
-        }
-
-        .header .logout-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-
-        .header .logout-btn:hover {
-            background: #ff3742;
-        }
-
-        .content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        .form-section, .list-section {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .form-section h2, .list-section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
+        
+        .input-field:focus {
+            border-color: #fff;
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
         }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
+        
+        .submit-btn {
+            position: relative;
+            overflow: hidden;
         }
-
-        .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            width: 100%;
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
         }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .card {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .card .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 10px;
-        }
-
-        .card .tag {
-            background: #667eea;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-        }
-
-        .delete-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-
-        .delete-btn:hover {
-            background: #ff3742;
-        }
-
-        .error-message {
-            color: #ff4757;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                grid-template-columns: 1fr;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .form-section, .list-section {
-                padding: 20px;
-            }
-
-            .login-container {
-                padding: 40px 20px;
-                margin: 0 20px;
-            }
+        
+        .submit-btn:hover::before {
+            transform: translateX(100%);
         }
     </style>
 </head>
 <body>
-    <!-- 登录页面 -->
-    <div class="container">
-        <div class="login-container" id="login-container">
-            <h1>AI Gosling 后台管理</h1>
-            <p>请输入账号和密码登录</p>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="username">账号</label>
-                    <input type="text" id="username" required>
+    <aside class="fixed left-0 top-0 bottom-0 w-16 lg:w-20 flex flex-col items-center justify-between py-8 z-40 bg-dark/80 backdrop-blur-sm">
+        <div class="text-xs tracking-[0.3em] text-gray-600 vertical-text hidden lg:block">
+            ADMIN
+        </div>
+        
+        <div class="flex flex-col space-y-6">
+            <a href="index.html" class="text-gray-500 hover:text-white transition-colors">
+                <i class="fa fa-arrow-left text-lg"></i>
+            </a>
+        </div>
+        
+        <div class="text-xs tracking-[0.3em] text-gray-600 vertical-text hidden lg:block">
+            2026
+        </div>
+    </aside>
+    
+    <main class="lg:ml-20 min-h-screen">
+        <div id="login-section" class="min-h-screen flex items-center justify-center p-8">
+            <div class="w-full max-w-md">
+                <div class="text-center mb-16">
+                    <h1 class="text-6xl font-black tracking-tight mb-4">ADMIN</h1>
+                    <p class="text-gray-500 text-lg">请输入账号和密码</p>
                 </div>
-                <div class="form-group">
-                    <label for="password">密码</label>
-                    <input type="password" id="password" required>
-                </div>
-                <div class="error-message" id="login-error"></div>
-                <button type="submit" class="btn">登录</button>
-            </form>
+                <form id="login-form" class="space-y-8">
+                    <div>
+                        <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-4">账号</label>
+                        <input type="text" id="username" class="w-full px-4 py-4 input-field text-white text-lg" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-4">密码</label>
+                        <input type="password" id="password" class="w-full px-4 py-4 input-field text-white text-lg" required>
+                    </div>
+                    <div class="error-message text-red-500 text-sm" id="login-error"></div>
+                    <button type="submit" class="submit-btn w-full px-8 py-5 bg-white text-black text-lg font-bold tracking-[0.2em] uppercase hover:bg-gray-200 transition-colors">
+                        登录
+                    </button>
+                </form>
+            </div>
         </div>
 
-        <!-- 后台管理页面 -->
-        <div class="admin-container" id="admin-container">
-            <div class="header">
-                <h1>AI Gosling 后台管理</h1>
-                <p>管理您的作品和教程</p>
-                <button class="logout-btn" onclick="logout()">退出登录</button>
-            </div>
-
-            <div class="content">
-                <!-- 作品表单 -->
-                <div class="form-section">
-                    <h2>添加新作品</h2>
-                    <form id="work-form">
-                        <div class="form-group">
-                            <label for="work-title">标题</label>
-                            <input type="text" id="work-title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="work-description">描述</label>
-                            <textarea id="work-description" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="work-cover">封面图片URL</label>
-                            <input type="text" id="work-cover" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="work-tags">标签 (用逗号分隔)</label>
-                            <input type="text" id="work-tags" required>
-                        </div>
-                        <button type="submit" class="btn">添加作品</button>
-                    </form>
+        <div id="admin-section" class="hidden">
+            <div class="container mx-auto px-8 lg:px-16 py-16">
+                <div class="mb-16">
+                    <h1 class="text-5xl md:text-6xl font-black tracking-tight mb-4">内容管理</h1>
+                    <p class="text-gray-500 text-lg">管理您的作品、教程和素材库</p>
                 </div>
 
-                <!-- 教程表单 -->
-                <div class="form-section">
-                    <h2>添加新教程</h2>
-                    <form id="tutorial-form">
-                        <div class="form-group">
-                            <label for="tutorial-title">标题</label>
-                            <input type="text" id="tutorial-title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="tutorial-description">描述</label>
-                            <textarea id="tutorial-description" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="tutorial-cover">封面图片URL</label>
-                            <input type="text" id="tutorial-cover" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="tutorial-tags">标签 (用逗号分隔)</label>
-                            <input type="text" id="tutorial-tags" required>
-                        </div>
-                        <button type="submit" class="btn">添加教程</button>
-                    </form>
-                </div>
-
-                <!-- 作品列表 -->
-                <div class="list-section">
-                    <h2>作品列表</h2>
-                    <div id="works-list">
-                        <!-- 作品将在这里动态生成 -->
+                <div class="flex flex-wrap gap-4 mb-16 border-b border-gray-800 pb-4">
+                    <button class="tab-btn text-sm tracking-[0.2em] text-gray-500 uppercase hover:text-white transition-colors pb-4 border-b-2 border-transparent" data-tab="works">
+                        作品
+                    </button>
+                    <button class="tab-btn text-sm tracking-[0.2em] text-gray-500 uppercase hover:text-white transition-colors pb-4 border-b-2 border-transparent" data-tab="tutorials">
+                        教程
+                    </button>
+                    <button class="tab-btn text-sm tracking-[0.2em] text-gray-500 uppercase hover:text-white transition-colors pb-4 border-b-2 border-transparent" data-tab="library">
+                        素材库
+                    </button>
+                    <div class="ml-auto">
+                        <button class="text-sm tracking-[0.2em] text-gray-500 uppercase hover:text-white transition-colors" onclick="logout()">
+                            退出
+                        </button>
                     </div>
                 </div>
 
-                <!-- 教程列表 -->
-                <div class="list-section">
-                    <h2>教程列表</h2>
-                    <div id="tutorials-list">
-                        <!-- 教程将在这里动态生成 -->
+                <div id="works-tab" class="tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+                        <div class="border border-gray-800 p-8">
+                            <h3 class="text-2xl font-bold mb-8">添加新作品</h3>
+                            <form id="work-form" class="space-y-6">
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">标题</label>
+                                    <input type="text" id="work-title" class="w-full px-4 py-3 input-field text-white" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">描述</label>
+                                    <textarea id="work-description" rows="4" class="w-full px-4 py-3 input-field text-white" required></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">封面图片</label>
+                                    <div class="border-2 border-dashed border-gray-700 p-8 text-center hover:border-white transition-all cursor-pointer" onclick="document.getElementById('work-cover-input').click()">
+                                        <i class="fa fa-cloud-upload text-4xl text-gray-500 mb-4"></i>
+                                        <p class="text-gray-500">点击上传图片</p>
+                                        <input type="file" id="work-cover-input" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'work-cover-preview', 'work-cover')">
+                                    </div>
+                                    <div id="work-cover-preview" class="mt-6 hidden">
+                                        <img id="work-cover-preview-img" class="w-full h-48 object-cover">
+                                    </div>
+                                    <input type="hidden" id="work-cover">
+                                </div>
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">视频 (可选)</label>
+                                    <div class="border-2 border-dashed border-gray-700 p-8 text-center hover:border-white transition-all cursor-pointer" onclick="document.getElementById('work-video-input').click()">
+                                        <i class="fa fa-film text-4xl text-gray-500 mb-4"></i>
+                                        <p class="text-gray-500">点击上传视频</p>
+                                        <input type="file" id="work-video-input" accept="video/*" class="hidden" onchange="handleVideoUpload(event, 'work-video-preview', 'work-video')">
+                                    </div>
+                                    <div id="work-video-preview" class="mt-6 hidden">
+                                        <video id="work-video-preview-video" class="w-full h-48 object-cover" controls></video>
+                                    </div>
+                                    <input type="hidden" id="work-video">
+                                </div>
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">标签</label>
+                                    <div class="flex gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="work-tag" value="作品" checked class="accent-white">
+                                            <span class="text-gray-400">作品</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="work-tag" value="分享" class="accent-white">
+                                            <span class="text-gray-400">分享</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="submit-btn w-full px-8 py-5 bg-white text-black text-lg font-bold tracking-[0.2em] uppercase hover:bg-gray-200 transition-colors">
+                                    添加作品
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="border border-gray-800 p-8">
+                            <h3 class="text-2xl font-bold mb-8">作品列表</h3>
+                            <div id="works-list" class="space-y-4 max-h-[500px] overflow-y-auto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tutorials-tab" class="tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+                        <div class="border border-gray-800 p-8">
+                            <h3 class="text-2xl font-bold mb-8">添加新教程</h3>
+                            <form id="tutorial-form" class="space-y-6">
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">标题</label>
+                                    <input type="text" id="tutorial-title" class="w-full px-4 py-3 input-field text-white" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">描述</label>
+                                    <textarea id="tutorial-description" rows="4" class="w-full px-4 py-3 input-field text-white" required></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">封面图片</label>
+                                    <div class="border-2 border-dashed border-gray-700 p-8 text-center hover:border-white transition-all cursor-pointer" onclick="document.getElementById('tutorial-cover-input').click()">
+                                        <i class="fa fa-cloud-upload text-4xl text-gray-500 mb-4"></i>
+                                        <p class="text-gray-500">点击上传图片</p>
+                                        <input type="file" id="tutorial-cover-input" accept="image/*" class="hidden" onchange="handleImageUpload(event, 'tutorial-cover-preview', 'tutorial-cover')">
+                                    </div>
+                                    <div id="tutorial-cover-preview" class="mt-6 hidden">
+                                        <img id="tutorial-cover-preview-img" class="w-full h-48 object-cover">
+                                    </div>
+                                    <input type="hidden" id="tutorial-cover">
+                                </div>
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">视频 (可选)</label>
+                                    <div class="border-2 border-dashed border-gray-700 p-8 text-center hover:border-white transition-all cursor-pointer" onclick="document.getElementById('tutorial-video-input').click()">
+                                        <i class="fa fa-film text-4xl text-gray-500 mb-4"></i>
+                                        <p class="text-gray-500">点击上传视频</p>
+                                        <input type="file" id="tutorial-video-input" accept="video/*" class="hidden" onchange="handleVideoUpload(event, 'tutorial-video-preview', 'tutorial-video')">
+                                    </div>
+                                    <div id="tutorial-video-preview" class="mt-6 hidden">
+                                        <video id="tutorial-video-preview-video" class="w-full h-48 object-cover" controls></video>
+                                    </div>
+                                    <input type="hidden" id="tutorial-video">
+                                </div>
+                                <div>
+                                    <label class="block text-xs tracking-[0.3em] text-gray-500 uppercase mb-3">标签</label>
+                                    <div class="flex gap-4">
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="tutorial-tag" value="作品" checked class="accent-white">
+                                            <span class="text-gray-400">作品</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="radio" name="tutorial-tag" value="分享" class="accent-white">
+                                            <span class="text-gray-400">分享</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="submit-btn w-full px-8 py-5 bg-white text-black text-lg font-bold tracking-[0.2em] uppercase hover:bg-gray-200 transition-colors">
+                                    添加教程
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="border border-gray-800 p-8">
+                            <h3 class="text-2xl font-bold mb-8">教程列表</h3>
+                            <div id="tutorials-list" class="space-y-4 max-h-[500px] overflow-y-auto">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="library-tab" class="tab-content hidden">
+                    <div class="mb-8">
+                        <h3 class="text-2xl font-bold mb-8">素材库</h3>
+                        <div class="border border-gray-800 p-8 mb-8">
+                            <div class="border-2 border-dashed border-gray-700 p-8 text-center hover:border-white transition-all cursor-pointer" onclick="document.getElementById('library-input').click()">
+                                <i class="fa fa-cloud-upload text-4xl text-gray-500 mb-4"></i>
+                                <p class="text-gray-500 text-lg">点击上传素材（图片或视频）</p>
+                                <input type="file" id="library-input" accept="image/*,video/*" class="hidden" multiple onchange="handleLibraryUpload(event)">
+                            </div>
+                        </div>
+                        <div id="library-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        // 登录功能
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('text-white', 'border-white'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                this.classList.add('text-white', 'border-white');
+                document.getElementById(this.dataset.tab + '-tab').classList.remove('hidden');
+            });
+        });
+        
+        document.querySelector('.tab-btn').classList.add('text-white', 'border-white');
+
         const loginForm = document.getElementById('login-form');
         const loginError = document.getElementById('login-error');
-        const loginContainer = document.getElementById('login-container');
-        const adminContainer = document.getElementById('admin-container');
+        const loginSection = document.getElementById('login-section');
+        const adminSection = document.getElementById('admin-section');
 
-        // 检查是否已登录
         if (localStorage.getItem('aigosling_admin_logged_in') === 'true') {
             showAdminPanel();
         }
 
-        // 登录表单提交
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
-            // 验证账号密码
-            if (username === 'AIGosling' && password === '357459654') {
-                // 登录成功
+            if (username === 'gosling' && password === '357459654') {
                 localStorage.setItem('aigosling_admin_logged_in', 'true');
                 showAdminPanel();
             } else {
-                // 登录失败
                 loginError.textContent = '账号或密码错误，请重新输入';
             }
         });
 
-        // 显示后台管理面板
         function showAdminPanel() {
-            loginContainer.style.display = 'none';
-            adminContainer.style.display = 'block';
+            loginSection.style.display = 'none';
+            adminSection.style.display = 'block';
             loadData();
         }
 
-        // 退出登录
         function logout() {
             localStorage.removeItem('aigosling_admin_logged_in');
-            adminContainer.style.display = 'none';
-            loginContainer.style.display = 'block';
-            document.getElementById('login-form').reset();
+            adminSection.style.display = 'none';
+            loginSection.style.display = 'flex';
+            loginForm.reset();
             loginError.textContent = '';
         }
 
-        // 加载数据
+        function handleImageUpload(event, previewId, hiddenInputId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById(previewId);
+                    const previewImg = document.getElementById(previewId + '-img');
+                    const hiddenInput = document.getElementById(hiddenInputId);
+                    previewImg.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    hiddenInput.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleVideoUpload(event, previewId, hiddenInputId) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById(previewId);
+                    const previewVideo = document.getElementById(previewId + '-video');
+                    const hiddenInput = document.getElementById(hiddenInputId);
+                    previewVideo.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    hiddenInput.value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleLibraryUpload(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const library = JSON.parse(localStorage.getItem('aigosling_library') || '[]');
+                        library.push({
+                            id: Date.now() + Math.random(),
+                            data: e.target.result,
+                            type: file.type.startsWith('video') ? 'video' : 'image',
+                            name: file.name
+                        });
+                        localStorage.setItem('aigosling_library', JSON.stringify(library));
+                        renderLibrary();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        function renderLibrary() {
+            const library = JSON.parse(localStorage.getItem('aigosling_library') || '[]');
+            const libraryGrid = document.getElementById('library-grid');
+            libraryGrid.innerHTML = '';
+            if (library.length === 0) {
+                libraryGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">素材库为空，请上传素材</div>';
+                return;
+            }
+            library.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'relative group aspect-square border border-gray-800 overflow-hidden';
+                itemDiv.innerHTML = `
+                    ${item.type === 'video' ? 
+                        `<video src="${item.data}" class="w-full h-full object-cover"></video>` :
+                        `<img src="${item.data}" alt="${item.name}" class="w-full h-full object-cover">`
+                    }
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                        <button onclick="copyToClipboard('${item.data}')" class="text-white hover:text-gray-300 p-2">
+                            <i class="fa fa-copy text-xl"></i>
+                        </button>
+                        <button onclick="deleteFromLibrary(${index})" class="text-white hover:text-red-500 p-2">
+                            <i class="fa fa-trash text-xl"></i>
+                        </button>
+                    </div>
+                `;
+                libraryGrid.appendChild(itemDiv);
+            });
+        }
+
+        function copyToClipboard(data) {
+            navigator.clipboard.writeText(data).then(() => {
+                alert('素材已复制到剪贴板');
+            });
+        }
+
+        function deleteFromLibrary(index) {
+            if (confirm('确定要删除这个素材吗？')) {
+                const library = JSON.parse(localStorage.getItem('aigosling_library') || '[]');
+                library.splice(index, 1);
+                localStorage.setItem('aigosling_library', JSON.stringify(library));
+                renderLibrary();
+            }
+        }
+
         function loadData() {
             const works = JSON.parse(localStorage.getItem('aigosling_works') || '[]');
             const tutorials = JSON.parse(localStorage.getItem('aigosling_tutorials') || '[]');
             renderWorks(works);
             renderTutorials(tutorials);
+            renderLibrary();
         }
 
-        // 保存数据
-        function saveData() {
-            localStorage.setItem('aigosling_works', JSON.stringify(works));
-            localStorage.setItem('aigosling_tutorials', JSON.stringify(tutorials));
-        }
-
-        // 渲染作品
         function renderWorks(works) {
             const worksList = document.getElementById('works-list');
             worksList.innerHTML = '';
-            
             if (works.length === 0) {
-                worksList.innerHTML = '<div class="card"><p>暂无作品，请添加新作品</p></div>';
+                worksList.innerHTML = '<div class="text-center py-12 text-gray-500">暂无作品</div>';
                 return;
             }
-            
             works.forEach((work, index) => {
-                const workCard = document.createElement('div');
-                workCard.className = 'card';
-                workCard.innerHTML = `
-                    <h3>${work.title}</h3>
-                    <p>${work.description}</p>
-                    <div class="tags">
-                        ${work.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                const workItem = document.createElement('div');
+                workItem.className = 'border border-gray-800 p-4 flex items-start gap-4';
+                workItem.innerHTML = `
+                    ${work.cover ? `<img src="${work.cover}" alt="${work.title}" class="w-20 h-20 object-cover">` : '<div class="w-20 h-20 bg-gray-800 flex items-center justify-center"><i class="fa fa-image text-gray-500 text-xl"></i></div>'}
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-lg font-semibold text-white mb-1 truncate">${work.title}</h4>
+                        <p class="text-gray-500 text-sm mb-2 line-clamp-2">${work.description}</p>
+                        ${work.tags && work.tags.length > 0 ? `<span class="text-xs text-gray-400 border border-gray-700 px-2 py-1">${work.tags[0]}</span>` : ''}
+                        ${work.video ? '<span class="ml-2 text-xs text-gray-400 border border-gray-700 px-2 py-1"><i class="fa fa-video-camera mr-1"></i> 视频</span>' : ''}
                     </div>
-                    <button class="delete-btn" onclick="deleteWork(${index})">删除</button>
+                    <button onclick="deleteWork(${index})" class="text-gray-500 hover:text-red-500 p-2">
+                        <i class="fa fa-trash text-lg"></i>
+                    </button>
                 `;
-                worksList.appendChild(workCard);
+                worksList.appendChild(workItem);
             });
         }
 
-        // 渲染教程
         function renderTutorials(tutorials) {
             const tutorialsList = document.getElementById('tutorials-list');
             tutorialsList.innerHTML = '';
-            
             if (tutorials.length === 0) {
-                tutorialsList.innerHTML = '<div class="card"><p>暂无教程，请添加新教程</p></div>';
+                tutorialsList.innerHTML = '<div class="text-center py-12 text-gray-500">暂无教程</div>';
                 return;
             }
-            
             tutorials.forEach((tutorial, index) => {
-                const tutorialCard = document.createElement('div');
-                tutorialCard.className = 'card';
-                tutorialCard.innerHTML = `
-                    <h3>${tutorial.title}</h3>
-                    <p>${tutorial.description}</p>
-                    <div class="tags">
-                        ${tutorial.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                const tutorialItem = document.createElement('div');
+                tutorialItem.className = 'border border-gray-800 p-4 flex items-start gap-4';
+                tutorialItem.innerHTML = `
+                    ${tutorial.cover ? `<img src="${tutorial.cover}" alt="${tutorial.title}" class="w-20 h-20 object-cover">` : '<div class="w-20 h-20 bg-gray-800 flex items-center justify-center"><i class="fa fa-image text-gray-500 text-xl"></i></div>'}
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-lg font-semibold text-white mb-1 truncate">${tutorial.title}</h4>
+                        <p class="text-gray-500 text-sm mb-2 line-clamp-2">${tutorial.description}</p>
+                        ${tutorial.tags && tutorial.tags.length > 0 ? `<span class="text-xs text-gray-400 border border-gray-700 px-2 py-1">${tutorial.tags[0]}</span>` : ''}
+                        ${tutorial.video ? '<span class="ml-2 text-xs text-gray-400 border border-gray-700 px-2 py-1"><i class="fa fa-video-camera mr-1"></i> 视频</span>' : ''}
                     </div>
-                    <button class="delete-btn" onclick="deleteTutorial(${index})">删除</button>
+                    <button onclick="deleteTutorial(${index})" class="text-gray-500 hover:text-red-500 p-2">
+                        <i class="fa fa-trash text-lg"></i>
+                    </button>
                 `;
-                tutorialsList.appendChild(tutorialCard);
+                tutorialsList.appendChild(tutorialItem);
             });
         }
 
-        // 删除作品
         function deleteWork(index) {
             if (confirm('确定要删除这个作品吗？')) {
+                const works = JSON.parse(localStorage.getItem('aigosling_works') || '[]');
                 works.splice(index, 1);
-                saveData();
+                localStorage.setItem('aigosling_works', JSON.stringify(works));
                 renderWorks(works);
             }
         }
 
-        // 删除教程
         function deleteTutorial(index) {
             if (confirm('确定要删除这个教程吗？')) {
+                const tutorials = JSON.parse(localStorage.getItem('aigosling_tutorials') || '[]');
                 tutorials.splice(index, 1);
-                saveData();
+                localStorage.setItem('aigosling_tutorials', JSON.stringify(tutorials));
                 renderTutorials(tutorials);
             }
         }
 
-        // 初始化数据
-        let works = JSON.parse(localStorage.getItem('aigosling_works') || '[]');
-        let tutorials = JSON.parse(localStorage.getItem('aigosling_tutorials') || '[]');
-
-        // 作品表单提交
         document.getElementById('work-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const title = document.getElementById('work-title').value;
             const description = document.getElementById('work-description').value;
             const cover = document.getElementById('work-cover').value;
-            const tags = document.getElementById('work-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-            
-            const work = { title, description, cover, tags };
-            works.push(work);
-            saveData();
+            const video = document.getElementById('work-video').value;
+            const tag = document.querySelector('input[name="work-tag"]:checked').value;
+            const works = JSON.parse(localStorage.getItem('aigosling_works') || '[]');
+            works.push({ title, description, cover, video, tags: [tag] });
+            localStorage.setItem('aigosling_works', JSON.stringify(works));
             renderWorks(works);
             this.reset();
+            document.getElementById('work-cover-preview').classList.add('hidden');
+            document.getElementById('work-video-preview').classList.add('hidden');
         });
 
-        // 教程表单提交
         document.getElementById('tutorial-form').addEventListener('submit', function(e) {
             e.preventDefault();
             const title = document.getElementById('tutorial-title').value;
             const description = document.getElementById('tutorial-description').value;
             const cover = document.getElementById('tutorial-cover').value;
-            const tags = document.getElementById('tutorial-tags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
-            
-            const tutorial = { title, description, cover, tags };
-            tutorials.push(tutorial);
-            saveData();
+            const video = document.getElementById('tutorial-video').value;
+            const tag = document.querySelector('input[name="tutorial-tag"]:checked').value;
+            const tutorials = JSON.parse(localStorage.getItem('aigosling_tutorials') || '[]');
+            tutorials.push({ title, description, cover, video, tags: [tag] });
+            localStorage.setItem('aigosling_tutorials', JSON.stringify(tutorials));
             renderTutorials(tutorials);
             this.reset();
+            document.getElementById('tutorial-cover-preview').classList.add('hidden');
+            document.getElementById('tutorial-video-preview').classList.add('hidden');
         });
     </script>
 </body>
