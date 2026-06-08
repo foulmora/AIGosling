@@ -548,6 +548,7 @@
     <div class="login-box">
       <h1 class="login-title">CONTROL<br>ROOM</h1>
       <p class="login-subtitle">这里管理 AIGosling 官网内容。发布到线上需要在 Vercel 配置后台账号、GitHub Token 和仓库信息；本地模式可以先预览和导出内容。</p>
+      <div class="notice bad" id="login-status" hidden></div>
       <form id="login-form">
         <div class="field">
           <label for="login-user">后台账号</label>
@@ -558,7 +559,7 @@
           <input class="input" id="login-password" type="password" autocomplete="current-password" placeholder="Vercel 环境变量 ADMIN_PASSWORD">
         </div>
         <div class="button-row">
-          <button class="button primary" type="submit">进入控制台</button>
+          <button class="button primary" id="login-submit" type="submit">进入控制台</button>
           <button class="button ghost" id="local-mode" type="button">本地编辑模式</button>
           <a class="button ghost" href="/">返回首页</a>
         </div>
@@ -743,6 +744,7 @@ CONTENT_PATH=content.json</div>
       content: null,
       source: "content.json",
       auth: sessionStorage.getItem("aigosling_admin_auth") || "",
+      localOnly: false,
       editing: {
         works: 0,
         tutorials: 0,
@@ -837,6 +839,43 @@ CONTENT_PATH=content.json</div>
       window.__toastTimer = setTimeout(() => node.classList.remove("show"), 3800);
     }
 
+    function showLoginStatus(message, tone = "bad") {
+      const node = byId("login-status");
+      node.textContent = message;
+      node.className = `notice ${tone}`;
+      node.hidden = !message;
+    }
+
+    function encodeBasicAuth(user, password) {
+      const bytes = new TextEncoder().encode(`${user}:${password}`);
+      let binary = "";
+      bytes.forEach((byte) => {
+        binary += String.fromCharCode(byte);
+      });
+      return btoa(binary);
+    }
+
+    async function verifyAuth(auth) {
+      const response = await fetch("/api/content?auth=check", {
+        cache: "no-store",
+        headers: {
+          "Authorization": `Basic ${auth}`
+        }
+      });
+
+      let result = {};
+      try {
+        result = await response.json();
+      } catch {
+        result = {};
+      }
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.message || "后台账号或密码不正确。");
+      }
+      return true;
+    }
+
     function makeId(prefix) {
       return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
     }
@@ -866,7 +905,7 @@ CONTENT_PATH=content.json</div>
       renderCollection("works");
       renderCollection("tutorials");
       renderCollection("journal");
-      byId("source-status").textContent = `当前内容源：${state.source}`;
+      byId("source-status").textContent = `当前内容源：${state.source}${state.localOnly ? "（本地编辑模式）" : ""}`;
     }
 
     function renderMetrics() {
@@ -1146,8 +1185,8 @@ CONTENT_PATH=content.json</div>
 
     async function publishRemote() {
       saveSiteForm();
-      if (!state.auth) {
-        toast("请先退出并用后台账号密码登录，或在发布前输入账号密码。", "bad");
+      if (state.localOnly || !state.auth) {
+        toast("本地编辑模式不能发布。请退出后用正确的后台账号密码登录。", "bad");
         return;
       }
 
@@ -1185,6 +1224,12 @@ CONTENT_PATH=content.json</div>
 
     async function checkApi() {
       const node = byId("api-status");
+      if (state.localOnly) {
+        node.className = "notice warn";
+        node.textContent = "当前是本地编辑模式：可以保存预览、导出 JSON，但不能发布到 GitHub。";
+        return;
+      }
+
       try {
         const response = await fetch("/api/content", { cache: "no-store" });
         const result = await response.json();
@@ -1206,11 +1251,15 @@ CONTENT_PATH=content.json</div>
       document.querySelectorAll(".panel").forEach((node) => node.classList.toggle("active", node.id === `panel-${panel}`));
     }
 
-    function login(user, password) {
-      if (user && password) {
-        state.auth = btoa(`${user}:${password}`);
-        sessionStorage.setItem("aigosling_admin_auth", state.auth);
+    function enterAdmin({ auth = "", localOnly = false } = {}) {
+      state.auth = auth;
+      state.localOnly = localOnly;
+      if (auth) {
+        sessionStorage.setItem("aigosling_admin_auth", auth);
+      } else {
+        sessionStorage.removeItem("aigosling_admin_auth");
       }
+
       byId("login-view").style.display = "none";
       byId("admin-app").classList.add("active");
       init().catch((error) => {
@@ -1218,12 +1267,38 @@ CONTENT_PATH=content.json</div>
       });
     }
 
-    byId("login-form").addEventListener("submit", (event) => {
+    async function login(user, password) {
+      if (!user || !password) {
+        throw new Error("请输入后台账号和密码。");
+      }
+
+      const auth = encodeBasicAuth(user, password);
+      await verifyAuth(auth);
+      enterAdmin({ auth });
+    }
+
+    byId("login-form").addEventListener("submit", async (event) => {
       event.preventDefault();
-      login(byId("login-user").value.trim(), byId("login-password").value);
+      const submit = byId("login-submit");
+      submit.disabled = true;
+      submit.textContent = "验证中...";
+      showLoginStatus("正在验证后台账号密码...", "warn");
+      try {
+        await login(byId("login-user").value.trim(), byId("login-password").value);
+      } catch (error) {
+        sessionStorage.removeItem("aigosling_admin_auth");
+        state.auth = "";
+        showLoginStatus(error.message || "登录失败。", "bad");
+      } finally {
+        submit.disabled = false;
+        submit.textContent = "进入控制台";
+      }
     });
 
-    byId("local-mode").addEventListener("click", () => login("", ""));
+    byId("local-mode").addEventListener("click", () => {
+      showLoginStatus("");
+      enterAdmin({ localOnly: true });
+    });
 
     byId("logout").addEventListener("click", () => {
       sessionStorage.removeItem("aigosling_admin_auth");
@@ -1271,9 +1346,22 @@ CONTENT_PATH=content.json</div>
       }
     });
 
-    if (state.auth) {
+    async function resumeSavedSession() {
+      if (!state.auth) return;
       byId("login-user").value = "已保存本次会话";
+      showLoginStatus("正在验证已保存的登录会话...", "warn");
+      try {
+        await verifyAuth(state.auth);
+        enterAdmin({ auth: state.auth });
+      } catch {
+        sessionStorage.removeItem("aigosling_admin_auth");
+        state.auth = "";
+        byId("login-user").value = "";
+        showLoginStatus("已保存的登录会话无效，请重新输入后台账号和密码。", "bad");
+      }
     }
+
+    resumeSavedSession();
   </script>
 </body>
 </html>

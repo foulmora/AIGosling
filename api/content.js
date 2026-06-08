@@ -124,6 +124,26 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  const requestUrl = new URL(req.url || "/", `https://${req.headers.host || "localhost"}`);
+  const isAuthCheck = requestUrl.searchParams.get("auth") === "check";
+
+  if (req.method === "GET" && isAuthCheck) {
+    if (!isAuthorized(req)) {
+      res.setHeader("WWW-Authenticate", "Basic realm=\"AIGosling Admin\"");
+      json(res, 401, {
+        ok: false,
+        message: "后台账号或密码不正确。"
+      });
+      return;
+    }
+
+    json(res, 200, {
+      ok: true,
+      message: "Authorized"
+    });
+    return;
+  }
+
   const config = getGithubConfig();
   const missing = Object.entries(config)
     .filter(([, value]) => !value)
