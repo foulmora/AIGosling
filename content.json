@@ -1,12 +1,12 @@
 {
   "site": {
     "brand": "AIGosling",
-    "brandZh": "爱果灵",
+    "brandZh": "",
     "kickerZh": "AI 影像导演工作室",
     "kickerEn": "AI Film Direction Studio",
     "headlineZh": "把东方想象力拍成下一代 AI 影像",
     "headlineEn": "Turning Chinese imagination into cinematic AI worlds",
-    "introZh": "AIGosling（爱果灵）专注 AI 短片、角色 IP、视觉实验与创作教程，用电影工业的方法训练人工智能的想象力。",
+    "introZh": "AIGosling 专注 AI 短片、角色 IP、视觉实验与创作教程，用电影工业的方法训练人工智能的想象力。",
     "introEn": "AIGosling builds AI short films, character IP, visual experiments, and practical creative tutorials with a cinematic production mindset.",
     "location": "China / Online",
     "email": "hello@aigosling.com",

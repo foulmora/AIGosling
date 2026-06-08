@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AIGosling（爱果灵）AI 影像导演工作室，专注 AI 短片、角色 IP、视觉实验与创作教程。">
-  <title>AIGosling 爱果灵 | AI 影像导演工作室</title>
+  <meta name="description" content="AIGosling AI 影像导演工作室，专注 AI 短片、角色 IP、视觉实验与创作教程。">
+  <title>AIGosling | AI 影像导演工作室</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+SC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -119,6 +119,10 @@
       font-weight: 900;
       font-size: 14px;
       white-space: nowrap;
+    }
+
+    .brand-zh:empty {
+      display: none;
     }
 
     .nav {
@@ -960,7 +964,7 @@
     <div class="shell topbar-inner">
       <a class="brand" href="#top" aria-label="AIGosling home">
         <span class="brand-mark">AIGosling</span>
-        <span class="brand-zh" data-text="brandZh">爱果灵</span>
+        <span class="brand-zh" data-text="brandZh"></span>
       </a>
       <nav class="nav" aria-label="主导航">
         <a href="#works" class="hide-sm" data-i18n="navWorks">作品</a>
@@ -987,7 +991,7 @@
             <span data-text="brand">AIGosling</span>
             <b data-text="headlineZh">把东方想象力拍成下一代 AI 影像</b>
           </h1>
-          <p class="hero-copy" data-text="introZh">AIGosling（爱果灵）专注 AI 短片、角色 IP、视觉实验与创作教程，用电影工业的方法训练人工智能的想象力。</p>
+          <p class="hero-copy" data-text="introZh">AIGosling 专注 AI 短片、角色 IP、视觉实验与创作教程，用电影工业的方法训练人工智能的想象力。</p>
           <div class="hero-actions">
             <a class="button primary" href="#works" data-text="ctaPrimaryZh">查看作品</a>
             <a class="button" href="admin.html" data-text="ctaSecondaryZh">进入后台</a>
@@ -1083,7 +1087,7 @@
       <div class="shell about-layout">
         <div class="reveal">
           <div class="section-kicker">05 / ABOUT</div>
-          <h2 class="section-title" data-i18n="aboutTitle">关于爱果灵</h2>
+          <h2 class="section-title" data-i18n="aboutTitle">关于 AIGosling</h2>
           <p class="about-text" data-text="aboutZh">我把十多年影视制作经验带入 AI 影像创作：从角色设定、分镜、镜头语言到世界观包装，让 AI 不只是生成画面，而是服务于叙事、情绪和原创 IP。</p>
         </div>
         <aside class="contact-panel reveal">
@@ -1095,7 +1099,7 @@
   </main>
 
   <footer class="footer">
-    <div class="shell">© 2026 AIGosling 爱果灵. Built for www.aigosling.com.</div>
+    <div class="shell">© 2026 AIGosling. Built for www.aigosling.com.</div>
   </footer>
 
   <div class="modal" id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -1137,7 +1141,7 @@
         tutorialsCopy: "记录可复制的方法：提示词、角色一致性、镜头设计、剪辑包装。",
         journalTitle: "创作日志",
         journalCopy: "把每一次尝试留下来，作品和方法一起进化。",
-        aboutTitle: "关于爱果灵",
+        aboutTitle: "关于 AIGosling",
         contactTitle: "联系与平台",
         all: "全部",
         emptyWorks: "还没有作品。进入后台添加第一条作品后，这里会自动更新。",
@@ -1228,10 +1232,12 @@
 
       document.querySelectorAll("[data-text]").forEach((node) => {
         const key = node.dataset.text;
-        const localized = key.endsWith("Zh") || key.endsWith("En")
-          ? site[key.replace(/(Zh|En)$/, state.lang === "zh" ? "Zh" : "En")]
-          : site[key];
-        node.textContent = localized || node.textContent;
+        const resolvedKey = key.endsWith("Zh") || key.endsWith("En")
+          ? key.replace(/(Zh|En)$/, state.lang === "zh" ? "Zh" : "En")
+          : key;
+        if (Object.prototype.hasOwnProperty.call(site, resolvedKey)) {
+          node.textContent = site[resolvedKey] ?? "";
+        }
       });
 
       renderHeroStrip();
