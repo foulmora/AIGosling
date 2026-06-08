@@ -3,25 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AIGosling AI 影像导演工作室，专注 AI 短片、角色 IP、视觉实验与创作教程。">
-  <title>AIGosling | AI 影像导演工作室</title>
+  <meta name="description" content="AIGosling AI 影像作品索引。">
+  <title>AIGosling | AI Film Index</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+SC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #050505;
-      --ink-2: #11110f;
-      --panel: #171713;
-      --line: rgba(244, 240, 232, 0.14);
-      --paper: #f4f0e8;
-      --muted: #989186;
-      --dim: #625f57;
-      --acid: #d8ff3f;
-      --ember: #ff5638;
-      --cyan: #10d7ff;
-      --gold: #d5ad61;
-      --shadow: rgba(0, 0, 0, 0.45);
+      --black: #000;
+      --white: #fff;
+      --dim: rgba(255, 255, 255, 0.58);
+      --dim-2: rgba(255, 255, 255, 0.32);
+      --line: rgba(255, 255, 255, 0.14);
+      --line-strong: rgba(255, 255, 255, 0.28);
+      --panel: rgba(255, 255, 255, 0.04);
+      --red: #ff3b30;
+      --mono: "IBM Plex Mono", "Courier New", monospace;
+      --display: "Bebas Neue", "Noto Sans SC", sans-serif;
+      --sans: "Noto Sans SC", "Helvetica Neue", sans-serif;
     }
 
     * {
@@ -34,26 +33,23 @@
 
     body {
       margin: 0;
-      background: var(--ink);
-      color: var(--paper);
-      font-family: "Noto Sans SC", sans-serif;
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans);
       letter-spacing: 0;
       overflow-x: hidden;
-      width: 100%;
+      -webkit-font-smoothing: antialiased;
     }
 
     body::before {
       content: "";
       position: fixed;
       inset: 0;
+      z-index: 50;
       pointer-events: none;
-      z-index: 20;
-      opacity: 0.16;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 44px 44px;
-      mask-image: linear-gradient(to bottom, black, transparent 92%);
+      opacity: 0.12;
+      background-image: linear-gradient(rgba(255,255,255,0.11) 1px, transparent 1px);
+      background-size: 100% 8px;
     }
 
     a {
@@ -61,1130 +57,600 @@
       text-decoration: none;
     }
 
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
-      letter-spacing: 0;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
     img {
       display: block;
       max-width: 100%;
     }
 
-    .shell {
-      width: min(1180px, calc(100% - 40px));
-      margin: 0 auto;
+    button {
+      font: inherit;
+      letter-spacing: 0;
     }
 
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      backdrop-filter: blur(18px);
-      background: rgba(5, 5, 5, 0.78);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .topbar-inner {
-      min-height: 76px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      min-width: 0;
-    }
-
-    .brand-mark {
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 36px;
-      line-height: 1;
-      white-space: nowrap;
-    }
-
-    .brand-zh {
-      color: var(--acid);
-      font-weight: 900;
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
-    .brand-zh:empty {
-      display: none;
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      color: var(--muted);
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
-    .nav a,
-    .icon-button {
-      min-height: 40px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid transparent;
-      color: inherit;
-      transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
-    }
-
-    .nav a:hover,
-    .icon-button:hover {
-      color: var(--paper);
-    }
-
-    .icon-button {
-      width: 42px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.04);
-      border-color: var(--line);
-    }
-
-    .lang-toggle {
-      min-width: 72px;
-      padding: 0 12px;
-      background: var(--paper);
-      color: var(--ink);
-      border-radius: 8px;
-      border: 0;
-      font-weight: 900;
-    }
-
-    .hero {
-      position: relative;
-      min-height: calc(100svh - 122px);
-      display: grid;
-      align-items: center;
-      overflow: hidden;
-      isolation: isolate;
-      border-bottom: 1px solid var(--line);
-    }
-
-    #signal-canvas {
-      position: absolute;
+    .bg-stage {
+      position: fixed;
       inset: 0;
       z-index: -2;
-      width: 100%;
-      height: 100%;
-      background: var(--ink);
+      background: #030303;
+      overflow: hidden;
     }
 
-    .hero::after {
+    .bg-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.34;
+      filter: grayscale(1) contrast(1.25) brightness(0.72);
+      transform: scale(1.04);
+      transition: opacity 420ms ease, transform 900ms ease, filter 420ms ease;
+    }
+
+    .bg-stage::after {
       content: "";
       position: absolute;
       inset: 0;
-      z-index: -1;
       background:
-        linear-gradient(90deg, rgba(5,5,5,0.96) 0%, rgba(5,5,5,0.82) 44%, rgba(5,5,5,0.28) 100%),
-        linear-gradient(to top, var(--ink) 0%, transparent 32%);
+        linear-gradient(90deg, rgba(0,0,0,0.92), rgba(0,0,0,0.48) 48%, rgba(0,0,0,0.84)),
+        linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.86));
+    }
+
+    .shell {
+      width: min(1500px, calc(100% - 56px));
+      margin: 0 auto;
+    }
+
+    .brand-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-top: 28px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--dim);
+      text-transform: uppercase;
+    }
+
+    .brand-bar a {
+      color: var(--white);
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .hero-index {
+      min-height: 92svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-bottom: 22px;
     }
 
     .hero-layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.75fr);
-      gap: 42px;
-      align-items: end;
-      padding: 74px 0 52px;
+      grid-template-columns: minmax(190px, 0.32fr) minmax(0, 0.68fr);
+      gap: 56px;
+      align-items: start;
+      padding: 52px 0 42px;
     }
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--acid);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 18px;
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 34px;
-      height: 2px;
-      background: var(--acid);
-    }
-
-    .hero-title {
-      margin: 0;
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 82px;
-      line-height: 0.88;
-      font-weight: 400;
-      max-width: 760px;
-      overflow-wrap: anywhere;
-    }
-
-    .hero-title span {
-      display: block;
-      color: transparent;
-      -webkit-text-stroke: 1px var(--paper);
-      text-stroke: 1px var(--paper);
-    }
-
-    .hero-title b {
-      display: block;
-      font-weight: 900;
-      overflow-wrap: anywhere;
-    }
-
-    .hero-copy {
-      margin: 28px 0 0;
-      max-width: 630px;
-      color: #d4cec2;
-      font-size: 19px;
-      line-height: 1.8;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 34px;
-    }
-
-    .button {
-      min-height: 48px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px 18px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.05);
-      color: var(--paper);
-      font-weight: 900;
-      transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
-    }
-
-    .button:hover {
-      transform: translateY(-2px);
-      border-color: rgba(244,240,232,0.4);
-      background: rgba(255,255,255,0.1);
-    }
-
-    .button.primary {
-      background: var(--acid);
-      color: var(--ink);
-      border-color: var(--acid);
-    }
-
-    .button.ember {
-      background: var(--ember);
-      color: white;
-      border-color: var(--ember);
-    }
-
-    .mobile-lang-toggle {
-      display: none;
-    }
-
-    .hero-panel {
-      border-left: 1px solid var(--line);
-      padding-left: 28px;
-    }
-
-    .signal-label {
-      font-family: "IBM Plex Mono", monospace;
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 18px;
-    }
-
-    .hero-strip {
+    .left-rail {
+      position: sticky;
+      top: 28px;
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
+      gap: 24px;
+      min-width: 0;
     }
 
-    .mini-frame {
-      min-height: 112px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      overflow: hidden;
-      position: relative;
-      background: linear-gradient(135deg, rgba(216,255,63,0.18), rgba(255,86,56,0.14), rgba(16,215,255,0.16));
-    }
-
-    .mini-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      min-height: 112px;
-      filter: saturate(1.12) contrast(1.06);
-      mix-blend-mode: screen;
-    }
-
-    .mini-frame::after {
-      content: attr(data-label);
-      position: absolute;
-      left: 12px;
-      bottom: 10px;
-      font-family: "IBM Plex Mono", monospace;
+    .rail-label,
+    .project-meta,
+    .mini-label,
+    .footer,
+    .empty {
+      font-family: var(--mono);
       font-size: 12px;
-      color: var(--paper);
-      background: rgba(5,5,5,0.58);
-      padding: 6px 8px;
-      border-radius: 6px;
+      line-height: 1.5;
+      color: var(--dim-2);
+      text-transform: uppercase;
     }
 
-    .stats-band {
+    .rail-list,
+    .project-index {
+      display: grid;
+      gap: 20px;
+    }
+
+    .rail-link,
+    .project-link {
+      display: grid;
+      gap: 5px;
+      color: var(--white);
+    }
+
+    .rail-link {
+      padding-bottom: 12px;
       border-bottom: 1px solid var(--line);
-      background: #0d0d0b;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--line);
-    }
-
-    .stat {
-      background: #0d0d0b;
-      padding: 28px;
-    }
-
-    .stat strong {
-      display: block;
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 48px;
-      line-height: 1;
-      color: var(--paper);
+    .rail-link strong {
+      font-family: var(--display);
+      font-size: 38px;
+      line-height: 0.9;
       font-weight: 400;
+      text-transform: uppercase;
     }
 
-    .stat span {
-      display: block;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 14px;
+    .rail-link.missing {
+      color: var(--dim);
+    }
+
+    .project-group {
+      display: grid;
+      justify-items: end;
+      text-align: right;
+    }
+
+    .project-link {
+      display: inline-grid;
+      justify-items: end;
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .project-index:hover .project-link {
+      opacity: 0.24;
+    }
+
+    .project-index .project-link:hover {
+      opacity: 1;
+      transform: translateX(-16px);
+    }
+
+    .project-title {
+      font-family: var(--display);
+      font-size: 88px;
+      line-height: 0.86;
+      font-weight: 400;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-info {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      color: var(--dim);
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.7;
+      text-transform: uppercase;
+    }
+
+    .hero-info strong {
+      color: var(--white);
+      font-weight: 700;
     }
 
     .section {
-      padding: 96px 0;
-      border-bottom: 1px solid var(--line);
+      border-top: 1px solid var(--line);
+      background: rgba(0,0,0,0.88);
     }
 
-    .section-head {
+    .project {
+      min-height: 82svh;
       display: grid;
-      grid-template-columns: minmax(0, 0.8fr) minmax(280px, 0.5fr);
-      gap: 36px;
       align-items: end;
-      margin-bottom: 38px;
-    }
-
-    .section-kicker {
-      font-family: "IBM Plex Mono", monospace;
-      color: var(--gold);
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .section-title {
-      margin: 0;
-      font-family: "Bebas Neue", sans-serif;
-      font-size: 72px;
-      line-height: 0.95;
-      font-weight: 400;
-    }
-
-    .section-copy {
-      margin: 0;
-      color: var(--muted);
-      font-size: 17px;
-      line-height: 1.8;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 26px;
-    }
-
-    .chip {
-      min-height: 38px;
-      padding: 8px 13px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      background: transparent;
-    }
-
-    .chip.active,
-    .chip:hover {
-      color: var(--ink);
-      background: var(--paper);
-      border-color: var(--paper);
-    }
-
-    .work-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
-
-    .poster-card {
-      min-height: 420px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 200ms ease, border-color 200ms ease;
-    }
-
-    .poster-card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(216,255,63,0.55);
-    }
-
-    .poster-media {
-      aspect-ratio: 16 / 10;
-      background:
-        linear-gradient(135deg, rgba(216,255,63,0.18), transparent 44%),
-        linear-gradient(315deg, rgba(255,86,56,0.2), transparent 42%),
-        #222019;
-      overflow: hidden;
       position: relative;
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      background: #060606;
     }
 
-    .poster-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: saturate(1.08) contrast(1.05);
-      transition: transform 360ms ease;
+    .project::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--cover);
+      background-size: cover;
+      background-position: center;
+      filter: grayscale(1) contrast(1.18) brightness(0.7);
+      transform: scale(1.02);
     }
 
-    .poster-card:hover .poster-media img {
-      transform: scale(1.045);
-    }
-
-    .poster-media.image-error img {
-      display: none;
-    }
-
-    .poster-body {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding: 20px;
-    }
-
-    .poster-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      color: var(--dim);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 12px;
-    }
-
-    .poster-title {
-      margin: 0;
-      font-size: 24px;
-      line-height: 1.25;
-      font-weight: 900;
-    }
-
-    .poster-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.75;
-      font-size: 15px;
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: auto;
-    }
-
-    .tag {
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      color: #beb6a9;
-      padding: 6px 9px;
-      font-size: 12px;
-      line-height: 1;
-    }
-
-    .process-band {
+    .project::after {
+      content: "";
+      position: absolute;
+      inset: 0;
       background:
-        linear-gradient(90deg, rgba(216,255,63,0.08), transparent 28%),
-        linear-gradient(270deg, rgba(255,86,56,0.12), transparent 30%),
-        #10100d;
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.92)),
+        linear-gradient(90deg, rgba(0,0,0,0.9), rgba(0,0,0,0.12));
     }
 
-    .process-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      overflow: hidden;
+    .project-body {
+      position: relative;
+      z-index: 1;
+      padding: 0 0 54px;
     }
 
-    .process-step {
-      min-height: 220px;
-      padding: 24px;
-      border-right: 1px solid var(--line);
-      background: rgba(5,5,5,0.18);
-    }
-
-    .process-step:last-child {
-      border-right: 0;
-    }
-
-    .process-step strong {
-      display: block;
-      color: var(--acid);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 13px;
-      margin-bottom: 36px;
-    }
-
-    .process-step h3 {
-      margin: 0 0 12px;
-      font-size: 22px;
-    }
-
-    .process-step p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: 14px;
-    }
-
-    .tutorial-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .tutorial-item {
-      display: grid;
-      grid-template-columns: 210px minmax(0, 1fr) auto;
-      gap: 20px;
-      align-items: center;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      background: #10100d;
-      transition: border-color 180ms ease, transform 180ms ease;
-    }
-
-    .tutorial-item:hover {
-      transform: translateX(4px);
-      border-color: rgba(16,215,255,0.5);
-    }
-
-    .tutorial-thumb {
-      aspect-ratio: 16 / 10;
-      border-radius: 6px;
-      overflow: hidden;
-      background: #222019;
-    }
-
-    .tutorial-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .tutorial-item h3 {
-      margin: 0 0 8px;
-      font-size: 24px;
-    }
-
-    .tutorial-item p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .arrow {
-      width: 48px;
-      height: 48px;
+    .project-number {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      background: var(--paper);
-      color: var(--ink);
-      font-weight: 900;
-    }
-
-    .journal-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
-
-    .journal-card {
-      min-height: 210px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 22px;
-      background: var(--panel);
-    }
-
-    .journal-card time {
-      color: var(--ember);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 13px;
-    }
-
-    .journal-card h3 {
-      margin: 22px 0 12px;
-      font-size: 22px;
-    }
-
-    .journal-card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.75;
-    }
-
-    .about-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 0.75fr) minmax(280px, 0.45fr);
-      gap: 46px;
-      align-items: start;
-    }
-
-    .about-text {
-      margin: 0;
-      font-size: 22px;
-      line-height: 1.9;
-      color: #d8d0c4;
-    }
-
-    .contact-panel {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 24px;
-      background: #10100d;
-    }
-
-    .contact-panel h3 {
-      margin: 0 0 20px;
-      font-size: 22px;
-    }
-
-    .contact-link {
-      min-height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 0;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-    }
-
-    .contact-link:hover {
-      color: var(--paper);
-    }
-
-    .footer {
-      padding: 34px 0;
-      color: var(--dim);
-      font-size: 14px;
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      display: none;
-      background: rgba(5,5,5,0.92);
-      backdrop-filter: blur(12px);
-      overflow: auto;
-      padding: 28px 0;
-    }
-
-    .modal.open {
-      display: block;
-    }
-
-    .modal-box {
-      width: min(980px, calc(100% - 32px));
-      margin: 0 auto;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #10100d;
-      overflow: hidden;
-      box-shadow: 0 30px 80px var(--shadow);
-    }
-
-    .modal-media {
-      aspect-ratio: 16 / 9;
-      background: #191914;
-    }
-
-    .modal-media img,
-    .modal-media video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .modal-body {
-      padding: 28px;
-    }
-
-    .modal-top {
-      display: flex;
-      align-items: start;
-      justify-content: space-between;
       gap: 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--white);
+      text-transform: uppercase;
       margin-bottom: 18px;
     }
 
-    .modal-title {
+    .project-number::after {
+      content: "";
+      width: 70px;
+      height: 1px;
+      background: var(--line-strong);
+    }
+
+    .project-hero-title {
       margin: 0;
-      font-size: 34px;
-      line-height: 1.2;
+      font-family: var(--display);
+      font-size: 132px;
+      line-height: 0.84;
+      font-weight: 400;
+      text-transform: uppercase;
+      max-width: 980px;
+      overflow-wrap: anywhere;
     }
 
-    .close {
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--paper);
+    .project-sub {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--dim);
+      text-transform: uppercase;
+    }
+
+    .project-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .pill-link {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line-strong);
+      padding: 8px 12px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--white);
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.22);
+    }
+
+    .compact-section {
+      padding: 72px 0;
+    }
+
+    .compact-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 24px;
+    }
+
+    .compact-head h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 68px;
+      line-height: 0.9;
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+
+    .log-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+    }
+
+    .log-item {
+      min-height: 190px;
+      display: grid;
+      align-content: space-between;
+      gap: 32px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 18px;
+      background: var(--panel);
+      transition: background 180ms ease;
+    }
+
+    .log-item:hover {
+      background: rgba(255,255,255,0.09);
+    }
+
+    .log-item:nth-child(3n) {
+      border-right: 0;
+    }
+
+    .log-item h3 {
+      margin: 0;
       font-size: 24px;
+      line-height: 1.15;
+      font-weight: 900;
     }
 
-    .empty {
-      border: 1px dashed var(--line);
-      border-radius: 8px;
-      padding: 34px;
-      color: var(--muted);
-      background: rgba(255,255,255,0.03);
+    .about-strip {
+      display: grid;
+      grid-template-columns: minmax(0, 0.55fr) minmax(260px, 0.45fr);
+      gap: 48px;
+      align-items: end;
+      padding: 76px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .about-strip h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 78px;
+      line-height: 0.9;
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+
+    .about-strip p {
+      margin: 0;
+      color: var(--dim);
+      line-height: 1.8;
+      max-width: 560px;
+    }
+
+    .footer {
+      padding: 32px 0;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      background: #000;
     }
 
     .reveal {
       opacity: 0;
       transform: translateY(18px);
-      transition: opacity 520ms ease, transform 520ms ease;
+      transition: opacity 500ms ease, transform 500ms ease;
     }
 
     .reveal.visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: none;
     }
 
-    @media (min-width: 1100px) {
-      .hero-title {
-        font-size: 118px;
+    @media (max-width: 1100px) {
+      .project-title {
+        font-size: 70px;
       }
 
-      .section-title {
-        font-size: 88px;
-      }
-    }
-
-    @media (max-width: 960px) {
-      .nav {
-        gap: 8px;
-      }
-
-      .nav .hide-sm {
-        display: none;
-      }
-
-      .hero-layout,
-      .section-head,
-      .about-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-panel {
-        border-left: 0;
-        padding-left: 0;
-      }
-
-      .work-grid,
-      .journal-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .process-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .process-step:nth-child(2) {
-        border-right: 0;
-      }
-
-      .process-step:nth-child(1),
-      .process-step:nth-child(2) {
-        border-bottom: 1px solid var(--line);
-      }
-
-      .tutorial-item {
-        grid-template-columns: 160px minmax(0, 1fr);
-      }
-
-      .tutorial-item .arrow {
-        display: none;
+      .project-hero-title {
+        font-size: 104px;
       }
     }
 
-    @media (max-width: 650px) {
+    @media (max-width: 780px) {
       .shell {
         width: calc(100% - 28px);
-        max-width: 1180px;
       }
 
-      .topbar-inner {
-        min-height: 66px;
-        overflow: hidden;
+      .hero-index {
+        min-height: auto;
       }
 
-      .brand-mark {
+      .brand-bar {
+        padding-top: 18px;
+      }
+
+      .hero-layout {
+        grid-template-columns: 1fr;
+        gap: 42px;
+        padding: 42px 0 34px;
+      }
+
+      .left-rail {
+        position: static;
+      }
+
+      .rail-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .rail-link strong {
         font-size: 30px;
       }
 
-      .brand-zh {
-        display: none;
+      .project-group,
+      .project-link {
+        justify-items: start;
+        text-align: left;
       }
 
-      .hero {
-        min-height: auto;
+      .project-index .project-link:hover {
+        transform: translateX(0);
       }
 
-      .hero-layout {
-        padding: 54px 0 42px;
+      .project-title {
+        font-size: 58px;
       }
 
-      .hero-title {
-        font-size: 48px;
-        line-height: 0.96;
-        max-width: 100%;
-        width: 100%;
-      }
-
-      .hero-title span {
-        font-size: 50px;
-      }
-
-      .hero-title b {
-        font-size: 46px;
-        word-break: break-all;
-        max-width: 100%;
-      }
-
-      .nav {
-        display: none;
-      }
-
-      .mobile-lang-toggle {
-        display: inline-flex;
-      }
-
-      .topbar,
-      main,
-      .hero,
-      .hero-layout {
-        max-width: 100vw;
-        overflow-x: hidden;
-      }
-
-      .hero-copy {
-        font-size: 17px;
-        max-width: 100%;
-        overflow-wrap: anywhere;
-        word-break: break-word;
-      }
-
-      .section {
-        padding: 66px 0;
-      }
-
-      .section-title {
-        font-size: 56px;
-      }
-
-      .stats-grid,
-      .work-grid,
-      .process-grid,
-      .journal-grid {
+      .hero-info,
+      .compact-head,
+      .footer,
+      .about-strip {
+        display: grid;
         grid-template-columns: 1fr;
       }
 
-      .process-step,
-      .process-step:nth-child(2) {
+      .project {
+        min-height: 72svh;
+      }
+
+      .project-hero-title {
+        font-size: 72px;
+      }
+
+      .compact-head h2,
+      .about-strip h2 {
+        font-size: 58px;
+      }
+
+      .log-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .log-item,
+      .log-item:nth-child(3n) {
         border-right: 0;
-        border-bottom: 1px solid var(--line);
       }
+    }
 
-      .process-step:last-child {
-        border-bottom: 0;
-      }
-
-      .tutorial-item {
+    @media (max-width: 460px) {
+      .rail-list {
         grid-template-columns: 1fr;
       }
 
-      .poster-card {
-        min-height: auto;
+      .project-title {
+        font-size: 48px;
+      }
+
+      .project-hero-title {
+        font-size: 58px;
       }
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="shell topbar-inner">
-      <a class="brand" href="#top" aria-label="AIGosling home">
-        <span class="brand-mark">AIGosling</span>
-        <span class="brand-zh" data-text="brandZh"></span>
-      </a>
-      <nav class="nav" aria-label="主导航">
-        <a href="#works" class="hide-sm" data-i18n="navWorks">作品</a>
-        <a href="#tutorials" class="hide-sm" data-i18n="navTutorials">教程</a>
-        <a href="#about" class="hide-sm" data-i18n="navAbout">关于</a>
-        <a class="icon-button" href="admin.html" title="后台管理" aria-label="后台管理">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M19.5 12a7.7 7.7 0 0 0-.08-1.08l2.04-1.57-2-3.46-2.42.98a8.11 8.11 0 0 0-1.86-1.08L14.82 3h-4l-.36 2.79c-.66.27-1.28.63-1.86 1.08l-2.42-.98-2 3.46 2.04 1.57A7.7 7.7 0 0 0 6.15 12c0 .37.03.73.08 1.08l-2.04 1.57 2 3.46 2.42-.98c.57.45 1.2.81 1.86 1.08l.36 2.79h4l.36-2.79c.66-.27 1.28-.63 1.86-1.08l2.42.98 2-3.46-2.04-1.57c.05-.35.08-.71.08-1.08Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <button class="lang-toggle lang-control" id="lang-toggle" type="button">中 / EN</button>
-      </nav>
-    </div>
-  </header>
+  <div class="bg-stage" aria-hidden="true">
+    <img id="bg-image" src="assets/visual-shanhai.png" alt="">
+  </div>
 
   <main id="top">
-    <section class="hero">
-      <canvas id="signal-canvas" aria-hidden="true"></canvas>
-      <div class="shell hero-layout">
-        <div>
-          <div class="eyebrow" data-text="kickerZh">AI 影像导演工作室</div>
-          <h1 class="hero-title">
-            <span data-text="brand">AIGosling</span>
-            <b data-text="headlineZh">把东方想象力拍成下一代 AI 影像</b>
-          </h1>
-          <p class="hero-copy" data-text="introZh">AIGosling 专注 AI 短片、角色 IP、视觉实验与创作教程，用电影工业的方法训练人工智能的想象力。</p>
-          <div class="hero-actions">
-            <a class="button primary" href="#works" data-text="ctaPrimaryZh">查看作品</a>
-            <a class="button" href="admin.html" data-text="ctaSecondaryZh">进入后台</a>
-            <button class="button mobile-lang-toggle lang-control" type="button">中 / EN</button>
-          </div>
-        </div>
-        <aside class="hero-panel" aria-label="精选影像">
-          <div class="signal-label">LIVE VISUAL INDEX / AIGOSLING.COM</div>
-          <div class="hero-strip" id="hero-strip"></div>
+    <section class="hero-index shell">
+      <div class="brand-bar">
+        <span id="brand-line">AIGOSLING // V.2026</span>
+        <a href="admin.html">ADMIN</a>
+      </div>
+
+      <div class="hero-layout">
+        <aside class="left-rail" aria-label="外部平台">
+          <div class="rail-label">SOCIAL / CHANNELS</div>
+          <div class="rail-list" id="social-links"></div>
         </aside>
+
+        <nav class="project-index" id="project-index" aria-label="作品索引"></nav>
+      </div>
+
+      <div class="hero-info">
+        <div><strong>AI FILM INDEX</strong><br><span id="hero-short">AI 短片 / 角色 IP / 视觉实验</span></div>
+        <div id="hero-contact">CHINA / ONLINE</div>
       </div>
     </section>
 
-    <section class="stats-band">
-      <div class="shell stats-grid" id="stats-grid"></div>
-    </section>
+    <section class="section" id="works"></section>
 
-    <section class="section" id="works">
+    <section class="section compact-section" id="tutorials">
       <div class="shell">
-        <div class="section-head reveal">
+        <div class="compact-head reveal">
           <div>
-            <div class="section-kicker">01 / SELECTED WORKS</div>
-            <h2 class="section-title" data-i18n="worksTitle">作品片场</h2>
+            <div class="mini-label">PROCESS LOGS</div>
+            <h2>LOGS</h2>
           </div>
-          <p class="section-copy" data-i18n="worksCopy">把 AI 生成变成可观看、可传播、可继续生长的影像资产。</p>
+          <div class="mini-label">SHORT NOTES / TUTORIALS</div>
         </div>
-        <div class="toolbar" id="work-filters" aria-label="作品筛选"></div>
-        <div class="work-grid" id="works-grid"></div>
-      </div>
-    </section>
-
-    <section class="section process-band">
-      <div class="shell">
-        <div class="section-head reveal">
-          <div>
-            <div class="section-kicker">02 / STUDIO OS</div>
-            <h2 class="section-title" data-i18n="processTitle">创作系统</h2>
-          </div>
-          <p class="section-copy" data-i18n="processCopy">不是随机出图，而是把影视流程拆成可复用的 AI 制作链路。</p>
-        </div>
-        <div class="process-grid reveal">
-          <article class="process-step">
-            <strong>01</strong>
-            <h3 data-i18n="stepOneTitle">世界观</h3>
-            <p data-i18n="stepOneCopy">先确定故事气质、角色关系和视觉规则，让每张图都属于同一个宇宙。</p>
-          </article>
-          <article class="process-step">
-            <strong>02</strong>
-            <h3 data-i18n="stepTwoTitle">分镜</h3>
-            <p data-i18n="stepTwoCopy">用镜头语言管理景别、运动、光线和节奏，避免 AI 画面散掉。</p>
-          </article>
-          <article class="process-step">
-            <strong>03</strong>
-            <h3 data-i18n="stepThreeTitle">生成</h3>
-            <p data-i18n="stepThreeCopy">角色卡、风格锚点和负面词一起工作，保证画面高级且连续。</p>
-          </article>
-          <article class="process-step">
-            <strong>04</strong>
-            <h3 data-i18n="stepFourTitle">剪辑</h3>
-            <p data-i18n="stepFourCopy">把生成素材整理成真正的影像：节奏、音乐、字幕、包装一次完成。</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="tutorials">
-      <div class="shell">
-        <div class="section-head reveal">
-          <div>
-            <div class="section-kicker">03 / PROCESS LOGS</div>
-            <h2 class="section-title" data-i18n="tutorialsTitle">教程与分享</h2>
-          </div>
-          <p class="section-copy" data-i18n="tutorialsCopy">记录可复制的方法：提示词、角色一致性、镜头设计、剪辑包装。</p>
-        </div>
-        <div class="tutorial-list" id="tutorials-list"></div>
-      </div>
-    </section>
-
-    <section class="section" id="journal">
-      <div class="shell">
-        <div class="section-head reveal">
-          <div>
-            <div class="section-kicker">04 / JOURNAL</div>
-            <h2 class="section-title" data-i18n="journalTitle">创作日志</h2>
-          </div>
-          <p class="section-copy" data-i18n="journalCopy">把每一次尝试留下来，作品和方法一起进化。</p>
-        </div>
-        <div class="journal-grid" id="journal-grid"></div>
+        <div class="log-grid" id="tutorial-list"></div>
       </div>
     </section>
 
     <section class="section" id="about">
-      <div class="shell about-layout">
-        <div class="reveal">
-          <div class="section-kicker">05 / ABOUT</div>
-          <h2 class="section-title" data-i18n="aboutTitle">关于 AIGosling</h2>
-          <p class="about-text" data-text="aboutZh">我把十多年影视制作经验带入 AI 影像创作：从角色设定、分镜、镜头语言到世界观包装，让 AI 不只是生成画面，而是服务于叙事、情绪和原创 IP。</p>
+      <div class="shell about-strip reveal">
+        <div>
+          <div class="mini-label">ABOUT</div>
+          <h2>AIGOSLING</h2>
         </div>
-        <aside class="contact-panel reveal">
-          <h3 data-i18n="contactTitle">联系与平台</h3>
-          <div id="contact-links"></div>
-        </aside>
+        <p id="about-copy">AI film / character IP / visual experiments.</p>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="shell">© 2026 AIGosling. Built for www.aigosling.com.</div>
+  <footer class="footer shell">
+    <span>AIGOSLING // 2026</span>
+    <span>WWW.AIGOSLING.COM</span>
   </footer>
 
-  <div class="modal" id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-box">
-      <div class="modal-media" id="modal-media"></div>
-      <div class="modal-body">
-        <div class="modal-top">
-          <div>
-            <div class="poster-meta" id="modal-meta"></div>
-            <h2 class="modal-title" id="modal-title"></h2>
-          </div>
-          <button class="close" id="modal-close" type="button" aria-label="关闭">×</button>
-        </div>
-        <p class="poster-desc" id="modal-desc"></p>
-        <div class="tag-row" id="modal-tags"></div>
-      </div>
-    </div>
-  </div>
-
   <script>
-    const ui = {
-      zh: {
-        navWorks: "作品",
-        navTutorials: "教程",
-        navAbout: "关于",
-        worksTitle: "作品片场",
-        worksCopy: "把 AI 生成变成可观看、可传播、可继续生长的影像资产。",
-        processTitle: "创作系统",
-        processCopy: "不是随机出图，而是把影视流程拆成可复用的 AI 制作链路。",
-        stepOneTitle: "世界观",
-        stepOneCopy: "先确定故事气质、角色关系和视觉规则，让每张图都属于同一个宇宙。",
-        stepTwoTitle: "分镜",
-        stepTwoCopy: "用镜头语言管理景别、运动、光线和节奏，避免 AI 画面散掉。",
-        stepThreeTitle: "生成",
-        stepThreeCopy: "角色卡、风格锚点和负面词一起工作，保证画面高级且连续。",
-        stepFourTitle: "剪辑",
-        stepFourCopy: "把生成素材整理成真正的影像：节奏、音乐、字幕、包装一次完成。",
-        tutorialsTitle: "教程与分享",
-        tutorialsCopy: "记录可复制的方法：提示词、角色一致性、镜头设计、剪辑包装。",
-        journalTitle: "创作日志",
-        journalCopy: "把每一次尝试留下来，作品和方法一起进化。",
-        aboutTitle: "关于 AIGosling",
-        contactTitle: "联系与平台",
-        all: "全部",
-        emptyWorks: "还没有作品。进入后台添加第一条作品后，这里会自动更新。",
-        emptyTutorials: "还没有教程。进入后台添加教程链接或说明。",
-        emptyJournal: "还没有创作日志。"
+    const fallbackContent = {
+      site: {
+        brand: "AIGosling",
+        introZh: "AI 短片 / 角色 IP / 视觉实验。",
+        introEn: "AI film / character IP / visual experiments.",
+        location: "China / Online",
+        email: "hello@aigosling.com",
+        douyin: "https://v.douyin.com/l1ZxVndn95I",
+        youtube: "",
+        x: "",
+        aboutZh: "AIGosling 是一个 AI 影像作品索引，记录短片、角色与视觉实验。",
+        aboutEn: "AIGosling is an AI film index for shorts, characters, and visual experiments."
       },
-      en: {
-        navWorks: "Works",
-        navTutorials: "Tutorials",
-        navAbout: "About",
-        worksTitle: "Visual Works",
-        worksCopy: "Turning AI generation into watchable, shareable, expandable film assets.",
-        processTitle: "Studio System",
-        processCopy: "A reusable AI production chain built from film workflow, not random image generation.",
-        stepOneTitle: "World",
-        stepOneCopy: "Define story tone, character logic, and visual rules before generating assets.",
-        stepTwoTitle: "Shots",
-        stepTwoCopy: "Use camera language to control framing, motion, lighting, and rhythm.",
-        stepThreeTitle: "Generate",
-        stepThreeCopy: "Character cards, style anchors, and negative prompts keep the visuals premium and coherent.",
-        stepFourTitle: "Edit",
-        stepFourCopy: "Turn generated assets into films with rhythm, music, subtitles, and packaging.",
-        tutorialsTitle: "Tutorials",
-        tutorialsCopy: "Repeatable methods for prompts, consistency, shot design, and editing.",
-        journalTitle: "Journal",
-        journalCopy: "Every experiment leaves a trace. The work and the method evolve together.",
-        aboutTitle: "About",
-        contactTitle: "Contact",
-        all: "All",
-        emptyWorks: "No works yet. Add the first work in the admin console.",
-        emptyTutorials: "No tutorials yet. Add tutorial links or notes in the admin console.",
-        emptyJournal: "No journal notes yet."
-      }
+      works: [
+        {
+          id: "work-001",
+          titleZh: "山海异闻录",
+          titleEn: "Records of Shanhai",
+          cover: "assets/visual-shanhai.png",
+          year: "2026",
+          tags: ["AI短片", "东方奇幻"]
+        },
+        {
+          id: "work-002",
+          titleZh: "城市夜航",
+          titleEn: "Night Run Protocol",
+          cover: "assets/visual-night-run.png",
+          year: "2026",
+          tags: ["视觉实验", "城市"]
+        },
+        {
+          id: "work-003",
+          titleZh: "角色设定：灵鹿少年",
+          titleEn: "Character Study: Spirit Deer",
+          cover: "assets/visual-spirit-deer.png",
+          year: "2026",
+          tags: ["角色IP", "一致性"]
+        }
+      ],
+      tutorials: [
+        {
+          titleZh: "AI 短片从 0 到 1 的工作流",
+          tags: ["教程"],
+          url: ""
+        },
+        {
+          titleZh: "角色一致性提示词模板",
+          tags: ["提示词"],
+          url: ""
+        }
+      ],
+      journal: []
     };
 
     const state = {
-      content: null,
-      lang: localStorage.getItem("aigosling_lang") || "zh",
-      activeTag: "all"
+      content: fallbackContent
     };
 
     const byId = (id) => document.getElementById(id);
-    const textFor = (item, key) => item[`${key}${state.lang === "zh" ? "Zh" : "En"}`] || item[`${key}Zh`] || item[`${key}En`] || "";
 
     function escapeHtml(value) {
       return String(value || "")
@@ -1195,326 +661,188 @@
         .replace(/'/g, "&#039;");
     }
 
-    async function loadContent() {
-      const preview = localStorage.getItem("aigosling_content_preview");
-      if (preview) {
-        try {
-          state.content = JSON.parse(preview);
-          render();
-          return;
-        } catch {
-          localStorage.removeItem("aigosling_content_preview");
-        }
+    function slug(value, fallback) {
+      return String(value || fallback)
+        .toLowerCase()
+        .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+        .replace(/^-+|-+$/g, "") || fallback;
+    }
+
+    function titleFor(item) {
+      return item.titleEn || item.titleZh || "UNTITLED";
+    }
+
+    function localTitleFor(item) {
+      return item.titleZh || item.titleEn || "未命名";
+    }
+
+    function formatIndexTitle(value) {
+      const clean = String(value || "UNTITLED").replace(/\s+/g, " ").trim();
+      const parts = clean.split(/[:：&]/).map((part) => part.trim()).filter(Boolean);
+      if (parts.length > 1) return parts.slice(0, 2).join("<br>");
+      const words = clean.split(" ");
+      if (words.length > 2) {
+        const middle = Math.ceil(words.length / 2);
+        return `${escapeHtml(words.slice(0, middle).join(" "))}<br>${escapeHtml(words.slice(middle).join(" "))}`;
       }
-
-      const response = await fetch("content.json", { cache: "no-store" });
-      state.content = await response.json();
-      render();
+      return escapeHtml(clean);
     }
 
-    function setLanguage(lang) {
-      state.lang = lang;
-      localStorage.setItem("aigosling_lang", lang);
-      render();
+    function coverFor(item) {
+      return item.cover || "assets/visual-shanhai.png";
     }
 
-    function render() {
-      if (!state.content) return;
-      document.documentElement.lang = state.lang === "zh" ? "zh-CN" : "en";
-      document.querySelectorAll(".lang-control").forEach((button) => {
-        button.textContent = state.lang === "zh" ? "中 / EN" : "EN / 中";
-      });
+    function socialHref(site, key) {
+      const value = (site[key] || "").trim();
+      if (!value) return "";
+      if (key === "email") return `mailto:${value}`;
+      return value;
+    }
 
+    function renderSocial() {
       const site = state.content.site || {};
-      document.querySelectorAll("[data-i18n]").forEach((node) => {
-        node.textContent = ui[state.lang][node.dataset.i18n] || node.textContent;
-      });
+      const links = [
+        ["x", "X.COM"],
+        ["youtube", "YOUTUBE"],
+        ["douyin", "DOUYIN"],
+        ["email", "EMAIL"],
+        ["admin", "ADMIN"]
+      ];
 
-      document.querySelectorAll("[data-text]").forEach((node) => {
-        const key = node.dataset.text;
-        const resolvedKey = key.endsWith("Zh") || key.endsWith("En")
-          ? key.replace(/(Zh|En)$/, state.lang === "zh" ? "Zh" : "En")
-          : key;
-        if (Object.prototype.hasOwnProperty.call(site, resolvedKey)) {
-          node.textContent = site[resolvedKey] ?? "";
-        }
-      });
-
-      renderHeroStrip();
-      renderStats();
-      renderFilters();
-      renderWorks();
-      renderTutorials();
-      renderJournal();
-      renderContacts();
-      observeReveals();
-    }
-
-    function renderHeroStrip() {
-      const container = byId("hero-strip");
-      const works = (state.content.works || []).filter((work) => work.featured).slice(0, 3);
-      container.innerHTML = works.map((work, index) => `
-        <button class="mini-frame" data-work-id="${escapeHtml(work.id)}" data-label="SHOT ${String(index + 1).padStart(2, "0")}" type="button">
-          ${work.cover ? `<img src="${escapeHtml(work.cover)}" alt="${escapeHtml(textFor(work, "title"))}">` : ""}
-        </button>
-      `).join("");
-
-      container.querySelectorAll("button").forEach((button) => {
-        button.addEventListener("click", () => {
-          const item = (state.content.works || []).find((work) => work.id === button.dataset.workId);
-          if (item) openDetail(item, "work");
-        });
-      });
-    }
-
-    function renderStats() {
-      const stats = state.content.site && Array.isArray(state.content.site.stats) ? state.content.site.stats : [];
-      byId("stats-grid").innerHTML = stats.map((stat) => `
-        <div class="stat">
-          <strong>${escapeHtml(stat.value)}</strong>
-          <span>${escapeHtml(textFor(stat, "label"))}</span>
-        </div>
-      `).join("");
-    }
-
-    function renderFilters() {
-      const tags = new Set();
-      (state.content.works || []).forEach((work) => (work.tags || []).forEach((tag) => tags.add(tag)));
-      const allLabel = ui[state.lang].all;
-      const buttons = [`<button class="chip ${state.activeTag === "all" ? "active" : ""}" data-tag="all" type="button">${allLabel}</button>`]
-        .concat([...tags].map((tag) => `<button class="chip ${state.activeTag === tag ? "active" : ""}" data-tag="${escapeHtml(tag)}" type="button">${escapeHtml(tag)}</button>`));
-      byId("work-filters").innerHTML = buttons.join("");
-      byId("work-filters").querySelectorAll("button").forEach((button) => {
-        button.addEventListener("click", () => {
-          state.activeTag = button.dataset.tag;
-          renderFilters();
-          renderWorks();
-        });
-      });
-    }
-
-    function renderWorks() {
-      const grid = byId("works-grid");
-      let works = state.content.works || [];
-      if (state.activeTag !== "all") {
-        works = works.filter((work) => (work.tags || []).includes(state.activeTag));
-      }
-
-      if (works.length === 0) {
-        grid.innerHTML = `<div class="empty">${ui[state.lang].emptyWorks}</div>`;
-        return;
-      }
-
-      grid.innerHTML = works.map((work) => `
-        <article class="poster-card reveal">
-          <button class="poster-media" data-work-id="${escapeHtml(work.id)}" type="button" aria-label="${escapeHtml(textFor(work, "title"))}">
-            ${work.cover ? `<img src="${escapeHtml(work.cover)}" alt="${escapeHtml(textFor(work, "title"))}" loading="lazy">` : ""}
-          </button>
-          <div class="poster-body">
-            <div class="poster-meta"><span>${escapeHtml(work.year || "2026")}</span><span>${work.video ? "VIDEO" : "STILL"}</span></div>
-            <h3 class="poster-title">${escapeHtml(textFor(work, "title"))}</h3>
-            <p class="poster-desc">${escapeHtml(textFor(work, "description"))}</p>
-            <div class="tag-row">${(work.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>
-          </div>
-        </article>
-      `).join("");
-
-      grid.querySelectorAll(".poster-media").forEach((button) => {
-        button.addEventListener("click", () => {
-          const item = (state.content.works || []).find((work) => work.id === button.dataset.workId);
-          if (item) openDetail(item, "work");
-        });
-      });
-
-      grid.querySelectorAll("img").forEach((img) => {
-        img.addEventListener("error", () => img.closest(".poster-media").classList.add("image-error"));
-      });
-      observeReveals();
-    }
-
-    function renderTutorials() {
-      const list = byId("tutorials-list");
-      const tutorials = state.content.tutorials || [];
-      if (tutorials.length === 0) {
-        list.innerHTML = `<div class="empty">${ui[state.lang].emptyTutorials}</div>`;
-        return;
-      }
-
-      list.innerHTML = tutorials.map((tutorial) => {
-        const title = escapeHtml(textFor(tutorial, "title"));
-        const href = tutorial.url || "#";
+      byId("social-links").innerHTML = links.map(([key, label], index) => {
+        const href = key === "admin" ? "admin.html" : socialHref(site, key);
+        const isMissing = !href;
+        const url = href || "admin.html";
+        const target = key === "admin" || key === "email" || isMissing ? "" : " target=\"_blank\" rel=\"noreferrer\"";
         return `
-          <a class="tutorial-item reveal" href="${escapeHtml(href)}" ${tutorial.url ? "target=\"_blank\" rel=\"noreferrer\"" : `data-tutorial-id="${escapeHtml(tutorial.id)}"`}>
-            <div class="tutorial-thumb">${tutorial.cover ? `<img src="${escapeHtml(tutorial.cover)}" alt="${title}" loading="lazy">` : ""}</div>
-            <div>
-              <div class="poster-meta">${(tutorial.tags || []).slice(0, 2).map(escapeHtml).join(" / ")}</div>
-              <h3>${title}</h3>
-              <p>${escapeHtml(textFor(tutorial, "description"))}</p>
-            </div>
-            <span class="arrow">→</span>
+          <a class="rail-link ${isMissing ? "missing" : ""}" href="${escapeHtml(url)}"${target}>
+            <span class="project-meta">${String(index + 1).padStart(2, "0")} // ${isMissing ? "ADD URL" : "OPEN"}</span>
+            <strong>${escapeHtml(label)}</strong>
           </a>
         `;
       }).join("");
-
-      list.querySelectorAll("[data-tutorial-id]").forEach((link) => {
-        link.addEventListener("click", (event) => {
-          event.preventDefault();
-          const item = tutorials.find((tutorial) => tutorial.id === link.dataset.tutorialId);
-          if (item) openDetail(item, "tutorial");
-        });
-      });
-      observeReveals();
     }
 
-    function renderJournal() {
-      const grid = byId("journal-grid");
-      const journal = state.content.journal || [];
-      if (journal.length === 0) {
-        grid.innerHTML = `<div class="empty">${ui[state.lang].emptyJournal}</div>`;
+    function renderIndex() {
+      const works = state.content.works || [];
+      const index = works.length ? works : fallbackContent.works;
+
+      if (!index.length) {
+        byId("project-index").innerHTML = `<div class="empty">NO WORKS YET</div>`;
         return;
       }
 
-      grid.innerHTML = journal.map((note) => `
-        <article class="journal-card reveal">
-          <time>${escapeHtml(note.date || "")}</time>
-          <h3>${escapeHtml(textFor(note, "title"))}</h3>
-          <p>${escapeHtml(textFor(note, "body"))}</p>
-        </article>
-      `).join("");
-      observeReveals();
+      byId("project-index").innerHTML = index.map((item, i) => {
+        const id = slug(item.id || item.titleEn || item.titleZh, `work-${i + 1}`);
+        const meta = `${String(i + 1).padStart(2, "0")} // ${(item.tags || ["AI FILM"])[0]} // ${item.year || "2026"}`;
+        return `
+          <div class="project-group">
+            <a class="project-link" href="#${escapeHtml(id)}" data-cover="${escapeHtml(coverFor(item))}">
+              <span class="project-meta">${escapeHtml(meta)}</span>
+              <span class="project-title">${formatIndexTitle(titleFor(item))}</span>
+            </a>
+          </div>
+        `;
+      }).join("");
+
+      document.querySelectorAll("[data-cover]").forEach((link) => {
+        link.addEventListener("mouseenter", () => {
+          const bg = byId("bg-image");
+          bg.src = link.dataset.cover;
+          bg.style.opacity = "0.46";
+          bg.style.transform = "scale(1.08)";
+        });
+        link.addEventListener("mouseleave", () => {
+          const bg = byId("bg-image");
+          bg.style.opacity = "0.34";
+          bg.style.transform = "scale(1.04)";
+        });
+      });
     }
 
-    function renderContacts() {
+    function renderProjects() {
+      const works = state.content.works || [];
+      byId("works").innerHTML = works.map((item, i) => {
+        const id = slug(item.id || item.titleEn || item.titleZh, `work-${i + 1}`);
+        const tags = (item.tags || []).slice(0, 4).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
+        const video = item.video ? `<a class="pill-link" href="${escapeHtml(item.video)}" target="_blank" rel="noreferrer">WATCH</a>` : "";
+        return `
+          <article class="project" id="${escapeHtml(id)}" style="--cover: url('${escapeHtml(coverFor(item))}')">
+            <div class="shell project-body reveal">
+              <div class="project-number">Project ${String(i + 1).padStart(2, "0")}</div>
+              <h2 class="project-hero-title">${formatIndexTitle(titleFor(item))}</h2>
+              <div class="project-sub">
+                <span>${escapeHtml(localTitleFor(item))}</span>
+                <span>${escapeHtml(item.year || "2026")}</span>
+                ${tags}
+              </div>
+              <div class="project-actions">
+                ${video}
+                <a class="pill-link" href="#top">BACK TO INDEX</a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderTutorials() {
+      const tutorials = state.content.tutorials || [];
+      byId("tutorial-list").innerHTML = tutorials.length ? tutorials.map((item, i) => {
+        const href = item.url || "admin.html";
+        const target = item.url ? " target=\"_blank\" rel=\"noreferrer\"" : "";
+        return `
+          <a class="log-item reveal" href="${escapeHtml(href)}"${target}>
+            <span class="mini-label">${String(i + 1).padStart(2, "0")} // ${(item.tags || ["LOG"])[0]}</span>
+            <h3>${escapeHtml(item.titleZh || item.titleEn || "未命名")}</h3>
+            <span class="mini-label">${item.url ? "OPEN" : "ADD LINK IN ADMIN"}</span>
+          </a>
+        `;
+      }).join("") : `<div class="empty">NO LOGS YET</div>`;
+    }
+
+    function renderStatic() {
       const site = state.content.site || {};
-      const links = [
-        ["Email", site.email ? `mailto:${site.email}` : ""],
-        ["Douyin", site.douyin],
-        ["Bilibili", site.bilibili],
-        ["YouTube", site.youtube],
-        ["X", site.x]
-      ].filter(([, href]) => href);
-
-      byId("contact-links").innerHTML = links.map(([label, href]) => `
-        <a class="contact-link" href="${escapeHtml(href)}" ${href.startsWith("http") ? "target=\"_blank\" rel=\"noreferrer\"" : ""}>
-          <span>${escapeHtml(label)}</span><span>→</span>
-        </a>
-      `).join("");
+      byId("brand-line").textContent = `${(site.brand || "AIGosling").toUpperCase()} // V.2026`;
+      byId("hero-short").textContent = site.introZh || site.introEn || "AI FILM / CHARACTER IP / VISUAL EXPERIMENTS";
+      byId("hero-contact").textContent = `${site.location || "China / Online"}${site.email ? " // " + site.email : ""}`;
+      byId("about-copy").textContent = site.aboutZh || site.aboutEn || "AI film / character IP / visual experiments.";
+      if ((state.content.works || [])[0]) byId("bg-image").src = coverFor(state.content.works[0]);
     }
 
-    function openDetail(item, type) {
-      byId("modal-title").textContent = textFor(item, "title");
-      byId("modal-desc").textContent = textFor(item, "description") || textFor(item, "body");
-      byId("modal-meta").innerHTML = `<span>${type.toUpperCase()}</span><span>${escapeHtml(item.year || item.date || "")}</span>`;
-      byId("modal-tags").innerHTML = (item.tags || []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
-      byId("modal-media").innerHTML = item.video
-        ? `<video src="${escapeHtml(item.video)}" controls playsinline></video>`
-        : item.cover
-          ? `<img src="${escapeHtml(item.cover)}" alt="${escapeHtml(textFor(item, "title"))}">`
-          : "";
-      byId("detail-modal").classList.add("open");
-      document.body.style.overflow = "hidden";
-    }
-
-    function closeDetail() {
-      byId("detail-modal").classList.remove("open");
-      byId("modal-media").innerHTML = "";
-      document.body.style.overflow = "";
-    }
-
-    let revealObserver = null;
-    function observeReveals() {
-      if (revealObserver) revealObserver.disconnect();
-      revealObserver = new IntersectionObserver((entries) => {
+    function observe() {
+      const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) entry.target.classList.add("visible");
         });
-      }, { threshold: 0.12 });
-
-      document.querySelectorAll(".reveal").forEach((node) => revealObserver.observe(node));
+      }, { threshold: 0.08 });
+      document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
     }
 
-    function startSignalCanvas() {
-      const canvas = byId("signal-canvas");
-      const ctx = canvas.getContext("2d");
-      let width = 0;
-      let height = 0;
-      let frame = 0;
-      const particles = Array.from({ length: 72 }, (_, index) => ({
-        x: Math.random(),
-        y: Math.random(),
-        r: 1 + (index % 4),
-        s: 0.0015 + Math.random() * 0.003,
-        hue: index % 3
-      }));
-
-      function resize() {
-        const ratio = window.devicePixelRatio || 1;
-        width = canvas.clientWidth;
-        height = canvas.clientHeight;
-        canvas.width = Math.max(1, Math.floor(width * ratio));
-        canvas.height = Math.max(1, Math.floor(height * ratio));
-        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-      }
-
-      function draw() {
-        frame += 1;
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = "#050505";
-        ctx.fillRect(0, 0, width, height);
-
-        const colors = ["rgba(216,255,63,0.9)", "rgba(255,86,56,0.84)", "rgba(16,215,255,0.78)"];
-        for (let y = 0; y < height; y += 18) {
-          const shift = Math.sin(frame * 0.018 + y * 0.03) * 16;
-          ctx.fillStyle = y % 54 === 0 ? "rgba(244,240,232,0.06)" : "rgba(244,240,232,0.025)";
-          ctx.fillRect(width * 0.48 + shift, y, width * 0.52, 1);
-        }
-
-        particles.forEach((particle, index) => {
-          particle.x += particle.s;
-          particle.y += Math.sin(frame * 0.01 + index) * 0.00045;
-          if (particle.x > 1.08) particle.x = 0.45;
-          const x = particle.x * width;
-          const y = particle.y * height;
-          ctx.beginPath();
-          ctx.fillStyle = colors[particle.hue];
-          ctx.arc(x, y, particle.r, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = "rgba(244,240,232,0.12)";
-          ctx.fillRect(x - 60, y, 44, 1);
-        });
-
-        for (let i = 0; i < 6; i += 1) {
-          const x = width * (0.56 + i * 0.07) + Math.sin(frame * 0.012 + i) * 12;
-          const h = height * (0.22 + (i % 3) * 0.1);
-          ctx.strokeStyle = i % 2 ? "rgba(216,255,63,0.2)" : "rgba(255,86,56,0.18)";
-          ctx.lineWidth = 1;
-          ctx.strokeRect(x, height * 0.2 + i * 18, 86 + i * 22, h);
-        }
-
-        requestAnimationFrame(draw);
-      }
-
-      resize();
-      window.addEventListener("resize", resize);
-      draw();
+    function renderPage() {
+      renderStatic();
+      renderSocial();
+      renderIndex();
+      renderProjects();
+      renderTutorials();
+      observe();
     }
 
-    document.querySelectorAll(".lang-control").forEach((button) => {
-      button.addEventListener("click", () => setLanguage(state.lang === "zh" ? "en" : "zh"));
-    });
-    byId("modal-close").addEventListener("click", closeDetail);
-    byId("detail-modal").addEventListener("click", (event) => {
-      if (event.target.id === "detail-modal") closeDetail();
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeDetail();
-    });
+    async function load() {
+      renderPage();
 
-    startSignalCanvas();
-    loadContent().catch((error) => {
-      console.error(error);
-      byId("works-grid").innerHTML = `<div class="empty">内容加载失败，请检查 content.json。</div>`;
-    });
+      try {
+        const response = await fetch("content.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("content load failed");
+        state.content = await response.json();
+      } catch {
+        state.content = fallbackContent;
+      }
+
+      renderPage();
+    }
+
+    load();
   </script>
 </body>
 </html>

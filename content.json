@@ -6,8 +6,8 @@
     "kickerEn": "AI Film Direction Studio",
     "headlineZh": "把东方想象力拍成下一代 AI 影像",
     "headlineEn": "Turning Chinese imagination into cinematic AI worlds",
-    "introZh": "AIGosling 专注 AI 短片、角色 IP、视觉实验与创作教程，用电影工业的方法训练人工智能的想象力。",
-    "introEn": "AIGosling builds AI short films, character IP, visual experiments, and practical creative tutorials with a cinematic production mindset.",
+    "introZh": "AI 短片 / 角色 IP / 视觉实验。",
+    "introEn": "AI film / character IP / visual experiments.",
     "location": "China / Online",
     "email": "hello@aigosling.com",
     "douyin": "https://v.douyin.com/l1ZxVndn95I",
@@ -18,8 +18,8 @@
     "ctaPrimaryEn": "View Works",
     "ctaSecondaryZh": "进入后台",
     "ctaSecondaryEn": "Admin",
-    "aboutZh": "我把十多年影视制作经验带入 AI 影像创作：从角色设定、分镜、镜头语言到世界观包装，让 AI 不只是生成画面，而是服务于叙事、情绪和原创 IP。",
-    "aboutEn": "I bring more than a decade of film and television production experience into AI image-making, using character design, storyboarding, camera language, and world-building to turn generation into real storytelling.",
+    "aboutZh": "AIGosling 是一个 AI 影像作品索引，记录短片、角色与视觉实验。",
+    "aboutEn": "AIGosling is an AI film index for shorts, characters, and visual experiments.",
     "stats": [
       {
         "value": "10+",
@@ -43,8 +43,8 @@
       "id": "work-001",
       "titleZh": "山海异闻录",
       "titleEn": "Records of Shanhai",
-      "descriptionZh": "以《山海经》气质为灵感的 AI 奇幻短片实验，探索东方怪谈、雾气、古建筑和角色凝视。",
-      "descriptionEn": "An AI fantasy short experiment inspired by the atmosphere of Chinese myth, combining strange tales, mist, old architecture, and intense character close-ups.",
+      "descriptionZh": "东方怪谈视觉实验。",
+      "descriptionEn": "Chinese myth visual experiment.",
       "cover": "assets/visual-shanhai.png",
       "video": "",
       "year": "2026",
@@ -55,8 +55,8 @@
       "id": "work-002",
       "titleZh": "城市夜航",
       "titleEn": "Night Run Protocol",
-      "descriptionZh": "霓虹、雨夜、无人机镜头与高速剪辑构成的都市 AI 视觉测试，偏向商业预告片节奏。",
-      "descriptionEn": "A neon city experiment with rain, drone-like camera moves, and trailer-paced editing.",
+      "descriptionZh": "霓虹雨夜测试。",
+      "descriptionEn": "Neon night test.",
       "cover": "assets/visual-night-run.png",
       "video": "",
       "year": "2026",
@@ -67,8 +67,8 @@
       "id": "work-003",
       "titleZh": "角色设定：灵鹿少年",
       "titleEn": "Character Study: Spirit Deer",
-      "descriptionZh": "围绕一个原创角色做多风格一致性测试，包含服饰、表情、动作、场景光线统一。",
-      "descriptionEn": "A consistency study for an original character across wardrobe, expression, action, and lighting.",
+      "descriptionZh": "原创角色一致性测试。",
+      "descriptionEn": "Character consistency test.",
       "cover": "assets/visual-spirit-deer.png",
       "video": "",
       "year": "2026",
@@ -81,8 +81,8 @@
       "id": "tutorial-001",
       "titleZh": "AI 短片从 0 到 1 的工作流",
       "titleEn": "AI Short Film Workflow From Zero",
-      "descriptionZh": "从剧本、分镜、提示词、镜头连续性到最终剪辑，拆解一条适合个人创作者的 AI 短片流程。",
-      "descriptionEn": "A practical pipeline for solo creators: script, storyboard, prompts, shot continuity, and final edit.",
+      "descriptionZh": "短片流程笔记。",
+      "descriptionEn": "Short film workflow notes.",
       "cover": "assets/tutorial-workflow.png",
       "url": "",
       "tags": ["教程", "工作流", "剪辑"]
@@ -91,8 +91,8 @@
       "id": "tutorial-002",
       "titleZh": "角色一致性提示词模板",
       "titleEn": "Prompt Template for Character Consistency",
-      "descriptionZh": "如何用角色卡、镜头词、服装词和负面词，让一个角色在多个镜头里保持稳定。",
-      "descriptionEn": "Use character cards, camera terms, wardrobe anchors, and negative prompts to keep a character stable across shots.",
+      "descriptionZh": "角色一致性模板。",
+      "descriptionEn": "Character consistency template.",
       "cover": "assets/tutorial-character.png",
       "url": "",
       "tags": ["提示词", "角色", "实战"]
@@ -104,8 +104,8 @@
       "date": "2026-06-08",
       "titleZh": "AIGosling 官网升级",
       "titleEn": "AIGosling website upgrade",
-      "bodyZh": "新的站点会把作品、教程和创作日志统一管理，并为后续上线真正后台打好结构。",
-      "bodyEn": "The refreshed site unifies works, tutorials, and journal notes while preparing for a real publishing workflow."
+      "bodyZh": "新首页改为作品索引。",
+      "bodyEn": "The homepage is now a work index."
     }
   ]
 }
