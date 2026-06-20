@@ -278,49 +278,22 @@
     color:rgba(255,255,255,.12);
   }
 
-  /* ===== MUSIC PLAYER (About right side) ===== */
-  .music-player {
-    position:fixed;
-    right:32px; bottom:80px;
-    z-index:99990;
-    display:flex; align-items:center; gap:12px;
-    background:rgba(10,10,10,.85);
-    backdrop-filter:blur(20px);
-    border:1px solid rgba(255,255,255,.06);
-    border-radius:40px;
-    padding:8px 20px 8px 12px;
-    transition:opacity .4s, transform .4s;
-  }
-  .music-player.hidden { opacity:0; pointer-events:none; transform:translateY(20px); }
-  .music-play-btn {
-    width:36px; height:36px; border-radius:50%;
-    background:rgba(200,164,92,.12); border:1px solid rgba(200,164,92,.25);
-    color:#c8a45c; cursor:pointer;
+  /* ===== 顶栏音乐按钮（右上角，黑白极简） ===== */
+  .nav-music-btn {
+    width:32px; height:32px; border-radius:50%;
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15);
+    color:rgba(255,255,255,.6); cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    font-size:14px; transition:background .3s, border-color .3s;
+    font-size:11px; transition:background .3s, border-color .3s, color .3s;
     flex-shrink:0;
   }
-  .music-play-btn:hover { background:rgba(200,164,92,.22); border-color:rgba(200,164,92,.45); }
-  .music-info {
-    display:flex; flex-direction:column; min-width:0;
+  .nav-music-btn:hover {
+    background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.3);
+    color:#fff;
   }
-  .music-title {
-    font-size:11px; color:rgba(255,255,255,.6);
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    max-width:140px;
-  }
-  .music-vol-row { display:flex; align-items:center; gap:6px; margin-top:2px; }
-  .music-vol-icon { font-size:10px; opacity:.4; cursor:pointer; }
-  .music-vol-slider {
-    -webkit-appearance:none; appearance:none;
-    width:70px; height:3px; border-radius:2px;
-    background:rgba(255,255,255,.1); outline:none;
-    cursor:pointer;
-  }
-  .music-vol-slider::-webkit-slider-thumb {
-    -webkit-appearance:none; appearance:none;
-    width:10px; height:10px; border-radius:50%;
-    background:#c8a45c; cursor:pointer;
+  .nav-music-btn.playing {
+    background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.35);
+    color:#fff;
   }
 
   /* ===== WORKS ===== */
@@ -359,6 +332,25 @@
   .video-card button { pointer-events:auto; }
 
   /* 16:9 容器 + 羽化边缘 */
+  /* 视频颗粒/胶片滤镜 overlay */
+  .card-grain {
+    position:absolute; inset:0; z-index:5;
+    pointer-events:none;
+    opacity:0.09;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size:128px 128px;
+    background-repeat:repeat;
+    animation:grainShift 0.5s steps(4) infinite;
+  }
+  @keyframes grainShift {
+    0%   { background-position:0 0; }
+    25%  { background-position:64px 32px; }
+    50%  { background-position:32px 64px; }
+    75%  { background-position:96px 16px; }
+    100% { background-position:0 0; }
+  }
+
   .card-media {
     position:relative; width:100%;
     padding-bottom:56.25%;
@@ -522,24 +514,11 @@
     .about-inner{ flex-direction:column; gap:40px; text-align:center; }
     .about-avatar{ width:180px; }
     .nav{ padding:18px 20px; }
-    .music-player{ right:12px; bottom:60px; padding:6px 14px 6px 8px; }
+    .nav-music-btn{ width:28px; height:28px; font-size:10px; }
   }
-</style>
+  </style>
 </head>
 <body>
-
-<!-- 音乐播放器（右下角极简） -->
-<div class="music-player" id="musicPlayer">
-  <button class="music-play-btn" id="musicPlayBtn" onclick="musicToggle()">▶</button>
-  <div class="music-info">
-    <span class="music-title" id="musicTitle">Music</span>
-    <div class="music-vol-row">
-      <span class="music-vol-icon" onclick="musicSetVol(musicVol>=0.5?0:0.5)">🔈</span>
-      <input type="range" class="music-vol-slider" id="musicVolSlider" min="0" max="100" value="50"
-             oninput="musicSetVolume(this.value/100)"/>
-    </div>
-  </div>
-</div>
 
 <!-- 管理员触发 -->
 <div class="admin-trigger" id="adminTrigger" title="Admin"></div>
@@ -664,8 +643,12 @@
 
 <nav class="nav" id="mainNav">
   <a href="#" class="nav-logo">AIGosling</a>
-  <div class="nav-right">
-    <a href="#about" class="nav-link" id="navAbout">About</a>
+    <div class="nav-right">
+      <!-- 音乐按钮（顶栏右上角） -->
+      <button class="nav-music-btn" id="aboutMusicBtn" onclick="musicToggle()" title="Play / Pause">
+        <span id="aboutMusicIcon">▶</span>
+      </button>
+      <a href="#about" class="nav-link" id="navAbout">About</a>
     <button class="nav-lang" id="langBtn">EN / 中</button>
     <div class="nav-social">
       <a href="https://douyin.com" target="_blank" aria-label="Douyin" title="Douyin" id="navDouyin">
@@ -717,8 +700,15 @@
 <section id="about">
   <div class="about-inner">
     <div class="about-avatar-wrap">
-      <img src="" alt="AIGosling" class="about-avatar" id="aboutAvatar"
-           onerror="this.style.display='none'"/>
+      <img src="" alt="AIGosling" class="about-avatar" id="aboutAvatar" />
+      <div class="about-avatar-placeholder" id="aboutAvatarPlaceholder"
+           style="display:none; width:260px; height:260px; border-radius:6px;
+                  background:linear-gradient(135deg,rgba(200,164,92,.08),rgba(167,139,218,.08));
+                  border:1px dashed rgba(255,255,255,.1);
+                  display:flex; align-items:center; justify-content:center;
+                  color:rgba(255,255,255,.2); font-size:13px; text-align:center; padding:16px;">
+        Upload avatar in Admin
+      </div>
     </div>
     <div class="about-text">
       <p class="about-tag" id="aboutTag">About</p>
@@ -760,7 +750,7 @@
       bioEn: 'AI filmmaker and visual artist.<br/>Exploring the boundaries of AI-generated cinema<br/>and experimental visual storytelling.',
       bioZh: 'AI 电影创作者 / 视觉艺术家。<br/>探索 AI 生成电影与实验性视觉叙事的边界。',
       email: 'hello@aigosling.com',
-      avatar: ''
+      avatar: 'avatar-aigosling.png'
     },
     music: {
       src: '',
@@ -806,54 +796,60 @@
       emailLink.href = 'mailto:' + (siteData.about.email || 'hello@aigosling.com');
     }
     var avatar = document.getElementById('aboutAvatar');
-    if(avatar){
+    var placeholder = document.getElementById('aboutAvatarPlaceholder');
+    if(avatar && placeholder){
       if(siteData.about.avatar){
         avatar.src = siteData.about.avatar;
         avatar.style.display = '';
+        placeholder.style.display = 'none';
       } else {
         avatar.style.display = 'none';
+        placeholder.style.display = 'flex';
       }
     }
   }
   function applyMusicSettings(){
     var m = siteData.music;
     if(m.src){
-      document.getElementById('musicPlayer').classList.remove('hidden');
-      musicAudio.src = m.src;
+      if(musicAudio.src !== m.src) musicAudio.src = m.src;
       musicAudio.volume = m.volume || 0.5;
-      document.getElementById('musicVolSlider').value = (m.volume||0.5)*100;
-      document.getElementById('musicTitle').textContent = m.name || 'Music';
+      var icon = document.getElementById('aboutMusicIcon');
+      var btn = document.getElementById('aboutMusicBtn');
+      if(icon) icon.textContent = '▶';
+      if(btn) btn.classList.remove('playing');
       if(m.autoplay){
-        musicAudio.play().catch(function(){});
-        document.getElementById('musicPlayBtn').textContent = '⏸';
+        musicAudio.play().then(function(){
+          if(icon) icon.textContent = '⏸';
+          if(btn) btn.classList.add('playing');
+        }).catch(function(){});
       }
-    } else {
-      document.getElementById('musicPlayer').classList.add('hidden');
     }
   }
+  window.musicToggle = function(){
+    var icon = document.getElementById('aboutMusicIcon');
+    var btn = document.getElementById('aboutMusicBtn');
+    if(!siteData.music.src){ return; }
+    if(musicAudio.paused){
+      musicAudio.play().then(function(){
+        if(icon) icon.textContent = '⏸';
+        if(btn) btn.classList.add('playing');
+      }).catch(function(){});
+    } else {
+      musicAudio.pause();
+      if(icon) icon.textContent = '▶';
+      if(btn) btn.classList.remove('playing');
+    }
+  };
 
   /* ===== 音乐播放器 ===== */
   var musicAudio = new Audio();
   musicAudio.loop = true;
   musicAudio.volume = 0.5;
 
-  window.musicToggle = function(){
-    if(musicAudio.paused){
-      musicAudio.play().catch(function(){});
-      document.getElementById('musicPlayBtn').textContent = '⏸';
-    } else {
-      musicAudio.pause();
-      document.getElementById('musicPlayBtn').textContent = '▶';
-    }
-  };
   window.musicSetVolume = function(v){
     musicAudio.volume = v;
-    document.getElementById('musicVolSlider').value = v * 100;
     siteData.music.volume = v;
     saveSiteData();
-  };
-  window.musicSetVol = function(v){
-    musicSetVolume(v);
   };
 
   /* ===== 渲染作品 ===== */
@@ -881,6 +877,10 @@
       poster.alt = w.title;
       poster.loading = 'lazy';
       poster.onerror = function(){ this.src = 'https://img.youtube.com/vi/' + w.videoId + '/default.jpg'; };
+
+      /* 颗粒滤镜层 */
+      var grain = document.createElement('div');
+      grain.className = 'card-grain';
 
       var iframe = document.createElement('iframe');
       iframe.className = 'card-iframe';
@@ -936,6 +936,7 @@
       });
 
       media.appendChild(poster);
+      media.appendChild(grain);
       media.appendChild(iframe);
       media.appendChild(overlay);
       media.appendChild(muteBtn);
