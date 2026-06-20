@@ -58,14 +58,13 @@
   }
   .nav-social a:hover { color:#c8a45c; }
 
-  /* ===== ADMIN TOGGLE (subtle) ===== */
+  /* ===== ADMIN ===== */
   .admin-trigger {
     position:fixed; bottom:8px; right:8px; z-index:99999;
     width:18px; height:18px; opacity:0; cursor:pointer;
   }
   .admin-trigger:hover { opacity:.3; }
 
-  /* ===== ADMIN LOGIN MODAL ===== */
   .admin-modal-overlay {
     position:fixed; inset:0; z-index:100000;
     background:rgba(0,0,0,.85); backdrop-filter:blur(12px);
@@ -100,7 +99,6 @@
   }
   .admin-btn:hover { opacity:.85; }
 
-  /* ===== ADMIN PANEL ===== */
   .admin-panel-overlay {
     position:fixed; inset:0; z-index:100000;
     background:rgba(0,0,0,.9); backdrop-filter:blur(16px);
@@ -150,7 +148,7 @@
   }
   .admin-field textarea { min-height:80px; resize:vertical; }
   .admin-row { display:flex; gap:12px; }
-  .admin-row .admin-field { flex:1; }
+  .admin-row .admin-field { flex:1; margin-bottom:0; }
 
   .admin-save-btn {
     padding:12px 32px; border-radius:8px; border:none;
@@ -169,13 +167,11 @@
   }
   .admin-save-all:hover { transform:translateY(-2px); box-shadow:0 12px 50px rgba(200,164,92,.35); }
 
-  /* Video list in admin */
   .admin-video-item {
     display:flex; align-items:center; gap:16px;
     padding:16px; background:#0a0a0a; border-radius:8px;
     margin-bottom:10px; border:1px solid rgba(255,255,255,.04);
   }
-  .admin-video-item input { flex:1; }
   .admin-video-item .admin-field { flex:1; margin-bottom:0; }
   .admin-remove-btn {
     background:none; border:1px solid rgba(231,76,60,.3);
@@ -201,6 +197,15 @@
   .admin-export-btn:hover { background:rgba(200,164,92,.1); }
 
   .admin-actions { display:flex; gap:12px; align-items:center; }
+
+  .admin-upload-btn {
+    padding:10px 20px; border-radius:8px; border:1px solid rgba(255,255,255,.1);
+    background:rgba(255,255,255,.03); color:rgba(255,255,255,.6);
+    font-size:13px; cursor:pointer; transition:border-color .3s, color .3s;
+    display:inline-block;
+  }
+  .admin-upload-btn:hover { border-color:rgba(200,164,92,.4); color:#c8a45c; }
+  .admin-file-input { display:none; }
 
   /* ===== HERO ===== */
   #hero {
@@ -273,6 +278,51 @@
     color:rgba(255,255,255,.12);
   }
 
+  /* ===== MUSIC PLAYER (About right side) ===== */
+  .music-player {
+    position:fixed;
+    right:32px; bottom:80px;
+    z-index:99990;
+    display:flex; align-items:center; gap:12px;
+    background:rgba(10,10,10,.85);
+    backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:40px;
+    padding:8px 20px 8px 12px;
+    transition:opacity .4s, transform .4s;
+  }
+  .music-player.hidden { opacity:0; pointer-events:none; transform:translateY(20px); }
+  .music-play-btn {
+    width:36px; height:36px; border-radius:50%;
+    background:rgba(200,164,92,.12); border:1px solid rgba(200,164,92,.25);
+    color:#c8a45c; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; transition:background .3s, border-color .3s;
+    flex-shrink:0;
+  }
+  .music-play-btn:hover { background:rgba(200,164,92,.22); border-color:rgba(200,164,92,.45); }
+  .music-info {
+    display:flex; flex-direction:column; min-width:0;
+  }
+  .music-title {
+    font-size:11px; color:rgba(255,255,255,.6);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    max-width:140px;
+  }
+  .music-vol-row { display:flex; align-items:center; gap:6px; margin-top:2px; }
+  .music-vol-icon { font-size:10px; opacity:.4; cursor:pointer; }
+  .music-vol-slider {
+    -webkit-appearance:none; appearance:none;
+    width:70px; height:3px; border-radius:2px;
+    background:rgba(255,255,255,.1); outline:none;
+    cursor:pointer;
+  }
+  .music-vol-slider::-webkit-slider-thumb {
+    -webkit-appearance:none; appearance:none;
+    width:10px; height:10px; border-radius:50%;
+    background:#c8a45c; cursor:pointer;
+  }
+
   /* ===== WORKS ===== */
   #works {
     position:relative; z-index:50;
@@ -291,7 +341,6 @@
     letter-spacing:-.02em;
   }
 
-  /* 4列网格 — 所有卡片 16:9 */
   .works-grid {
     display:grid;
     grid-template-columns:repeat(4, 1fr);
@@ -309,21 +358,22 @@
   .video-card * { pointer-events:none; }
   .video-card button { pointer-events:auto; }
 
-  /* 16:9 容器 */
+  /* 16:9 容器 + 羽化边缘 */
   .card-media {
     position:relative; width:100%;
     padding-bottom:56.25%;
     overflow:hidden; background:#0a0a0a;
+    /* 羽化边缘：用 mask-image 实现 */
+    -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 55%, transparent 100%);
   }
 
-  /* iframe 铺满 */
   .card-iframe {
     position:absolute; top:0; left:0;
     width:100%; height:100%;
     border:none;
   }
 
-  /* 加载前显示的封面 */
   .card-poster {
     position:absolute; top:0; left:0;
     width:100%; height:100%;
@@ -331,10 +381,12 @@
     transition:opacity .8s;
     z-index:2;
     pointer-events:none;
+    /* 封面也羽化 */
+    -webkit-mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 55%, transparent 100%);
+    mask-image: radial-gradient(ellipse 85% 85% at 50% 50%, black 55%, transparent 100%);
   }
   .video-card.playing .card-poster { opacity:0; }
 
-  /* 错落微旋 */
   .video-card:nth-child(7n+2) { transform:rotate(.5deg); }
   .video-card:nth-child(7n+5) { transform:rotate(-.4deg); }
   .video-card:nth-child(7n+7) { transform:rotate(.3deg); }
@@ -345,7 +397,6 @@
                0 0 80px -25px rgba(200,164,92,.1);
   }
 
-  /* 序号 */
   .card-index {
     position:absolute; top:12px; left:14px; z-index:8;
     font-family:'Space Grotesk',sans-serif; font-weight:700;
@@ -355,7 +406,6 @@
   .video-card:hover .card-index { color:rgba(200,164,92,.7); }
   .video-card.playing .card-index { opacity:0; }
 
-  /* 叠加文字 */
   .card-overlay {
     position:absolute; inset:0; z-index:6;
     background:linear-gradient(to top,
@@ -376,7 +426,7 @@
     letter-spacing:-.01em; line-height:1.35;
   }
 
-  /* 静音按钮 */
+  /* 静音按钮：默认隐藏，点击卡片后显示 */
   .card-mute-btn {
     position:absolute; bottom:12px; right:12px; z-index:9;
     width:32px; height:32px; border-radius:50%;
@@ -385,11 +435,36 @@
     color:#fff; font-size:13px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
     opacity:0; transition:opacity .3s, background .3s;
+    pointer-events:none;
+  }
+  .video-card.sound-visible .card-mute-btn {
+    opacity:1;
     pointer-events:auto;
   }
-  .video-card:hover .card-mute-btn { opacity:1; }
-  .video-card.playing .card-mute-btn { opacity:1; }
   .card-mute-btn:hover { background:rgba(200,164,92,.25); border-color:rgba(200,164,92,.4); }
+
+  /* 点击播放覆盖层 */
+  .card-click-overlay {
+    position:absolute; inset:0; z-index:7;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,.25);
+    cursor:pointer;
+    transition:opacity .5s;
+    pointer-events:auto;
+  }
+  .video-card.playing .card-click-overlay { opacity:0; pointer-events:none; }
+  .click-play-circle {
+    width:56px; height:56px; border-radius:50%;
+    background:rgba(0,0,0,.6); backdrop-filter:blur(10px);
+    border:1.5px solid rgba(255,255,255,.2);
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .35s, background .35s;
+  }
+  .card-click-overlay:hover .click-play-circle {
+    transform:scale(1.12);
+    background:rgba(200,164,92,.25);
+    border-color:rgba(200,164,92,.5);
+  }
 
   /* ===== ABOUT ===== */
   #about {
@@ -400,6 +475,9 @@
   .about-inner {
     max-width:1100px; margin:0 auto;
     display:flex; align-items:center; gap:80px;
+  }
+  .about-avatar-wrap {
+    position:relative; flex-shrink:0;
   }
   .about-avatar {
     width:260px; height:260px; border-radius:6px;
@@ -444,15 +522,29 @@
     .about-inner{ flex-direction:column; gap:40px; text-align:center; }
     .about-avatar{ width:180px; }
     .nav{ padding:18px 20px; }
+    .music-player{ right:12px; bottom:60px; padding:6px 14px 6px 8px; }
   }
 </style>
 </head>
 <body>
 
-<!-- 隐藏管理员触发按钮 -->
+<!-- 音乐播放器（右下角极简） -->
+<div class="music-player" id="musicPlayer">
+  <button class="music-play-btn" id="musicPlayBtn" onclick="musicToggle()">▶</button>
+  <div class="music-info">
+    <span class="music-title" id="musicTitle">Music</span>
+    <div class="music-vol-row">
+      <span class="music-vol-icon" onclick="musicSetVol(musicVol>=0.5?0:0.5)">🔈</span>
+      <input type="range" class="music-vol-slider" id="musicVolSlider" min="0" max="100" value="50"
+             oninput="musicSetVolume(this.value/100)"/>
+    </div>
+  </div>
+</div>
+
+<!-- 管理员触发 -->
 <div class="admin-trigger" id="adminTrigger" title="Admin"></div>
 
-<!-- 管理员登录弹窗 -->
+<!-- 管理员登录 -->
 <div class="admin-modal-overlay" id="adminLoginOverlay">
   <div class="admin-modal">
     <h2>Admin Login</h2>
@@ -489,6 +581,47 @@
       </div>
     </div>
 
+    <!-- 头像 -->
+    <div class="admin-section">
+      <h2>Avatar Image</h2>
+      <div class="admin-field">
+        <label>Upload Avatar (PNG/JPG, square recommended)</label>
+        <label class="admin-upload-btn">
+          Upload Image
+          <input type="file" class="admin-file-input" id="adminAvatarInput" accept="image/*"
+                 onchange="adminUploadAvatar(event)"/>
+        </label>
+        <p style="color:rgba(255,255,255,.3); font-size:11px; margin-top:6px;">Image will be saved as base64 in browser storage. For production, upload to GitHub repo instead.</p>
+      </div>
+    </div>
+
+    <!-- 音乐管理 -->
+    <div class="admin-section">
+      <h2>Background Music</h2>
+      <div class="admin-field">
+        <label>Upload Music File (MP3/WAV/OGG)</label>
+        <label class="admin-upload-btn">
+          Upload Music
+          <input type="file" class="admin-file-input" id="adminMusicInput" accept="audio/*"
+                 onchange="adminUploadMusic(event)"/>
+        </label>
+        <p style="color:rgba(255,255,255,.3); font-size:11px; margin-top:6px;" id="adminMusicStatus">No music uploaded.</p>
+      </div>
+      <div class="admin-field">
+        <label>Default Volume (0-100)</label>
+        <input type="range" id="adminMusicVol" min="0" max="100" value="50"
+               oninput="document.getElementById('adminMusicVolVal').textContent=this.value"/>
+        <span style="color:rgba(255,255,255,.4); font-size:12px;" id="adminMusicVolVal">50</span>
+      </div>
+      <div class="admin-field">
+        <label>Default Playing</label>
+        <select id="adminMusicAutoplay">
+          <option value="1">Auto-play on load</option>
+          <option value="0">Paused on load</option>
+        </select>
+      </div>
+    </div>
+
     <!-- 关于文字 -->
     <div class="admin-section">
       <h2>About Section</h2>
@@ -513,7 +646,7 @@
       <button class="admin-add-btn" onclick="adminAddVideo()">+ Add Video</button>
     </div>
 
-    <!-- 操作按钮 -->
+    <!-- 操作 -->
     <div class="admin-section">
       <h2>Actions</h2>
       <div class="admin-actions">
@@ -583,9 +716,10 @@
 <!-- ABOUT -->
 <section id="about">
   <div class="about-inner">
-    <img src="grok-2d8b6c0b-83c2-43bf-9778-f3f087d023b4.png"
-         alt="AIGosling" class="about-avatar"
-         onerror="this.style.display='none'"/>
+    <div class="about-avatar-wrap">
+      <img src="" alt="AIGosling" class="about-avatar" id="aboutAvatar"
+           onerror="this.style.display='none'"/>
+    </div>
     <div class="about-text">
       <p class="about-tag" id="aboutTag">About</p>
       <p class="about-bio" id="aboutBio">
@@ -613,10 +747,9 @@
 (function(){
   "use strict";
 
-  /* ===== 管理员密码 ===== */
   var ADMIN_PASSWORD = '357459654';
 
-  /* ===== 默认数据 ===== */
+  /* ===== 网站数据 ===== */
   var siteData = {
     social: {
       douyin: 'https://douyin.com',
@@ -626,14 +759,21 @@
     about: {
       bioEn: 'AI filmmaker and visual artist.<br/>Exploring the boundaries of AI-generated cinema<br/>and experimental visual storytelling.',
       bioZh: 'AI 电影创作者 / 视觉艺术家。<br/>探索 AI 生成电影与实验性视觉叙事的边界。',
-      email: 'hello@aigosling.com'
+      email: 'hello@aigosling.com',
+      avatar: ''
+    },
+    music: {
+      src: '',
+      name: 'Music',
+      volume: 0.5,
+      autoplay: true
     },
     works: [
       { videoId:'522Qt-lvbv8', title:'Work 1', titleZh:'作品一', year:'2025', cat:'AI Film', catZh:'AI 影像', size:'wide' }
     ]
   };
 
-  /* ===== 从 localStorage 加载数据 ===== */
+  /* ===== localStorage ===== */
   function loadSiteData(){
     try {
       var saved = localStorage.getItem('aigosling_site_data');
@@ -642,18 +782,15 @@
         if(parsed.works) siteData.works = parsed.works;
         if(parsed.social) siteData.social = parsed.social;
         if(parsed.about) siteData.about = parsed.about;
+        if(parsed.music) siteData.music = parsed.music;
       }
     } catch(e){}
   }
-
-  /* ===== 保存数据到 localStorage ===== */
   function saveSiteData(){
-    try {
-      localStorage.setItem('aigosling_site_data', JSON.stringify(siteData));
-    } catch(e){}
+    try { localStorage.setItem('aigosling_site_data', JSON.stringify(siteData)); } catch(e){}
   }
 
-  /* ===== 应用社交链接 ===== */
+  /* ===== 应用数据 ===== */
   function applySocialLinks(){
     var d = document.getElementById('navDouyin');
     var y = document.getElementById('navYoutube');
@@ -662,21 +799,68 @@
     if(y) y.href = siteData.social.youtube || 'https://youtube.com';
     if(x) x.href = siteData.social.x || 'https://x.com';
   }
-
-  /* ===== 应用关于文字 ===== */
   function applyAboutContent(){
     var emailLink = document.getElementById('aboutEmailLink');
     if(emailLink){
       emailLink.textContent = siteData.about.email || 'hello@aigosling.com';
       emailLink.href = 'mailto:' + (siteData.about.email || 'hello@aigosling.com');
     }
+    var avatar = document.getElementById('aboutAvatar');
+    if(avatar){
+      if(siteData.about.avatar){
+        avatar.src = siteData.about.avatar;
+        avatar.style.display = '';
+      } else {
+        avatar.style.display = 'none';
+      }
+    }
+  }
+  function applyMusicSettings(){
+    var m = siteData.music;
+    if(m.src){
+      document.getElementById('musicPlayer').classList.remove('hidden');
+      musicAudio.src = m.src;
+      musicAudio.volume = m.volume || 0.5;
+      document.getElementById('musicVolSlider').value = (m.volume||0.5)*100;
+      document.getElementById('musicTitle').textContent = m.name || 'Music';
+      if(m.autoplay){
+        musicAudio.play().catch(function(){});
+        document.getElementById('musicPlayBtn').textContent = '⏸';
+      }
+    } else {
+      document.getElementById('musicPlayer').classList.add('hidden');
+    }
   }
 
+  /* ===== 音乐播放器 ===== */
+  var musicAudio = new Audio();
+  musicAudio.loop = true;
+  musicAudio.volume = 0.5;
+
+  window.musicToggle = function(){
+    if(musicAudio.paused){
+      musicAudio.play().catch(function(){});
+      document.getElementById('musicPlayBtn').textContent = '⏸';
+    } else {
+      musicAudio.pause();
+      document.getElementById('musicPlayBtn').textContent = '▶';
+    }
+  };
+  window.musicSetVolume = function(v){
+    musicAudio.volume = v;
+    document.getElementById('musicVolSlider').value = v * 100;
+    siteData.music.volume = v;
+    saveSiteData();
+  };
+  window.musicSetVol = function(v){
+    musicSetVolume(v);
+  };
+
+  /* ===== 渲染作品 ===== */
   var works = siteData.works;
   var currentLang = 'en';
   var heroVisible = true;
 
-  /* ===== 渲染作品网格（直接内嵌 iframe，自动播放静音）===== */
   function renderWorks(){
     var container = document.getElementById('videoContainer');
     if(!container) return;
@@ -688,11 +872,9 @@
       card.setAttribute('data-index', i);
       card.setAttribute('data-videoid', w.videoId);
 
-      /* 媒体容器 */
       var media = document.createElement('div');
       media.className = 'card-media';
 
-      /* 封面图（加载 iframe 前显示） */
       var poster = document.createElement('img');
       poster.className = 'card-poster';
       poster.src = 'https://img.youtube.com/vi/' + w.videoId + '/hqdefault.jpg';
@@ -700,7 +882,6 @@
       poster.loading = 'lazy';
       poster.onerror = function(){ this.src = 'https://img.youtube.com/vi/' + w.videoId + '/default.jpg'; };
 
-      /* YouTube iframe（先不设置 src，等进入视口再加载） */
       var iframe = document.createElement('iframe');
       iframe.className = 'card-iframe';
       iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
@@ -709,7 +890,7 @@
       iframe.dataset.src = 'https://www.youtube-nocookie.com/embed/' + w.videoId
         + '?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&loop=1&playlist=' + w.videoId;
 
-      /* 点击播放覆盖层（首次点击后取消静音需要用户交互） */
+      /* 点击覆盖层：首次点击取消静音 + 显示声音按钮 */
       var overlay = document.createElement('div');
       overlay.className = 'card-click-overlay';
       var playCircle = document.createElement('div');
@@ -717,9 +898,9 @@
       playCircle.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>';
       overlay.appendChild(playCircle);
 
-      /* 点击覆盖层 → 取消静音 + 隐藏覆盖层 */
       overlay.addEventListener('click', function(e){
         e.stopPropagation();
+        /* 取消静音 */
         try {
           iframe.contentWindow.postMessage(
             JSON.stringify({ event:'command', func:'unMute' }),
@@ -731,16 +912,14 @@
           );
         } catch(ex){}
         card.classList.add('playing');
+        card.classList.add('sound-visible'); /* 显示静音按钮 */
         overlay.style.display = 'none';
-        var muteBtn = card.querySelector('.card-mute-btn');
-        if(muteBtn) muteBtn.style.display = 'flex';
       });
 
       /* 静音按钮 */
       var muteBtn = document.createElement('button');
       muteBtn.className = 'card-mute-btn';
       muteBtn.title = 'Unmute / Mute';
-      muteBtn.style.display = 'none';
       muteBtn.innerHTML = '<span class="mute-icon">🔇</span><span class="vol-icon" style="display:none;">🔊</span>';
       muteBtn.addEventListener('click', function(e){
         e.stopPropagation();
@@ -784,14 +963,12 @@
       container.appendChild(card);
     });
 
-    /* 启动 Intersection Observer：进入视口才加载 + 播放 */
     initVideoObserver();
   }
 
-  /* ===== Intersection Observer：进入视口才加载 iframe ===== */
   function initVideoObserver(){
     var cards = document.querySelectorAll('.video-card');
-    if(!('IntersectionObserver' in window)) {
+    if(!('IntersectionObserver' in window)){
       cards.forEach(function(card){ loadCardVideo(card); });
       return;
     }
@@ -803,7 +980,6 @@
         }
       });
     }, { threshold:0.15, rootMargin:'100px' });
-
     cards.forEach(function(card){ observer.observe(card); });
   }
 
@@ -813,8 +989,6 @@
       iframe.src = iframe.dataset.src;
       iframe.onload = function(){
         card.classList.add('playing');
-        var btn = card.querySelector('.card-mute-btn');
-        if(btn) btn.style.display = 'flex';
         var poster = card.querySelector('.card-poster');
         if(poster) poster.style.opacity = '0';
       };
@@ -828,7 +1002,7 @@
     setTimeout(function(){ heroTitle.classList.remove('glitching'); }, 130);
   }, 4000);
 
-  /* ===== 幕布滚动（双向） ===== */
+  /* ===== 幕布滚动 ===== */
   var scrollAccum = 0;
   var upAccum = 0;
   window.addEventListener('wheel', function(e){
@@ -862,7 +1036,6 @@
     }
   }, { passive:true });
 
-  /* 触摸屏支持（双向） */
   var touchStartY = 0;
   window.addEventListener('touchstart', function(e){ touchStartY = e.touches[0].clientY; }, { passive:true });
   window.addEventListener('touchend', function(e){
@@ -898,18 +1071,16 @@
     renderWorks();
   });
 
-  /* ===== 导航滚动效果 ===== */
+  /* ===== 导航滚动 ===== */
   window.addEventListener('scroll', function(){
     var nav = document.getElementById('mainNav');
     if(window.scrollY > 60) nav.classList.add('scrolled');
     else nav.classList.remove('scrolled');
-
     var bar = document.getElementById('progressBar');
     var h = document.documentElement.scrollHeight - window.innerHeight;
     bar.style.width = (window.scrollY / h * 100) + '%';
   });
 
-  /* ===== About 平滑滚动 ===== */
   document.getElementById('navAbout').addEventListener('click', function(e){
     e.preventDefault();
     if(heroVisible){
@@ -923,24 +1094,19 @@
   });
 
   /* ===== 管理员功能 ===== */
-
-  /* 快捷键打开管理员登录：连续按 Ctrl+Shift+A */
   var adminKeySeq = [];
-  var ADMIN_KEY_TIMEOUT = 2000;
   document.addEventListener('keydown', function(e){
     if(e.ctrlKey && e.shiftKey && e.key === 'A'){
       var now = Date.now();
       adminKeySeq.push(now);
-      adminKeySeq = adminKeySeq.filter(function(t){ return now - t < ADMIN_KEY_TIMEOUT; });
+      adminKeySeq = adminKeySeq.filter(function(t){ return now - t < 2000; });
       if(adminKeySeq.length >= 1){
-        /* 按 Ctrl+Shift+A 即可打开（简单易用）*/
         openAdminLogin();
         adminKeySeq = [];
       }
     }
   });
 
-  /* 也支持点击右下角小区域 */
   var adminTrigger = document.getElementById('adminTrigger');
   if(adminTrigger){
     adminTrigger.addEventListener('click', function(){
@@ -962,7 +1128,7 @@
     }, 100);
   }
 
-  function adminLogin(){
+  window.adminLogin = function(){
     var input = document.getElementById('adminPasswordInput');
     var error = document.getElementById('adminError');
     if(input.value === ADMIN_PASSWORD){
@@ -975,19 +1141,23 @@
       input.value = '';
       input.focus();
     }
-  }
+  };
 
   function openAdminPanel(){
-    /* 填充表单 */
     document.getElementById('adminDouyin').value = siteData.social.douyin;
     document.getElementById('adminYoutube').value = siteData.social.youtube;
     document.getElementById('adminX').value = siteData.social.x;
     document.getElementById('adminBioEn').value = siteData.about.bioEn.replace(/<br\/>/g, '\n');
     document.getElementById('adminBioZh').value = siteData.about.bioZh.replace(/<br\/>/g, '\n');
     document.getElementById('adminEmail').value = siteData.about.email;
+    document.getElementById('adminMusicVol').value = (siteData.music.volume||0.5)*100;
+    document.getElementById('adminMusicVolVal').textContent = (siteData.music.volume||0.5)*100;
+    document.getElementById('adminMusicAutoplay').value = siteData.music.autoplay ? '1' : '0';
+    if(siteData.music.src){
+      document.getElementById('adminMusicStatus').textContent = 'Current: ' + (siteData.music.name||'music');
+    }
 
     renderAdminVideoList();
-
     document.getElementById('adminPanelOverlay').classList.add('active');
   }
 
@@ -1032,8 +1202,35 @@
     renderAdminVideoList();
   };
 
+  /* 头像上传 */
+  window.adminUploadAvatar = function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      siteData.about.avatar = ev.target.result;
+      applyAboutContent();
+      alert('Avatar updated! Click "Save Changes" to persist.');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  /* 音乐上传 */
+  window.adminUploadMusic = function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      siteData.music.src = ev.target.result;
+      siteData.music.name = file.name.replace(/\.[^.]+$/, '');
+      document.getElementById('adminMusicStatus').textContent = 'Uploaded: ' + siteData.music.name;
+      alert('Music uploaded! Click "Save Changes" to persist. The player will update after saving.');
+    };
+    reader.readAsDataURL(file);
+  };
+
   window.adminSave = function(){
-    /* 从表单读取视频数据 */
+    /* 视频数据 */
     var inputs = document.querySelectorAll('#adminVideoList input');
     inputs.forEach(function(inp){
       var i = parseInt(inp.getAttribute('data-i'));
@@ -1047,34 +1244,36 @@
       if(works[i]) works[i][f] = sel.value;
     });
 
-    /* 社交链接 */
+    /* 社交 */
     siteData.social.douyin = document.getElementById('adminDouyin').value;
     siteData.social.youtube = document.getElementById('adminYoutube').value;
     siteData.social.x = document.getElementById('adminX').value;
 
-    /* 关于文字 */
+    /* 关于 */
     siteData.about.bioEn = document.getElementById('adminBioEn').value.replace(/\n/g, '<br/>');
     siteData.about.bioZh = document.getElementById('adminBioZh').value.replace(/\n/g, '<br/>');
     siteData.about.email = document.getElementById('adminEmail').value;
 
-    /* 保存到 localStorage */
+    /* 音乐 */
+    siteData.music.volume = document.getElementById('adminMusicVol').value / 100;
+    siteData.music.autoplay = document.getElementById('adminMusicAutoplay').value === '1';
+
+    /* 保存 */
     siteData.works = works;
     saveSiteData();
 
-    /* 应用到页面 */
+    /* 应用 */
     applySocialLinks();
     applyAboutContent();
+    applyMusicSettings();
     document.getElementById('aboutBio').innerHTML = currentLang === 'en' ? siteData.about.bioEn : siteData.about.bioZh;
     renderWorks();
 
-    alert('Changes saved! The page will now reflect your updates.');
+    alert('Changes saved!');
   };
 
   window.adminExport = function(){
-    /* 先保存 */
     adminSave();
-
-    /* 生成完整 HTML */
     var html = generateFullHTML();
     var blob = new Blob([html], { type:'text/html' });
     var url = URL.createObjectURL(blob);
@@ -1087,13 +1286,9 @@
   };
 
   function generateFullHTML(){
-    /* 读取当前页面的 HTML，替换动态部分 */
     var html = document.documentElement.outerHTML;
-
-    /* 把 siteData 的当前值注入到 script 中 */
     var dataScript = '\n    var siteData = ' + JSON.stringify(siteData, null, 6) + ';\n';
-    html = html.replace(/\n\s*var siteData = \{[\s\S]*?\n    \};\n/, dataScript);
-
+    html = html.replace(/\n\s*var siteData = \{[\s\S]*?\n    \}\;\n/, dataScript);
     return html;
   }
 
@@ -1106,6 +1301,7 @@
   works = siteData.works;
   applySocialLinks();
   applyAboutContent();
+  applyMusicSettings();
   renderWorks();
 
 })();
