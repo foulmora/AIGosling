@@ -1,848 +1,703 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AIGosling AI 影像作品索引。">
-  <title>AIGosling | AI Film Index</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600;700&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --black: #000;
-      --white: #fff;
-      --dim: rgba(255, 255, 255, 0.58);
-      --dim-2: rgba(255, 255, 255, 0.32);
-      --line: rgba(255, 255, 255, 0.14);
-      --line-strong: rgba(255, 255, 255, 0.28);
-      --panel: rgba(255, 255, 255, 0.04);
-      --red: #ff3b30;
-      --mono: "IBM Plex Mono", "Courier New", monospace;
-      --display: "Bebas Neue", "Noto Sans SC", sans-serif;
-      --sans: "Noto Sans SC", "Helvetica Neue", sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      background: var(--black);
-      color: var(--white);
-      font-family: var(--sans);
-      letter-spacing: 0;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 50;
-      pointer-events: none;
-      opacity: 0.12;
-      background-image: linear-gradient(rgba(255,255,255,0.11) 1px, transparent 1px);
-      background-size: 100% 8px;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      display: block;
-      max-width: 100%;
-    }
-
-    button {
-      font: inherit;
-      letter-spacing: 0;
-    }
-
-    .bg-stage {
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      background: #030303;
-      overflow: hidden;
-    }
-
-    .bg-stage img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.34;
-      filter: grayscale(1) contrast(1.25) brightness(0.72);
-      transform: scale(1.04);
-      transition: opacity 420ms ease, transform 900ms ease, filter 420ms ease;
-    }
-
-    .bg-stage::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(90deg, rgba(0,0,0,0.92), rgba(0,0,0,0.48) 48%, rgba(0,0,0,0.84)),
-        linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.86));
-    }
-
-    .shell {
-      width: min(1500px, calc(100% - 56px));
-      margin: 0 auto;
-    }
-
-    .brand-bar {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      padding-top: 28px;
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.4;
-      color: var(--dim);
-      text-transform: uppercase;
-    }
-
-    .brand-bar a {
-      color: var(--white);
-      border-bottom: 1px solid var(--line-strong);
-    }
-
-    .hero-index {
-      min-height: 92svh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding-bottom: 22px;
-    }
-
-    .hero-layout {
-      display: grid;
-      grid-template-columns: minmax(190px, 0.32fr) minmax(0, 0.68fr);
-      gap: 56px;
-      align-items: start;
-      padding: 52px 0 42px;
-    }
-
-    .left-rail {
-      position: sticky;
-      top: 28px;
-      display: grid;
-      gap: 24px;
-      min-width: 0;
-    }
-
-    .rail-label,
-    .project-meta,
-    .mini-label,
-    .footer,
-    .empty {
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.5;
-      color: var(--dim-2);
-      text-transform: uppercase;
-    }
-
-    .rail-list,
-    .project-index {
-      display: grid;
-      gap: 20px;
-    }
-
-    .rail-link,
-    .project-link {
-      display: grid;
-      gap: 5px;
-      color: var(--white);
-    }
-
-    .rail-link {
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .rail-link strong {
-      font-family: var(--display);
-      font-size: 38px;
-      line-height: 0.9;
-      font-weight: 400;
-      text-transform: uppercase;
-    }
-
-    .rail-link.missing {
-      color: var(--dim);
-    }
-
-    .project-group {
-      display: grid;
-      justify-items: end;
-      text-align: right;
-    }
-
-    .project-link {
-      display: inline-grid;
-      justify-items: end;
-      transition: opacity 220ms ease, transform 220ms ease;
-    }
-
-    .project-index:hover .project-link {
-      opacity: 0.24;
-    }
-
-    .project-index .project-link:hover {
-      opacity: 1;
-      transform: translateX(-16px);
-    }
-
-    .project-title {
-      font-family: var(--display);
-      font-size: 88px;
-      line-height: 0.86;
-      font-weight: 400;
-      text-transform: uppercase;
-      overflow-wrap: anywhere;
-    }
-
-    .hero-info {
-      border-top: 1px solid var(--line);
-      padding-top: 18px;
-      display: flex;
-      justify-content: space-between;
-      gap: 24px;
-      color: var(--dim);
-      font-family: var(--mono);
-      font-size: 12px;
-      line-height: 1.7;
-      text-transform: uppercase;
-    }
-
-    .hero-info strong {
-      color: var(--white);
-      font-weight: 700;
-    }
-
-    .section {
-      border-top: 1px solid var(--line);
-      background: rgba(0,0,0,0.88);
-    }
-
-    .project {
-      min-height: 82svh;
-      display: grid;
-      align-items: end;
-      position: relative;
-      overflow: hidden;
-      border-top: 1px solid var(--line);
-      background: #060606;
-    }
-
-    .project::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: var(--cover);
-      background-size: cover;
-      background-position: center;
-      filter: grayscale(1) contrast(1.18) brightness(0.7);
-      transform: scale(1.02);
-    }
-
-    .project::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.92)),
-        linear-gradient(90deg, rgba(0,0,0,0.9), rgba(0,0,0,0.12));
-    }
-
-    .project-body {
-      position: relative;
-      z-index: 1;
-      padding: 0 0 54px;
-    }
-
-    .project-number {
-      display: inline-flex;
-      align-items: center;
-      gap: 16px;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--white);
-      text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-
-    .project-number::after {
-      content: "";
-      width: 70px;
-      height: 1px;
-      background: var(--line-strong);
-    }
-
-    .project-hero-title {
-      margin: 0;
-      font-family: var(--display);
-      font-size: 132px;
-      line-height: 0.84;
-      font-weight: 400;
-      text-transform: uppercase;
-      max-width: 980px;
-      overflow-wrap: anywhere;
-    }
-
-    .project-sub {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 16px;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--dim);
-      text-transform: uppercase;
-    }
-
-    .project-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .pill-link {
-      min-height: 38px;
-      display: inline-flex;
-      align-items: center;
-      border: 1px solid var(--line-strong);
-      padding: 8px 12px;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--white);
-      text-transform: uppercase;
-      background: rgba(0,0,0,0.22);
-    }
-
-    .compact-section {
-      padding: 72px 0;
-    }
-
-    .compact-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--line);
-      margin-bottom: 24px;
-    }
-
-    .compact-head h2 {
-      margin: 0;
-      font-family: var(--display);
-      font-size: 68px;
-      line-height: 0.9;
-      font-weight: 400;
-      text-transform: uppercase;
-    }
-
-    .log-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      border-top: 1px solid var(--line);
-    }
-
-    .log-item {
-      min-height: 190px;
-      display: grid;
-      align-content: space-between;
-      gap: 32px;
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      padding: 18px;
-      background: var(--panel);
-      transition: background 180ms ease;
-    }
-
-    .log-item:hover {
-      background: rgba(255,255,255,0.09);
-    }
-
-    .log-item:nth-child(3n) {
-      border-right: 0;
-    }
-
-    .log-item h3 {
-      margin: 0;
-      font-size: 24px;
-      line-height: 1.15;
-      font-weight: 900;
-    }
-
-    .about-strip {
-      display: grid;
-      grid-template-columns: minmax(0, 0.55fr) minmax(260px, 0.45fr);
-      gap: 48px;
-      align-items: end;
-      padding: 76px 0;
-      border-top: 1px solid var(--line);
-    }
-
-    .about-strip h2 {
-      margin: 0;
-      font-family: var(--display);
-      font-size: 78px;
-      line-height: 0.9;
-      font-weight: 400;
-      text-transform: uppercase;
-    }
-
-    .about-strip p {
-      margin: 0;
-      color: var(--dim);
-      line-height: 1.8;
-      max-width: 560px;
-    }
-
-    .footer {
-      padding: 32px 0;
-      border-top: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      background: #000;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 500ms ease, transform 500ms ease;
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    @media (max-width: 1100px) {
-      .project-title {
-        font-size: 70px;
-      }
-
-      .project-hero-title {
-        font-size: 104px;
-      }
-    }
-
-    @media (max-width: 780px) {
-      .shell {
-        width: calc(100% - 28px);
-      }
-
-      .hero-index {
-        min-height: auto;
-      }
-
-      .brand-bar {
-        padding-top: 18px;
-      }
-
-      .hero-layout {
-        grid-template-columns: 1fr;
-        gap: 42px;
-        padding: 42px 0 34px;
-      }
-
-      .left-rail {
-        position: static;
-      }
-
-      .rail-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .rail-link strong {
-        font-size: 30px;
-      }
-
-      .project-group,
-      .project-link {
-        justify-items: start;
-        text-align: left;
-      }
-
-      .project-index .project-link:hover {
-        transform: translateX(0);
-      }
-
-      .project-title {
-        font-size: 58px;
-      }
-
-      .hero-info,
-      .compact-head,
-      .footer,
-      .about-strip {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-
-      .project {
-        min-height: 72svh;
-      }
-
-      .project-hero-title {
-        font-size: 72px;
-      }
-
-      .compact-head h2,
-      .about-strip h2 {
-        font-size: 58px;
-      }
-
-      .log-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .log-item,
-      .log-item:nth-child(3n) {
-        border-right: 0;
-      }
-    }
-
-    @media (max-width: 460px) {
-      .rail-list {
-        grid-template-columns: 1fr;
-      }
-
-      .project-title {
-        font-size: 48px;
-      }
-
-      .project-hero-title {
-        font-size: 58px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIGosling — AI Visual Art</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#0a0a0a; color:#f0f0f0;
+    font-family:'Inter',sans-serif; overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .progress-bar {
+    position:fixed; top:0; left:0; height:2px;
+    background:linear-gradient(90deg,#c8a45c,#a78bda,#c8a45c);
+    background-size:200% 100%;
+    animation:shimmer 3s ease infinite;
+    z-index:9999; transition:width .15s linear;
+  }
+  @keyframes shimmer{ 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+  .nav {
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:28px 48px;
+    transition:background .5s, backdrop-filter .5s, padding .3s;
+  }
+  .nav.scrolled {
+    background:rgba(10,10,10,.92); backdrop-filter:blur(24px);
+    padding-top:16px; padding-bottom:16px;
+    border-bottom:1px solid rgba(255,255,255,.04);
+  }
+  .nav-logo {
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    font-size:20px; color:#fff; text-decoration:none;
+    letter-spacing:-.03em;
+  }
+  .nav-right { display:flex; align-items:center; gap:32px; }
+  .nav-link {
+    color:rgba(255,255,255,.45); text-decoration:none;
+    font-size:13px; letter-spacing:.08em; transition:color .3s;
+  }
+  .nav-link:hover { color:#fff; }
+  .nav-lang {
+    background:none; border:1px solid rgba(255,255,255,.08);
+    color:rgba(255,255,255,.25); font-size:12px;
+    padding:5px 14px; border-radius:20px; cursor:pointer;
+    transition:border-color .3s, color .3s;
+  }
+  .nav-lang:hover { border-color:rgba(200,164,92,.3); color:rgba(200,164,92,.6); }
+  .nav-social { display:flex; align-items:center; gap:18px; }
+  .nav-social a {
+    color:rgba(255,255,255,.3); transition:color .3s;
+    display:flex; align-items:center;
+  }
+  .nav-social a:hover { color:#c8a45c; }
+
+  /* ===== HERO ===== */
+  #hero {
+    position:fixed; inset:0; z-index:100;
+    display:flex; align-items:center; justify-content:center;
+    background:#050505;
+    transition:transform 1.1s cubic-bezier(.76,0,.24,1),
+               opacity   1.1s cubic-bezier(.76,0,.24,1);
+  }
+  #hero.curtain-up {
+    transform:translateY(-100%);
+    opacity:0;
+    pointer-events:none;
+    z-index:0;
+  }
+  /* 幕布回来时的过渡 */
+  #hero.curtain-down {
+    transform:translateY(0);
+    opacity:1;
+    pointer-events:auto;
+    z-index:100;
+  }
+
+  .hero-glow { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+  .hero-glow .g1 {
+    position:absolute; top:-20%; left:-10%; width:60%; height:140%;
+    background:radial-gradient(ellipse,rgba(200,164,92,.06) 0%,transparent 70%);
+    animation:glowDrift 12s ease-in-out infinite alternate;
+  }
+  .hero-glow .g2 {
+    position:absolute; bottom:-20%; right:-10%; width:50%; height:120%;
+    background:radial-gradient(ellipse,rgba(167,139,218,.05) 0%,transparent 70%);
+    animation:glowDrift 15s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes glowDrift {
+    0%{transform:translate(0,0) scale(1)}
+    100%{transform:translate(8%,5%) scale(1.08)}
+  }
+
+  .hero-title {
+    position:relative; z-index:10; text-align:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    font-size:clamp(4rem,13vw,12rem); color:#fff;
+    letter-spacing:-.04em; line-height:.92; user-select:none;
+  }
+  .glitch-layer {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; opacity:0; transition:all .05s;
+  }
+  .glitch-gold { color:#c8a45c; clip-path:inset(0 0 55% 0); }
+  .glitch-purple { color:#a78bda; clip-path:inset(55% 0 0 0); }
+  .hero-title.glitching .glitch-gold { transform:translate(-6px,2px); opacity:.92; }
+  .hero-title.glitching .glitch-purple { transform:translate(6px,-2px); opacity:.82; }
+
+  .hero-sub {
+    margin-top:36px; font-size:13px; letter-spacing:.38em;
+    text-transform:uppercase; color:rgba(255,255,255,.3);
+  }
+  .scroll-hint {
+    position:absolute; bottom:56px; left:50%; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:16px;
+  }
+  .scroll-line {
+    width:1px; height:52px;
+    background:linear-gradient(to bottom, rgba(200,164,92,.45), transparent);
+    animation:scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+  .scroll-text {
+    font-size:10px; letter-spacing:.28em; text-transform:uppercase;
+    color:rgba(255,255,255,.12);
+  }
+
+  /* ===== WORKS ===== */
+  #works {
+    position:relative; z-index:50;
+    background:#0a0a0a;
+    padding:120px 40px 180px; min-height:100vh;
+    margin-top:100vh; /* 初始在 hero 下面 */
+  }
+  .works-header { text-align:center; margin-bottom:80px; }
+  .works-label {
+    font-size:11px; letter-spacing:.4em; text-transform:uppercase;
+    color:#c8a45c; margin-bottom:16px;
+  }
+  .works-title {
+    font-family:'Space Grotesk',sans-serif; font-weight:300;
+    font-size:clamp(1.6rem,4vw,3rem); color:rgba(255,255,255,.6);
+    letter-spacing:-.02em;
+  }
+
+  /* 4列网格 — 所有卡片 16:9 */
+  .works-grid {
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:10px;
+    max-width:1500px; margin:0 auto;
+  }
+  .card-wide  { grid-column:span 2; }
+  .card-normal { grid-column:span 1; }
+
+  .video-card {
+    position:relative; overflow:hidden;
+    cursor:pointer; border-radius:3px;
+    background:#111;
+    transition:transform .6s cubic-bezier(.16,1,.3,1), box-shadow .6s;
+  }
+  .video-card * { pointer-events:none; }
+  .video-card button { pointer-events:auto; }
+
+  /* 16:9 */
+  .card-media {
+    position:relative; width:100%;
+    padding-bottom:56.25%;
+    overflow:hidden; background:#0a0a0a;
+  }
+  .card-poster {
+    position:absolute; top:0; left:0;
+    width:100%; height:100%;
+    object-fit:cover; border:none;
+    transition:transform 5s ease, filter .5s;
+  }
+  .video-card:hover .card-poster { transform:scale(1.08); filter:brightness(1.1); }
+
+  /* 错落微旋 */
+  .video-card:nth-child(7n+2) { transform:rotate(.5deg); }
+  .video-card:nth-child(7n+5) { transform:rotate(-.4deg); }
+  .video-card:nth-child(7n+7) { transform:rotate(.3deg); }
+  .video-card:hover {
+    transform:rotate(0deg) translateY(-10px) scale(1.03) !important;
+    z-index:20;
+    box-shadow:0 40px 120px -30px rgba(0,0,0,.9),
+               0 0 80px -25px rgba(200,164,92,.1);
+  }
+
+  /* 序号 */
+  .card-index {
+    position:absolute; top:12px; left:14px; z-index:8;
+    font-family:'Space Grotesk',sans-serif; font-weight:700;
+    font-size:12px; color:rgba(255,255,255,.3);
+    pointer-events:none; transition:color .3s;
+  }
+  .video-card:hover .card-index { color:rgba(200,164,92,.7); }
+
+  /* 叠加文字 */
+  .card-overlay {
+    position:absolute; inset:0; z-index:6;
+    background:linear-gradient(to top,
+      rgba(10,10,10,.95) 0%, rgba(10,10,10,.35) 45%, transparent 70%);
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:20px 16px; opacity:0; transition:opacity .45s;
+    pointer-events:none;
+  }
+  .video-card:hover .card-overlay { opacity:1; }
+  .card-cat {
+    font-size:9px; letter-spacing:.35em; text-transform:uppercase;
+    color:#c8a45c; margin-bottom:5px; opacity:.7;
+  }
+  .card-name {
+    font-family:'Space Grotesk',sans-serif; font-weight:500;
+    font-size:clamp(11px,1.1vw,15px); color:#fff;
+    letter-spacing:-.01em; line-height:1.35;
+  }
+
+  /* 播放按钮覆盖层 */
+  .card-play-btn {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    z-index:10; display:flex; align-items:center; justify-content:center;
+    pointer-events:auto;
+  }
+  .card-play-circle {
+    width:56px; height:56px; border-radius:50%;
+    background:rgba(0,0,0,.55); backdrop-filter:blur(10px);
+    border:1.5px solid rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .35s, background .35s, border-color .35s;
+  }
+  .video-card:hover .card-play-circle {
+    transform:scale(1.12);
+    background:rgba(200,164,92,.25);
+    border-color:rgba(200,164,92,.5);
+  }
+  .card-play-circle svg { margin-left:3px; }
+
+  /* ===== 模态框 ===== */
+  .modal-overlay {
+    position:fixed; inset:0; z-index:10000;
+    background:rgba(0,0,0,.92); backdrop-filter:blur(20px);
+    display:none; align-items:center; justify-content:center;
+    animation:modalIn .4s ease;
+  }
+  .modal-overlay.active { display:flex; }
+  @keyframes modalIn {
+    from{ opacity:0; }
+    to{ opacity:1; }
+  }
+  .modal-box {
+    position:relative; width:90vw; max-width:1200px;
+    aspect-ratio:16/9; background:#000; border-radius:6px;
+    overflow:hidden; box-shadow:0 0 120px -30px rgba(200,164,92,.15);
+  }
+  .modal-iframe {
+    width:100%; height:100%; border:none;
+  }
+  .modal-close {
+    position:absolute; top:16px; right:20px; z-index:10;
+    width:40px; height:40px; border-radius:50%;
+    background:rgba(0,0,0,.6); backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.1);
+    color:#fff; font-size:22px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .3s;
+  }
+  .modal-close:hover { background:rgba(200,164,92,.3); }
+  .modal-error {
+    position:absolute; inset:0; display:none;
+    align-items:center; justify-content:center; flex-direction:column; gap:20px;
+    background:#0a0a0a; color:rgba(255,255,255,.5);
+  }
+  .modal-error.show { display:flex; }
+  .modal-error p { font-size:14px; }
+  .modal-error a {
+    color:#c8a45c; text-decoration:none; font-size:14px;
+    border:1px solid rgba(200,164,92,.3); padding:10px 28px;
+    border-radius:30px; transition:background .3s;
+  }
+  .modal-error a:hover { background:rgba(200,164,92,.1); }
+
+  /* ===== ABOUT ===== */
+  #about {
+    padding:140px 48px 120px;
+    background:linear-gradient(180deg,#0a0a0a 0%,#080808 100%);
+    border-top:1px solid rgba(255,255,255,.04);
+  }
+  .about-inner {
+    max-width:1100px; margin:0 auto;
+    display:flex; align-items:center; gap:80px;
+  }
+  .about-avatar {
+    width:260px; height:260px; border-radius:6px;
+    object-fit:cover;
+    transition:filter .6s;
+    border:1px solid rgba(255,255,255,.04);
+  }
+  .about-avatar:hover { filter:brightness(1.15) contrast(1.05); }
+  .about-text { flex:1; }
+  .about-tag {
+    font-size:11px; letter-spacing:.4em; text-transform:uppercase;
+    color:#c8a45c; margin-bottom:20px;
+  }
+  .about-bio {
+    font-size:clamp(16px,1.6vw,20px); font-weight:300;
+    line-height:1.75; color:rgba(255,255,255,.55);
+    margin-bottom:40px;
+  }
+  .about-contact { display:flex; flex-direction:column; gap:16px; }
+  .contact-item {
+    display:flex; align-items:center; gap:14px;
+    font-size:14px; color:rgba(255,255,255,.3);
+    transition:color .3s;
+  }
+  .contact-item:hover { color:#fff; }
+  .contact-icon { flex-shrink:0; opacity:.5; }
+
+  footer { padding:56px 48px; text-align:center; border-top:1px solid rgba(255,255,255,.04); }
+  .footer-copy { color:rgba(255,255,255,.07); font-size:11px; letter-spacing:.1em; }
+
+  @media(max-width:1100px){
+    .works-grid{ grid-template-columns:repeat(3,1fr); }
+    .card-wide{ grid-column:span 2; }
+  }
+  @media(max-width:700px){
+    .works-grid{ grid-template-columns:repeat(2,1fr); gap:6px; padding:0 10px; }
+    .card-wide,.card-normal{ grid-column:span 1; }
+    .video-card{ transform:none !important; }
+    .video-card:hover{ transform:none !important; }
+    #works{ padding:80px 8px 120px; margin-top:100vh; }
+    .works-header{ margin-bottom:48px; }
+    .about-inner{ flex-direction:column; gap:40px; text-align:center; }
+    .about-avatar{ width:180px; }
+    .nav{ padding:18px 20px; }
+  }
+</style>
 </head>
 <body>
-  <div class="bg-stage" aria-hidden="true">
-    <img id="bg-image" src="assets/visual-shanhai.png" alt="">
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav class="nav" id="mainNav">
+  <a href="#" class="nav-logo">AIGosling</a>
+  <div class="nav-right">
+    <a href="#about" class="nav-link" id="navAbout">About</a>
+    <button class="nav-lang" id="langBtn">EN / 中</button>
+    <div class="nav-social">
+      <a href="https://douyin.com" target="_blank" aria-label="Douyin" title="Douyin">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12.525.02c1.31 0 2.5.44 3.47 1.29a4.56 4.56 0 0 1 1.7 3.48c0 2.49-2.03 4.52-4.52 4.52-.83 0-1.61-.22-2.26-.6v2.56a7.13 7.13 0 0 1-3.16-.74 7.1 7.1 0 0 1-3.16-5.96C5 2.26 8.13-.01 12 .01v.01zm3.02 8.43a2.48 2.48 0 0 0 2.47-2.47c0-1.3-1-2.36-2.26-2.45v4.92zm-6.01 4.55a2.48 2.48 0 0 1-2.47-2.47c0-1.21.87-2.21 2.02-2.44v4.92a2.42 2.42 0 0 1 .45.25V7.79c-1.7.3-3 1.79-3 3.57a3.97 3.97 0 0 0 3.97 3.97c1.73 0 3.2-1.12 3.73-2.68a3.1 3.1 0 0 1-1.26.27 3.06 3.06 0 0 1-3.06-3.06V7.79z"/>
+        </svg>
+      </a>
+      <a href="https://youtube.com" target="_blank" aria-label="YouTube" title="YouTube">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+      </a>
+      <a href="https://x.com" target="_blank" aria-label="X" title="X">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      </a>
+    </div>
   </div>
+</nav>
 
-  <main id="top">
-    <section class="hero-index shell">
-      <div class="brand-bar">
-        <span id="brand-line">AIGOSLING // V.2026</span>
-        <a href="admin.html">ADMIN</a>
-      </div>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"><div class="g1"></div><div class="g2"></div></div>
+  <div style="text-align:center;">
+    <h1 class="hero-title" id="heroTitle">
+      AIGosling
+      <span class="glitch-layer glitch-gold">AIGosling</span>
+      <span class="glitch-layer glitch-purple">AIGosling</span>
+    </h1>
+    <p class="hero-sub" id="heroSub">AI Filmmaker · Visual Artist</p>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span class="scroll-text" id="scrollText">Scroll</span>
+  </div>
+</section>
 
-      <div class="hero-layout">
-        <aside class="left-rail" aria-label="外部平台">
-          <div class="rail-label">SOCIAL / CHANNELS</div>
-          <div class="rail-list" id="social-links"></div>
-        </aside>
+<!-- WORKS -->
+<section id="works">
+  <div class="works-header">
+    <p class="works-label" id="worksLabel">Selected Works</p>
+    <h2 class="works-title" id="worksTitle">Works</h2>
+  </div>
+  <div class="works-grid" id="videoContainer"></div>
+</section>
 
-        <nav class="project-index" id="project-index" aria-label="作品索引"></nav>
-      </div>
-
-      <div class="hero-info">
-        <div><strong>AI FILM INDEX</strong><br><span id="hero-short">AI 短片 / 角色 IP / 视觉实验</span></div>
-        <div id="hero-contact">CHINA / ONLINE</div>
-      </div>
-    </section>
-
-    <section class="section" id="works"></section>
-
-    <section class="section compact-section" id="tutorials">
-      <div class="shell">
-        <div class="compact-head reveal">
-          <div>
-            <div class="mini-label">PROCESS LOGS</div>
-            <h2>LOGS</h2>
-          </div>
-          <div class="mini-label">SHORT NOTES / TUTORIALS</div>
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <img src="grok-2d8b6c0b-83c2-43bf-9778-f3f087d023b4.png"
+         alt="AIGosling" class="about-avatar"
+         onerror="this.style.display='none'"/>
+    <div class="about-text">
+      <p class="about-tag" id="aboutTag">About</p>
+      <p class="about-bio" id="aboutBio">
+        AI filmmaker and visual artist.<br/>
+        Exploring the boundaries of AI-generated cinema<br/>
+        and experimental visual storytelling.
+      </p>
+      <div class="about-contact">
+        <div class="contact-item">
+          <span class="contact-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </span>
+          <span>aigosling.contact@gmail.com</span>
         </div>
-        <div class="log-grid" id="tutorial-list"></div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <section class="section" id="about">
-      <div class="shell about-strip reveal">
-        <div>
-          <div class="mini-label">ABOUT</div>
-          <h2>AIGOSLING</h2>
-        </div>
-        <p id="about-copy">AI film / character IP / visual experiments.</p>
-      </div>
-    </section>
-  </main>
+<footer>
+  <p class="footer-copy">&copy; 2025 AIGosling.</p>
+</footer>
 
-  <footer class="footer shell">
-    <span>AIGOSLING // 2026</span>
-    <span>WWW.AIGOSLING.COM</span>
-  </footer>
+<!-- 模态框 -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <iframe class="modal-iframe" id="modalIframe" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    <div class="modal-error" id="modalError">
+      <p id="modalErrText">This video cannot be embedded.<br>Watch on YouTube instead.</p>
+      <a href="#" target="_blank" id="modalYTLink">Watch on YouTube</a>
+    </div>
+  </div>
+</div>
 
-  <script>
-    const fallbackContent = {
-      site: {
-        brand: "AIGosling",
-        introZh: "AI 短片 / 角色 IP / 视觉实验。",
-        introEn: "AI film / character IP / visual experiments.",
-        location: "China / Online",
-        email: "hello@aigosling.com",
-        douyin: "https://v.douyin.com/l1ZxVndn95I",
-        youtube: "",
-        x: "",
-        aboutZh: "AIGosling 是一个 AI 影像作品索引，记录短片、角色与视觉实验。",
-        aboutEn: "AIGosling is an AI film index for shorts, characters, and visual experiments."
-      },
-      works: [
-        {
-          id: "work-001",
-          titleZh: "山海异闻录",
-          titleEn: "Records of Shanhai",
-          cover: "assets/visual-shanhai.png",
-          year: "2026",
-          tags: ["AI短片", "东方奇幻"]
-        },
-        {
-          id: "work-002",
-          titleZh: "城市夜航",
-          titleEn: "Night Run Protocol",
-          cover: "assets/visual-night-run.png",
-          year: "2026",
-          tags: ["视觉实验", "城市"]
-        },
-        {
-          id: "work-003",
-          titleZh: "角色设定：灵鹿少年",
-          titleEn: "Character Study: Spirit Deer",
-          cover: "assets/visual-spirit-deer.png",
-          year: "2026",
-          tags: ["角色IP", "一致性"]
+<script>
+(function(){
+  "use strict";
+
+  /*
+   * 作品数据 — 放入你自己的 YouTube videoId
+   * size: 'wide'=2列宽, 'normal'=1列宽
+   */
+  var works = [
+    { videoId:'522Qt-lvbv8', title:'9KKtzm8fGOakaqD3p', titleZh:'副本', year:'2025', cat:'AI Film', catZh:'AI 影像', size:'wide' },
+  ];
+
+  var currentLang = 'en';
+  var heroVisible = true;
+
+  /* ===== 渲染作品网格 ===== */
+  function renderWorks(){
+    var container = document.getElementById('videoContainer');
+    container.innerHTML = '';
+
+    works.forEach(function(w, i){
+      var card = document.createElement('div');
+      card.className = 'video-card' + (w.size === 'wide' ? ' card-wide' : ' card-normal');
+      card.setAttribute('data-index', i);
+
+      /* 媒体容器 */
+      var media = document.createElement('div');
+      media.className = 'card-media';
+
+      /* 缩略图 */
+      var poster = document.createElement('img');
+      poster.className = 'card-poster';
+      poster.src = 'https://img.youtube.com/vi/' + w.videoId + '/hqdefault.jpg';
+      poster.alt = w.title;
+      poster.loading = 'lazy';
+      poster.onerror = function(){ this.src = 'https://img.youtube.com/vi/' + w.videoId + '/default.jpg'; };
+
+      /* 播放按钮 */
+      var playBtn = document.createElement('div');
+      playBtn.className = 'card-play-btn';
+      var circle = document.createElement('div');
+      circle.className = 'card-play-circle';
+      circle.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>';
+      playBtn.appendChild(circle);
+
+      media.appendChild(poster);
+      media.appendChild(playBtn);
+      card.appendChild(media);
+
+      /* 序号 */
+      var idx = document.createElement('span');
+      idx.className = 'card-index';
+      idx.textContent = String(i+1).padStart(2,'0');
+      card.appendChild(idx);
+
+      /* 叠加文字 */
+      var overlay = document.createElement('div');
+      overlay.className = 'card-overlay';
+      var cat = document.createElement('p');
+      cat.className = 'card-cat';
+      cat.textContent = currentLang === 'en' ? w.cat : w.catZh;
+      var name = document.createElement('p');
+      name.className = 'card-name';
+      name.textContent = currentLang === 'en' ? w.title + '  ' + w.year : w.titleZh + '  ' + w.year;
+      overlay.appendChild(cat);
+      overlay.appendChild(name);
+      card.appendChild(overlay);
+
+      /* 点击 → 打开模态框 */
+      card.addEventListener('click', function(){ openModal(w); });
+
+      container.appendChild(card);
+    });
+  }
+
+  /* ===== 模态框 ===== */
+  var modalOverlay = document.getElementById('modalOverlay');
+  var modalIframe = document.getElementById('modalIframe');
+  var modalError   = document.getElementById('modalError');
+  var modalYTLink = document.getElementById('modalYTLink');
+  var modalErrText = document.getElementById('modalErrText');
+
+  function showModalError(videoId){
+    modalIframe.style.display = 'none';
+    modalError.classList.add('show');
+    modalYTLink.href = 'https://www.youtube.com/watch?v=' + videoId;
+  }
+
+  function openModal(work){
+    /* 重置状态 */
+    modalError.classList.remove('show');
+    modalIframe.style.display = 'block';
+
+    /* 嵌入 URL — 优先用 nocookie 域名（更宽松）
+       autoplay=1 + mute=1 是避免 153 的关键组合
+       origin 参数帮助 YouTube 验证来源 */
+    var embedUrl = 'https://www.youtube-nocookie.com/embed/' + work.videoId
+      + '?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin=' + encodeURIComponent(window.location.origin || 'https://youtube.com');
+    modalIframe.src = embedUrl;
+    modalYTLink.href = 'https://www.youtube.com/watch?v=' + work.videoId;
+
+    modalOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    /* 加载后检测是否出现错误页面（跨域限制下只能部分检测） */
+    modalIframe.onload = function(){
+      setTimeout(function(){
+        try {
+          var doc = modalIframe.contentDocument || modalIframe.contentWindow.document;
+        } catch(e) {
+          /* 跨域 = iframe 加载了外部内容，通常是正常的
+             如果真的出 153，YouTube 会在 iframe 内显示错误页面，
+             但我们无法通过 JS 读取其内容（跨域安全策略）
+             所以这里不做误判 */
         }
-      ],
-      tutorials: [
-        {
-          titleZh: "AI 短片从 0 到 1 的工作流",
-          tags: ["教程"],
-          url: ""
-        },
-        {
-          titleZh: "角色一致性提示词模板",
-          tags: ["提示词"],
-          url: ""
+      }, 1500);
+    };
+    modalIframe.onerror = function(){ showModalError(work.videoId); };
+
+    /* 手动检测按钮 — 如果用户看到 153 错误可以点击报告 */
+    var existingBtn = document.getElementById('errReportBtn');
+    if(existingBtn) existingBtn.remove();
+    var reportBtn = document.createElement('button');
+    reportBtn.id = 'errReportBtn';
+    reportBtn.textContent = 'Video not playing? Click here';
+    reportBtn.style.cssText =
+      'position:absolute;bottom:16px;left:50%;transform:translateX(-50%);'+
+      'background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.35);'+
+      'font-size:11px;padding:6px 18px;border-radius:20px;cursor:pointer;'+
+      'transition:all .3s;z-index:9;';
+    reportBtn.onmouseenter = function(){ this.style.borderColor='rgba(200,164,92,.5)'; this.style.color='rgba(200,164,92,.8)'; };
+    reportBtn.onmouseleave = function(){ this.style.borderColor='rgba(255,255,255,.15)'; this.style.color='rgba(255,255,255,.35)'; };
+    reportBtn.onclick = function(){ showModalError(work.videoId); };
+    document.querySelector('.modal-box').appendChild(reportBtn);
+  }
+
+  function closeModal(){
+    modalOverlay.classList.remove('active');
+    modalIframe.src = '';
+    document.body.style.overflow = '';
+    var rb = document.getElementById('errReportBtn');
+    if(rb) rb.remove();
+  }
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', function(e){
+    if(e.target === modalOverlay) closeModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeModal();
+  });
+
+  /* ===== Glitch ===== */
+  var heroTitle = document.getElementById('heroTitle');
+  setInterval(function(){
+    heroTitle.classList.add('glitching');
+    setTimeout(function(){ heroTitle.classList.remove('glitching'); }, 130);
+  }, 4000);
+
+  /* ===== 幕布滚动（双向） ===== */
+  var scrollAccum = 0;
+  var upAccum = 0;
+  window.addEventListener('wheel', function(e){
+    if(heroVisible){
+      /* Hero 还在 → 只处理下滑 */
+      scrollAccum += e.deltaY;
+      if(scrollAccum > 100){
+        document.getElementById('hero').classList.add('curtain-up');
+        document.getElementById('hero').classList.remove('curtain-down');
+        heroVisible = false;
+        scrollAccum = 0;
+      }
+    } else {
+      /* Hero 已卷走 → 检测上滑回来 */
+      /* 只有在页面顶部附近才允许回弹 */
+      if(window.scrollY < 200){
+        if(e.deltaY < -30){
+          upAccum += Math.abs(e.deltaY);
+          if(upAccum > 80){
+            var hero = document.getElementById('hero');
+            hero.classList.remove('curtain-up');
+            hero.classList.add('curtain-down');
+            heroVisible = true;
+            upAccum = 0;
+            scrollAccum = 0;
+            window.scrollTo({ top:0, behavior:'auto' });
+          }
+        } else {
+          upAccum = 0;
         }
-      ],
-      journal: []
-    };
-
-    const state = {
-      content: fallbackContent
-    };
-
-    const byId = (id) => document.getElementById(id);
-
-    function escapeHtml(value) {
-      return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function slug(value, fallback) {
-      return String(value || fallback)
-        .toLowerCase()
-        .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
-        .replace(/^-+|-+$/g, "") || fallback;
-    }
-
-    function titleFor(item) {
-      return item.titleEn || item.titleZh || "UNTITLED";
-    }
-
-    function localTitleFor(item) {
-      return item.titleZh || item.titleEn || "未命名";
-    }
-
-    function formatIndexTitle(value) {
-      const clean = String(value || "UNTITLED").replace(/\s+/g, " ").trim();
-      const parts = clean.split(/[:：&]/).map((part) => part.trim()).filter(Boolean);
-      if (parts.length > 1) return parts.slice(0, 2).join("<br>");
-      const words = clean.split(" ");
-      if (words.length > 2) {
-        const middle = Math.ceil(words.length / 2);
-        return `${escapeHtml(words.slice(0, middle).join(" "))}<br>${escapeHtml(words.slice(middle).join(" "))}`;
+      } else {
+        upAccum = 0;
       }
-      return escapeHtml(clean);
     }
+  }, { passive:true });
 
-    function coverFor(item) {
-      return item.cover || "assets/visual-shanhai.png";
-    }
-
-    function socialHref(site, key) {
-      const value = (site[key] || "").trim();
-      if (!value) return "";
-      if (key === "email") return `mailto:${value}`;
-      return value;
-    }
-
-    function renderSocial() {
-      const site = state.content.site || {};
-      const links = [
-        ["x", "X.COM"],
-        ["youtube", "YOUTUBE"],
-        ["douyin", "DOUYIN"],
-        ["email", "EMAIL"],
-        ["admin", "ADMIN"]
-      ];
-
-      byId("social-links").innerHTML = links.map(([key, label], index) => {
-        const href = key === "admin" ? "admin.html" : socialHref(site, key);
-        const isMissing = !href;
-        const url = href || "admin.html";
-        const target = key === "admin" || key === "email" || isMissing ? "" : " target=\"_blank\" rel=\"noreferrer\"";
-        return `
-          <a class="rail-link ${isMissing ? "missing" : ""}" href="${escapeHtml(url)}"${target}>
-            <span class="project-meta">${String(index + 1).padStart(2, "0")} // ${isMissing ? "ADD URL" : "OPEN"}</span>
-            <strong>${escapeHtml(label)}</strong>
-          </a>
-        `;
-      }).join("");
-    }
-
-    function renderIndex() {
-      const works = state.content.works || [];
-      const index = works.length ? works : fallbackContent.works;
-
-      if (!index.length) {
-        byId("project-index").innerHTML = `<div class="empty">NO WORKS YET</div>`;
-        return;
+  /* 触摸屏支持（双向） */
+  var touchStartY = 0;
+  window.addEventListener('touchstart', function(e){ touchStartY = e.touches[0].clientY; }, { passive:true });
+  window.addEventListener('touchend', function(e){
+    if(heroVisible){
+      /* 下滑卷走 */
+      if(touchStartY - e.changedTouches[0].clientY > 60){
+        document.getElementById('hero').classList.add('curtain-up');
+        document.getElementById('hero').classList.remove('curtain-down');
+        heroVisible = false;
       }
-
-      byId("project-index").innerHTML = index.map((item, i) => {
-        const id = slug(item.id || item.titleEn || item.titleZh, `work-${i + 1}`);
-        const meta = `${String(i + 1).padStart(2, "0")} // ${(item.tags || ["AI FILM"])[0]} // ${item.year || "2026"}`;
-        return `
-          <div class="project-group">
-            <a class="project-link" href="#${escapeHtml(id)}" data-cover="${escapeHtml(coverFor(item))}">
-              <span class="project-meta">${escapeHtml(meta)}</span>
-              <span class="project-title">${formatIndexTitle(titleFor(item))}</span>
-            </a>
-          </div>
-        `;
-      }).join("");
-
-      document.querySelectorAll("[data-cover]").forEach((link) => {
-        link.addEventListener("mouseenter", () => {
-          const bg = byId("bg-image");
-          bg.src = link.dataset.cover;
-          bg.style.opacity = "0.46";
-          bg.style.transform = "scale(1.08)";
-        });
-        link.addEventListener("mouseleave", () => {
-          const bg = byId("bg-image");
-          bg.style.opacity = "0.34";
-          bg.style.transform = "scale(1.04)";
-        });
-      });
-    }
-
-    function renderProjects() {
-      const works = state.content.works || [];
-      byId("works").innerHTML = works.map((item, i) => {
-        const id = slug(item.id || item.titleEn || item.titleZh, `work-${i + 1}`);
-        const tags = (item.tags || []).slice(0, 4).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("");
-        const video = item.video ? `<a class="pill-link" href="${escapeHtml(item.video)}" target="_blank" rel="noreferrer">WATCH</a>` : "";
-        return `
-          <article class="project" id="${escapeHtml(id)}" style="--cover: url('${escapeHtml(coverFor(item))}')">
-            <div class="shell project-body reveal">
-              <div class="project-number">Project ${String(i + 1).padStart(2, "0")}</div>
-              <h2 class="project-hero-title">${formatIndexTitle(titleFor(item))}</h2>
-              <div class="project-sub">
-                <span>${escapeHtml(localTitleFor(item))}</span>
-                <span>${escapeHtml(item.year || "2026")}</span>
-                ${tags}
-              </div>
-              <div class="project-actions">
-                ${video}
-                <a class="pill-link" href="#top">BACK TO INDEX</a>
-              </div>
-            </div>
-          </article>
-        `;
-      }).join("");
-    }
-
-    function renderTutorials() {
-      const tutorials = state.content.tutorials || [];
-      byId("tutorial-list").innerHTML = tutorials.length ? tutorials.map((item, i) => {
-        const href = item.url || "admin.html";
-        const target = item.url ? " target=\"_blank\" rel=\"noreferrer\"" : "";
-        return `
-          <a class="log-item reveal" href="${escapeHtml(href)}"${target}>
-            <span class="mini-label">${String(i + 1).padStart(2, "0")} // ${(item.tags || ["LOG"])[0]}</span>
-            <h3>${escapeHtml(item.titleZh || item.titleEn || "未命名")}</h3>
-            <span class="mini-label">${item.url ? "OPEN" : "ADD LINK IN ADMIN"}</span>
-          </a>
-        `;
-      }).join("") : `<div class="empty">NO LOGS YET</div>`;
-    }
-
-    function renderStatic() {
-      const site = state.content.site || {};
-      byId("brand-line").textContent = `${(site.brand || "AIGosling").toUpperCase()} // V.2026`;
-      byId("hero-short").textContent = site.introZh || site.introEn || "AI FILM / CHARACTER IP / VISUAL EXPERIMENTS";
-      byId("hero-contact").textContent = `${site.location || "China / Online"}${site.email ? " // " + site.email : ""}`;
-      byId("about-copy").textContent = site.aboutZh || site.aboutEn || "AI film / character IP / visual experiments.";
-      if ((state.content.works || [])[0]) byId("bg-image").src = coverFor(state.content.works[0]);
-    }
-
-    function observe() {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("visible");
-        });
-      }, { threshold: 0.08 });
-      document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
-    }
-
-    function renderPage() {
-      renderStatic();
-      renderSocial();
-      renderIndex();
-      renderProjects();
-      renderTutorials();
-      observe();
-    }
-
-    async function load() {
-      renderPage();
-
-      try {
-        const response = await fetch("content.json", { cache: "no-store" });
-        if (!response.ok) throw new Error("content load failed");
-        state.content = await response.json();
-      } catch {
-        state.content = fallbackContent;
+    } else {
+      /* 上滑回来 */
+      if(window.scrollY < 200 && e.changedTouches[0].clientY - touchStartY > 60){
+        var hero = document.getElementById('hero');
+        hero.classList.remove('curtain-up');
+        hero.classList.add('curtain-down');
+        heroVisible = true;
+        window.scrollTo({ top:0, behavior:'auto' });
       }
-
-      renderPage();
     }
+  }, { passive:true });
 
-    load();
-  </script>
+  /* ===== 语言切换 ===== */
+  document.getElementById('langBtn').addEventListener('click', function(){
+    currentLang = currentLang === 'en' ? 'zh' : 'en';
+    var t = currentLang === 'en'
+      ? { sub:'AI Filmmaker · Visual Artist', scroll:'Scroll', worksLabel:'Selected Works', worksTitle:'Works', aboutTag:'About', aboutBio:'AI filmmaker and visual artist.<br/>Exploring the boundaries of AI-generated cinema<br/>and experimental visual storytelling.' }
+      : { sub:'AI 影视创作 · 视觉艺术', scroll:'滚动', worksLabel:'精选作品', worksTitle:'作品', aboutTag:'关于', aboutBio:'AI 电影创作者 / 视觉艺术家。<br/>探索 AI 生成电影与实验性视觉叙事的边界。' };
+    document.getElementById('heroSub').textContent = t.sub;
+    document.getElementById('scrollText').textContent = t.scroll;
+    document.getElementById('worksLabel').textContent = t.worksLabel;
+    document.getElementById('worksTitle').textContent = t.worksTitle;
+    document.getElementById('aboutTag').textContent = t.aboutTag;
+    document.getElementById('aboutBio').innerHTML = t.aboutBio;
+    renderWorks();
+  });
+
+  /* ===== 导航滚动效果 ===== */
+  window.addEventListener('scroll', function(){
+    var nav = document.getElementById('mainNav');
+    if(window.scrollY > 60) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+
+    var bar = document.getElementById('progressBar');
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.width = (window.scrollY / h * 100) + '%';
+  });
+
+  /* ===== About 平滑滚动 ===== */
+  document.getElementById('navAbout').addEventListener('click', function(e){
+    e.preventDefault();
+    if(heroVisible){
+      document.getElementById('hero').classList.add('curtain-up');
+      heroVisible = false;
+    }
+    setTimeout(function(){
+      document.getElementById('about').scrollIntoView({ behavior:'smooth' });
+    }, heroVisible ? 0 : 200);
+  });
+
+  /* ===== 启动 ===== */
+  renderWorks();
+
+})();
+</script>
 </body>
 </html>
