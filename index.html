@@ -338,6 +338,8 @@
     position:absolute; top:0; left:0;
     width:100%; height:100%;
     border:none;
+    /* 阻止 iframe 接收鼠标事件 → 悬停时不弹出 YouTube 原生 UI */
+    pointer-events:none;
   }
 
   .card-poster {
@@ -389,7 +391,22 @@
     letter-spacing:-.01em; line-height:1.35;
   }
 
-  /* 静音按钮：始终可见，右上角 */
+  /* 自定义播放/暂停按钮（居中，hover 时显示） */
+  .card-play-indicator {
+    position:absolute; top:50%; left:50%; z-index:12;
+    transform:translate(-50%,-50%);
+    width:52px; height:52px; border-radius:50%;
+    background:rgba(0,0,0,.5); backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.18);
+    color:#fff; font-size:20px;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transition:opacity .3s;
+    pointer-events:none; cursor:pointer;
+  }
+  .video-card:hover .card-play-indicator { opacity:.85; }
+  .video-card.playing .card-play-indicator { opacity:0 !important; }
+
+  /* 静音按钮：始终可见，右下角 */
   .card-mute-btn {
     position:absolute; bottom:10px; right:10px; z-index:10;
     width:32px; height:32px; border-radius:50%;
@@ -886,12 +903,14 @@
               'https://www.youtube-nocookie.com'
             );
             card.classList.remove('playing');
+            playInd.innerHTML = '▶';
           } else {
             iframe.contentWindow.postMessage(
               JSON.stringify({ event:'command', func:'playVideo' }),
               'https://www.youtube-nocookie.com'
             );
             card.classList.add('playing');
+            playInd.innerHTML = '❚❚';
           }
         } catch(ex){}
       });
@@ -915,9 +934,15 @@
         muteBtn.querySelector('.vol-icon').style.display  = isMuted ? 'none' : 'inline';
       });
 
+      /* 自定义播放/暂停指示器（居中） */
+      var playInd = document.createElement('div');
+      playInd.className = 'card-play-indicator';
+      playInd.innerHTML = '▶';
+
       media.appendChild(poster);
       media.appendChild(iframe);
       media.appendChild(muteBtn);
+      media.appendChild(playInd);
       card.appendChild(media);
 
       /* 序号 */
@@ -1001,6 +1026,8 @@
         card.classList.add('playing');
         var poster = card.querySelector('.card-poster');
         if(poster) poster.style.opacity = '0';
+        var playInd = card.querySelector('.card-play-indicator');
+        if(playInd) playInd.innerHTML = '❚❚';
       };
     }
   }
