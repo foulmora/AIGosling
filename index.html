@@ -487,117 +487,110 @@
     .grid-span-6 { grid-column:span 3; }
     .grid-span-12 { grid-column:span 6; }
   }
-  /* ===== 网格编辑器（拼图式） ===== */
+  /* ===== 自由画布编辑器 ===== */
   .grid-editor-overlay {
     position:fixed; inset:0; z-index:100002;
-    background:rgba(0,0,0,.96); backdrop-filter:blur(24px);
-    display:none; overflow:hidden;
+    background:rgba(0,0,0,.97); backdrop-filter:blur(24px);
+    display:none; overflow:hidden; flex-direction:column;
   }
-  .grid-editor-overlay.active { display:block; }
-  .grid-editor {
-    width:100%; height:100%; display:flex; flex-direction:column;
-  }
+  .grid-editor-overlay.active { display:flex; }
   .grid-editor-header {
     display:flex; align-items:center; justify-content:space-between;
-    padding:20px 32px; border-bottom:1px solid rgba(255,255,255,.06);
+    padding:16px 24px; border-bottom:1px solid rgba(255,255,255,.06);
     flex-shrink:0;
   }
   .grid-editor-header h1 {
-    font-family:'Space Grotesk',sans-serif; font-size:20px; color:#fff;
+    font-family:'Space Grotesk',sans-serif; font-size:18px; color:#fff;
     letter-spacing:-0.02em;
   }
-  .ge-main {
-    display:flex; flex:1; overflow:hidden;
+  .ge-header-btns { display:flex; align-items:center; gap:12px; }
+  /* 工具栏 */
+  .ge-topbar {
+    display:flex; align-items:center; gap:10px; padding:10px 24px;
+    border-bottom:1px solid rgba(255,255,255,.04);
+    flex-shrink:0; flex-wrap:wrap;
   }
-  /* 左侧：视频调色板 */
-  .ge-palette {
-    width:220px; flex-shrink:0; border-right:1px solid rgba(255,255,255,.06);
-    padding:16px; overflow-y:auto; background:rgba(255,255,255,.01);
+  .ge-topbar-label { font-size:11px; color:rgba(255,255,255,.3); margin-right:4px; }
+  .ge-thumb-item {
+    display:flex; align-items:center; gap:8px;
+    background:#111; border:1px solid rgba(255,255,255,.1);
+    border-radius:8px; padding:6px 10px; cursor:pointer;
+    transition:border-color .2s; user-select:none; font-size:12px;
+    color:rgba(255,255,255,.55);
   }
-  .ge-palette-title {
-    font-size:11px; color:rgba(255,255,255,.3); text-transform:uppercase;
-    letter-spacing:0.08em; margin-bottom:12px;
+  .ge-thumb-item:hover { border-color:rgba(200,164,92,.4); color:#fff; }
+  .ge-thumb-item img {
+    width:48px; height:27px; object-fit:cover; border-radius:3px;
+    background:#000;
   }
-  .ge-palette-item {
-    background:#111; border:1px solid rgba(255,255,255,.08);
-    border-radius:8px; padding:10px 12px; margin-bottom:8px;
-    cursor:grab; transition:border-color .2s, background .2s;
-    user-select:none; position:relative;
-  }
-  .ge-palette-item:hover { border-color:rgba(200,164,92,.3); background:rgba(255,255,255,.03); }
-  .ge-palette-item.dragging { opacity:0.4; cursor:grabbing; }
-  .ge-palette-item .ge-p-num {
-    display:inline-block; width:20px; height:20px; border-radius:50%;
-    background:rgba(200,164,92,.15); color:rgba(200,164,92,.8);
-    font-size:10px; text-align:center; line-height:20px; margin-right:8px;
-  }
-  .ge-palette-item .ge-p-title { font-size:12px; color:rgba(255,255,255,.6); }
-  /* 右侧：12列网格画布 */
-  .ge-canvas-wrap {
-    flex:1; padding:24px; overflow:auto; position:relative;
-  }
-  .ge-canvas-title {
-    font-size:11px; color:rgba(255,255,255,.3); text-transform:uppercase;
-    letter-spacing:0.08em; margin-bottom:16px;
-  }
-  .ge-grid-canvas {
-    display:grid; grid-template-columns:repeat(12, 1fr);
-    gap:0; position:relative;
-    min-height:600px; background:
-      repeating-linear-gradient(90deg, rgba(255,255,255,.015) 0, rgba(255,255,255,.015) calc(100%/12 - 1px), transparent calc(100%/12 - 1px), transparent calc(100%/12)),
-      repeating-linear-gradient(180deg, rgba(255,255,255,.015) 0, rgba(255,255,255,.015) 47px, transparent 47px, transparent 48px);
-    border:1px solid rgba(255,255,255,.04); border-radius:8px;
-    padding:0;
-  }
-  .ge-grid-col-line {
-    position:absolute; top:0; bottom:0; width:1px;
-    background:rgba(255,255,255,.04); pointer-events:none;
-  }
-  .ge-grid-cell {
-    min-height:48px; border-right:1px solid rgba(255,255,255,.02);
-    border-bottom:1px solid rgba(255,255,255,.02);
-    position:relative; transition:background .15s;
-  }
-  .ge-grid-cell:hover { background:rgba(200,164,92,.03); }
-  .ge-grid-cell.drag-over { background:rgba(200,164,92,.06); }
-  /* 放置在网格中的视频块 */
-  .ge-placed-block {
-    position:absolute; border-radius:6px;
-    background:rgba(200,164,92,.12); border:1px solid rgba(200,164,92,.3);
+  .ge-thumb-item .ge-add-icon {
+    width:48px; height:27px; border-radius:3px; background:rgba(255,255,255,.04);
     display:flex; align-items:center; justify-content:center;
-    font-size:10px; color:rgba(255,255,255,.6);
-    cursor:grab; user-select:none;
+    font-size:16px; color:rgba(255,255,255,.3);
+  }
+  .ge-thumb-item.placed { border-color:rgba(200,164,92,.3); color:rgba(200,164,92,.7); }
+  /* 自由画布区 */
+  .ge-freecanvas {
+    flex:1; position:relative; overflow:hidden;
+    background:#0a0a0a;
+    background-image: radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  /* 画布上的视频块 */
+  .ge-block {
+    position:absolute; border-radius:8px; overflow:hidden;
+    box-shadow:0 4px 24px rgba(0,0,0,.6);
+    border:2px solid transparent;
+    cursor:move; user-select:none;
     transition:border-color .2s, box-shadow .2s;
-    z-index:2; overflow:hidden;
   }
-  .ge-placed-block:hover {
-    border-color:rgba(200,164,92,.5);
-    box-shadow:0 0 0 1px rgba(200,164,92,.2);
+  .ge-block:hover { border-color:rgba(200,164,92,.5); }
+  .ge-block.selected {
+    border-color:#c8a45c;
+    box-shadow:0 0 0 1px rgba(200,164,92,.3), 0 8px 40px rgba(0,0,0,.7);
+    z-index:100 !important;
   }
-  .ge-placed-block.dragging { cursor:grabbing; opacity:0.8; z-index:10; }
-  .ge-placed-block .ge-pb-title {
-    padding:4px 8px; text-align:center;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  .ge-block img {
+    width:100%; height:100%; object-fit:cover; display:block;
     pointer-events:none;
   }
-  .ge-placed-block .ge-pb-remove {
-    position:absolute; top:2px; right:4px;
-    background:none; border:none; color:rgba(255,255,255,.3);
-    cursor:pointer; font-size:10px; padding:2px 4px;
-    opacity:0; transition:opacity .15s;
+  .ge-block-label {
+    position:absolute; bottom:0; left:0; right:0;
+    background:linear-gradient(transparent,rgba(0,0,0,.75));
+    padding:20px 10px 8px; font-size:11px; color:rgba(255,255,255,.7);
+    pointer-events:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .ge-placed-block:hover .ge-pb-remove { opacity:1; }
-  .ge-placed-block .ge-pb-remove:hover { color:#e74c3c; }
-  .ge-placed-block .ge-pb-resize-handle {
-    position:absolute; right:0; top:0; bottom:0; width:6px;
-    cursor:ew-resize; opacity:0; transition:opacity .15s;
+  /* 删除按钮 */
+  .ge-block-del {
+    position:absolute; top:6px; right:6px; z-index:10;
+    width:22px; height:22px; border-radius:50%;
+    background:rgba(0,0,0,.6); border:1px solid rgba(255,255,255,.2);
+    color:rgba(255,255,255,.6); font-size:11px; cursor:pointer;
+    display:none; align-items:center; justify-content:center;
+    line-height:1;
   }
-  .ge-placed-block:hover .ge-pb-resize-handle { opacity:1; }
+  .ge-block.selected .ge-block-del { display:flex; }
+  .ge-block-del:hover { background:rgba(231,76,60,.8); border-color:#e74c3c; color:#fff; }
+  /* 8方向拉伸手柄 */
+  .ge-resize-handle {
+    position:absolute; width:10px; height:10px;
+    background:#c8a45c; border:2px solid #000; border-radius:2px;
+    z-index:20; display:none;
+  }
+  .ge-block.selected .ge-resize-handle { display:block; }
+  .ge-resize-handle.nw { top:-5px; left:-5px; cursor:nw-resize; }
+  .ge-resize-handle.n  { top:-5px; left:calc(50% - 5px); cursor:n-resize; }
+  .ge-resize-handle.ne { top:-5px; right:-5px; cursor:ne-resize; }
+  .ge-resize-handle.e  { top:calc(50% - 5px); right:-5px; cursor:e-resize; }
+  .ge-resize-handle.se { bottom:-5px; right:-5px; cursor:se-resize; }
+  .ge-resize-handle.s  { bottom:-5px; left:calc(50% - 5px); cursor:s-resize; }
+  .ge-resize-handle.sw { bottom:-5px; left:-5px; cursor:sw-resize; }
+  .ge-resize-handle.w  { top:calc(50% - 5px); left:-5px; cursor:w-resize; }
   /* 底部工具栏 */
   .ge-toolbar {
     display:flex; align-items:center; justify-content:space-between;
-    padding:12px 32px; border-top:1px solid rgba(255,255,255,.06);
-    flex-shrink:0; background:rgba(0,0,0,.5);
+    padding:10px 24px; border-top:1px solid rgba(255,255,255,.06);
+    flex-shrink:0; background:rgba(0,0,0,.6);
   }
   .ge-toolbar-info { font-size:12px; color:rgba(255,255,255,.3); }
   .ge-toolbar-btn {
@@ -1495,8 +1488,8 @@
   applyMusicSettings();
   renderWorks();
 
-  /* ===== 网格编辑器（拼图式） ===== */
-  var gePlaced = []; // [{idx, col, span}]
+  /* ===== 自由画布编辑器 ===== */
+  var geBlocks = []; // [{idx, x, y, w, h}] — 像素坐标
 
   function openGridEditor(){
     var overlay = document.getElementById('gridEditorOverlay');
@@ -1505,183 +1498,270 @@
       div.id = 'gridEditorOverlay';
       div.className = 'grid-editor-overlay';
       div.innerHTML =
-        '<div class="grid-editor">' +
-          '<div class="grid-editor-header">' +
-            '<h1>🧩 Grid Editor</h1>' +
-            '<button class="admin-close-btn" onclick="window.closeGridEditor()" style="position:fixed;top:20px;right:24px;z-index:10;">✕</button>' +
+        '<div class="grid-editor-header">' +
+          '<h1>🎬 Layout Editor</h1>' +
+          '<div class="ge-header-btns">' +
+            '<button class="ge-toolbar-btn ge-btn-cancel" onclick="window.closeGridEditor()">Cancel</button>' +
+            '<button class="ge-toolbar-btn ge-btn-apply" onclick="window.saveGridEditor()">Apply Layout</button>' +
           '</div>' +
-          '<div class="ge-main">' +
-            /* 左侧调色板 */ +
-            '<div class="ge-palette">' +
-              '<div class="ge-palette-title">Videos</div>' +
-              '<div id="gePaletteList"></div>' +
-            '</div>' +
-            /* 右侧画布 */ +
-            '<div class="ge-canvas-wrap">' +
-              '<div class="ge-canvas-title">12-Column Grid — drag videos to position</div>' +
-              '<div class="ge-grid-canvas" id="geGridCanvas"></div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="ge-toolbar">' +
-            '<span class="ge-toolbar-info" id="geInfo">Click a placed block to select. Drag to move.</span>' +
-            '<div>' +
-              '<button class="ge-toolbar-btn ge-btn-cancel" onclick="window.closeGridEditor()">Cancel</button>' +
-              '<button class="ge-toolbar-btn ge-btn-apply" onclick="window.saveGridEditor()">Apply</button>' +
-            '</div>' +
-          '</div>' +
+        '</div>' +
+        '<div class="ge-topbar" id="geTopbar">' +
+          '<span class="ge-topbar-label">Add video:</span>' +
+        '</div>' +
+        '<div class="ge-freecanvas" id="geFreeCanvas"></div>' +
+        '<div class="ge-toolbar">' +
+          '<span class="ge-toolbar-info" id="geInfo">Drag to move · Drag edges/corners to resize · Click to select</span>' +
         '</div>';
       document.body.appendChild(div);
     }
     document.getElementById('gridEditorOverlay').classList.add('active');
-    initGeData();
-    renderGridEditor();
+    geInitData();
+    geRenderTopbar();
+    geRenderCanvas();
   }
 
-  function initGeData(){
-    gePlaced = [];
+  function geInitData(){
+    var canvas = document.getElementById('geFreeCanvas');
+    var cw = canvas ? canvas.offsetWidth : window.innerWidth;
+    var ch = canvas ? canvas.offsetHeight : window.innerHeight - 160;
+    /* 把已有 works 转成自由坐标 */
+    geBlocks = [];
+    var colW = cw / 12;
+    var row = 0; var col = 0;
     works.forEach(function(w, i){
-      var col = parseInt(w.gridCol);
       var span = parseInt(w.gridSpan) || 4;
-      if(isNaN(col) || col < 1 || col > 12) col = autoPlaceCol(i, span);
-      if(span < 1) span = 4;
-      if(span > 12) span = 12;
-      if(col + span > 13) col = 13 - span;
-      if(col < 1) col = 1;
-      gePlaced.push({ idx:i, col:col, span:span });
-    });
-  }
-
-  function autoPlaceCol(idx, span){
-    /* 自动摆放：从左到右填充 */
-    var used = {};
-    gePlaced.forEach(function(p){
-      for(var c = p.col; c < p.col + p.span; c++) used[c] = true;
-    });
-    for(var start = 1; start <= 13 - span; start++){
-      var ok = true;
-      for(var c = start; c < start + span; c++){
-        if(used[c]){ ok = false; break; }
+      /* 如果有 geX/geY 精确坐标，直接用 */
+      if(w.geX !== undefined && w.geY !== undefined){
+        geBlocks.push({
+          idx: i,
+          x: w.geX, y: w.geY,
+          bw: w.geW || Math.round(colW * span),
+          bh: w.geH || Math.round(colW * span * 9/16),
+          zIndex: geBlocks.length + 1
+        });
+        return;
       }
-      if(ok) return start;
-    }
-    return 1;
-  }
-
-  function renderGridEditor(){
-    renderGePalette();
-    renderGeCanvas();
-  }
-
-  function renderGePalette(){
-    var list = document.getElementById('gePaletteList');
-    if(!list) return;
-    list.innerHTML = '';
-    works.forEach(function(w, i){
-      var placed = gePlaced.find(function(p){ return p.idx === i; });
-      var item = document.createElement('div');
-      item.className = 'ge-palette-item';
-      item.setAttribute('data-idx', i);
-      item.draggable = true;
-      item.innerHTML =
-        '<span class="ge-p-num">' + (i+1) + '</span>' +
-        '<span class="ge-p-title">' + (w.title || w.titleZh || ('Video ' + (i+1))) + '</span>';
-      /* 拖拽事件：从调色板拖到画布 */
-      item.addEventListener('dragstart', function(e){
-        e.dataTransfer.setData('text/plain', String(i));
-        item.classList.add('dragging');
+      /* 自动排列 */
+      var bw = Math.round(colW * span);
+      var bh = Math.round(bw * 9/16);
+      if(col + span > 12){ col = 0; row++; }
+      geBlocks.push({
+        idx: i,
+        x: Math.round(col * colW) + 8,
+        y: Math.round(row * (bh + 12)) + 8,
+        bw: bw - 8, bh: bh,
+        zIndex: i + 1
       });
-      item.addEventListener('dragend', function(){ item.classList.remove('dragging'); });
-      list.appendChild(item);
+      col += span;
     });
   }
 
-  function renderGeCanvas(){
-    var canvas = document.getElementById('geGridCanvas');
+  function geRenderTopbar(){
+    var bar = document.getElementById('geTopbar');
+    if(!bar) return;
+    /* 清除旧 items（保留 label） */
+    var items = bar.querySelectorAll('.ge-thumb-item');
+    items.forEach(function(el){ el.remove(); });
+    works.forEach(function(w, i){
+      var placed = geBlocks.some(function(b){ return b.idx === i; });
+      var item = document.createElement('div');
+      item.className = 'ge-thumb-item' + (placed ? ' placed' : '');
+      item.title = placed ? (w.title || w.titleZh) + ' (placed)' : 'Add: ' + (w.title || w.titleZh);
+      var img = document.createElement('img');
+      img.src = 'https://img.youtube.com/vi/' + w.videoId + '/mqdefault.jpg';
+      img.alt = w.title;
+      img.onerror = function(){ this.style.display='none'; };
+      var label = document.createElement('span');
+      label.textContent = (i+1) + '. ' + (w.title || w.titleZh || 'Video');
+      if(placed){
+        label.style.textDecoration = 'line-through';
+        label.style.opacity = '0.4';
+      }
+      item.appendChild(img);
+      item.appendChild(label);
+      if(!placed){
+        item.addEventListener('click', function(){
+          geAddBlock(i);
+        });
+      }
+      bar.appendChild(item);
+    });
+  }
+
+  function geAddBlock(idx){
+    var canvas = document.getElementById('geFreeCanvas');
+    var cw = canvas ? canvas.offsetWidth : 800;
+    var colW = cw / 12;
+    var span = parseInt(works[idx].gridSpan) || 4;
+    var bw = Math.round(colW * span) - 8;
+    var bh = Math.round(bw * 9/16);
+    geBlocks.push({
+      idx: idx,
+      x: 20, y: 20,
+      bw: bw, bh: bh,
+      zIndex: geBlocks.length + 1
+    });
+    geRenderTopbar();
+    geRenderCanvas();
+    geSelectBlock(idx);
+  }
+
+  function geRenderCanvas(){
+    var canvas = document.getElementById('geFreeCanvas');
     if(!canvas) return;
     canvas.innerHTML = '';
-
-    /* 创建 12 列 × 最多 20 行的网格单元格 */
-    var maxRows = 20;
-    canvas.style.gridTemplateRows = 'repeat(' + maxRows + ', 48px)';
-
-    for(var r = 0; r < maxRows; r++){
-      for(var c = 1; c <= 12; c++){
-        var cell = document.createElement('div');
-        cell.className = 'ge-grid-cell';
-        cell.setAttribute('data-row', r);
-        cell.setAttribute('data-col', c);
-        /* 允许拖放 */
-        cell.addEventListener('dragover', function(e){ e.preventDefault(); this.classList.add('drag-over'); });
-        cell.addEventListener('dragleave', function(){ this.classList.remove('drag-over'); });
-        cell.addEventListener('drop', function(e){
-          e.preventDefault();
-          this.classList.remove('drag-over');
-          var idx = parseInt(e.dataTransfer.getData('text/plain'));
-          if(isNaN(idx)) return;
-          var row = parseInt(this.getAttribute('data-row'));
-          var col = parseInt(this.getAttribute('data-col'));
-          /* 查找或创建放置项 */
-          var existing = gePlaced.find(function(p){ return p.idx === idx; });
-          if(existing){
-            existing.col = col;
-          } else {
-            var span = parseInt(works[idx].gridSpan) || 4;
-            if(col + span > 13) col = 13 - span;
-            gePlaced.push({ idx:idx, col:col, span:span });
-          }
-          renderGeCanvas(); /* 重绘 */
-        });
-        canvas.appendChild(cell);
+    /* 点击画布空白处取消选中 */
+    canvas.addEventListener('click', function(e){
+      if(e.target === canvas){
+        var sel = canvas.querySelector('.ge-block.selected');
+        if(sel) sel.classList.remove('selected');
+        document.getElementById('geInfo').textContent = 'Drag to move · Drag edges/corners to resize · Click to select';
       }
-    }
-
-    /* 在网格上绘制已放置的块 */
-    gePlaced.forEach(function(p){
-      var w = works[p.idx];
+    });
+    geBlocks.forEach(function(b){
+      var w = works[b.idx];
       if(!w) return;
       var block = document.createElement('div');
-      block.className = 'ge-placed-block';
-      block.setAttribute('data-idx', p.idx);
-      block.style.gridColumn = p.col + ' / span ' + p.span;
-      block.style.gridRow = 'auto';
-      block.innerHTML =
-        '<span class="ge-pb-title">' + (p.idx+1) + '. ' + (w.title || w.titleZh || 'Video') + '</span>' +
-        '<button class="ge-pb-remove" onclick="window.geRemoveBlock(' + p.idx + ')">✕</button>';
-      /* 点击选中：显示宽度调节 */
+      block.className = 'ge-block';
+      block.setAttribute('data-idx', b.idx);
+      block.style.cssText =
+        'left:' + b.x + 'px;top:' + b.y + 'px;' +
+        'width:' + b.bw + 'px;height:' + b.bh + 'px;' +
+        'z-index:' + b.zIndex + ';';
+
+      /* 缩略图 */
+      var img = document.createElement('img');
+      img.src = 'https://img.youtube.com/vi/' + w.videoId + '/mqdefault.jpg';
+      img.alt = w.title;
+      img.draggable = false;
+
+      /* 标签 */
+      var label = document.createElement('div');
+      label.className = 'ge-block-label';
+      label.textContent = (b.idx+1) + '. ' + (w.title || w.titleZh || 'Video');
+
+      /* 删除按钮 */
+      var del = document.createElement('button');
+      del.className = 'ge-block-del';
+      del.innerHTML = '✕';
+      del.addEventListener('click', function(e){
+        e.stopPropagation();
+        geBlocks = geBlocks.filter(function(x){ return x.idx !== b.idx; });
+        geRenderTopbar();
+        geRenderCanvas();
+      });
+
+      /* 8个拉伸手柄 */
+      ['nw','n','ne','e','se','s','sw','w'].forEach(function(dir){
+        var h = document.createElement('div');
+        h.className = 'ge-resize-handle ' + dir;
+        h.addEventListener('mousedown', function(e){
+          e.stopPropagation();
+          e.preventDefault();
+          geStartResize(e, b, dir, block);
+        });
+        block.appendChild(h);
+      });
+
+      block.appendChild(img);
+      block.appendChild(label);
+      block.appendChild(del);
+
+      /* 选中 */
       block.addEventListener('click', function(e){
         e.stopPropagation();
-        selectGeBlock(p.idx);
+        geSelectBlock(b.idx);
       });
-      /* 拖拽重新定位 */
-      block.draggable = true;
-      block.addEventListener('dragstart', function(e){
-        e.dataTransfer.setData('text/plain', String(p.idx));
-        block.classList.add('dragging');
+
+      /* 拖拽移动 */
+      block.addEventListener('mousedown', function(e){
+        if(e.target.classList.contains('ge-resize-handle') ||
+           e.target.classList.contains('ge-block-del')) return;
+        geStartDrag(e, b, block);
       });
-      block.addEventListener('dragend', function(){ block.classList.remove('dragging'); });
+
       canvas.appendChild(block);
     });
   }
 
-  function selectGeBlock(idx){
-    var p = gePlaced.find(function(x){ return x.idx === idx; });
-    if(!p) return;
-    var w = works[idx];
-    var currentSpan = p.span;
-    var newSpan = prompt('Width (columns, 1-12) for "' + (w.title || w.titleZh) + '":\nCurrent: ' + currentSpan, String(currentSpan));
-    if(newSpan === null) return;
-    var ns = parseInt(newSpan);
-    if(isNaN(ns) || ns < 1) ns = 1;
-    if(ns > 12) ns = 12;
-    if(p.col + ns > 13) ns = 13 - p.col;
-    p.span = ns;
-    renderGeCanvas();
+  function geSelectBlock(idx){
+    var canvas = document.getElementById('geFreeCanvas');
+    if(!canvas) return;
+    canvas.querySelectorAll('.ge-block').forEach(function(bl){
+      bl.classList.remove('selected');
+    });
+    var target = canvas.querySelector('[data-idx="' + idx + '"]');
+    if(target){
+      target.classList.add('selected');
+      /* 提升层级 */
+      var maxZ = 0;
+      geBlocks.forEach(function(b){ if(b.zIndex > maxZ) maxZ = b.zIndex; });
+      var b = geBlocks.find(function(x){ return x.idx === idx; });
+      if(b){ b.zIndex = maxZ + 1; target.style.zIndex = b.zIndex; }
+      var w = works[idx];
+      document.getElementById('geInfo').textContent =
+        'Selected: ' + (w ? (w.title || w.titleZh) : '') +
+        '  (' + Math.round(geBlocks.find(function(x){return x.idx===idx;}).bw) +
+        ' × ' + Math.round(geBlocks.find(function(x){return x.idx===idx;}).bh) + 'px)';
+    }
   }
 
-  window.geRemoveBlock = function(idx){
-    gePlaced = gePlaced.filter(function(p){ return p.idx !== idx; });
-    renderGeCanvas();
-  };
+  function geStartDrag(e, b, block){
+    var startX = e.clientX - b.x;
+    var startY = e.clientY - b.y;
+    var canvas = document.getElementById('geFreeCanvas');
+    var canvasRect = canvas.getBoundingClientRect();
+    geSelectBlock(b.idx);
+    function onMove(ev){
+      b.x = Math.max(0, Math.min(ev.clientX - startX, canvasRect.width - b.bw));
+      b.y = Math.max(0, Math.min(ev.clientY - startY, canvasRect.height - b.bh));
+      block.style.left = b.x + 'px';
+      block.style.top  = b.y + 'px';
+    }
+    function onUp(){
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }
+
+  function geStartResize(e, b, dir, block){
+    var startX = e.clientX;
+    var startY = e.clientY;
+    var origX = b.x; var origY = b.y;
+    var origW = b.bw; var origH = b.bh;
+    var minW = 80; var minH = 45;
+    geSelectBlock(b.idx);
+    function onMove(ev){
+      var dx = ev.clientX - startX;
+      var dy = ev.clientY - startY;
+      if(dir.includes('e')){ b.bw = Math.max(minW, origW + dx); }
+      if(dir.includes('s')){ b.bh = Math.max(minH, origH + dy); }
+      if(dir.includes('w')){
+        var nw = Math.max(minW, origW - dx);
+        b.x  = origX + (origW - nw);
+        b.bw = nw;
+      }
+      if(dir.includes('n')){
+        var nh = Math.max(minH, origH - dy);
+        b.y  = origY + (origH - nh);
+        b.bh = nh;
+      }
+      block.style.left   = b.x + 'px';
+      block.style.top    = b.y + 'px';
+      block.style.width  = b.bw + 'px';
+      block.style.height = b.bh + 'px';
+      document.getElementById('geInfo').textContent =
+        Math.round(b.bw) + ' × ' + Math.round(b.bh) + 'px';
+    }
+    function onUp(){
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }
 
   window.closeGridEditor = function(){
     var overlay = document.getElementById('gridEditorOverlay');
@@ -1689,25 +1769,33 @@
   };
 
   window.saveGridEditor = function(){
-    /* 将 gePlaced 中的位置写回 works */
+    /* 将自由坐标写回 works（同时换算成 gridSpan 供普通渲染用） */
+    var canvas = document.getElementById('geFreeCanvas');
+    var cw = canvas ? canvas.offsetWidth : 1200;
+    var colW = cw / 12;
     works.forEach(function(w, i){
-      var p = gePlaced.find(function(x){ return x.idx === i; });
-      if(p){
-        w.gridCol = p.col;
-        w.gridSpan = p.span;
-      } else {
-        /* 未放置的视频：清除位置 */
+      var b = geBlocks.find(function(x){ return x.idx === i; });
+      if(b){
+        w.geX = Math.round(b.x);
+        w.geY = Math.round(b.y);
+        w.geW = Math.round(b.bw);
+        w.geH = Math.round(b.bh);
+        /* 换算 gridSpan（取最近整列） */
+        w.gridSpan = Math.max(1, Math.min(12, Math.round(b.bw / colW)));
         delete w.gridCol;
       }
     });
+    /* 按 y 坐标重新排序 works（保证分页顺序合理） */
+    works.sort(function(a, b){
+      var ay = a.geY !== undefined ? a.geY : 9999;
+      var by = b.geY !== undefined ? b.geY : 9999;
+      return ay - by;
+    });
     renderWorks();
     window.closeGridEditor();
-    alert('Grid layout applied! Click "Save Changes" in the admin panel to persist.');
   };
 
-  /* 暴露给全局（供 onclick 调用）*/
   window.openGridEditor = openGridEditor;
-  window.renderGridEditor = renderGridEditor;
 
   /* ===== Ctrl+Shift+A 后台快捷键 ===== */
   document.addEventListener('keydown', function(e){
