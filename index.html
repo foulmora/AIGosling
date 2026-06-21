@@ -328,7 +328,6 @@
   .grid-span-12 { grid-column:span 12; }
 
   .video-card { pointer-events:auto; }
-  .video-card .card-click-overlay { pointer-events:auto; }
   .video-card .card-mute-btn { pointer-events:auto; }
 
   /* 16:9 容器 + 羽化边缘 */
@@ -398,44 +397,28 @@
     letter-spacing:-.01em; line-height:1.35;
   }
 
-  /* 静音按钮：默认隐藏，点击卡片后显示 */
+  /* 静音按钮：始终可见，右上角 */
   .card-mute-btn {
-    position:absolute; bottom:12px; right:12px; z-index:9;
-    width:32px; height:32px; border-radius:50%;
-    background:rgba(0,0,0,.55); backdrop-filter:blur(8px);
-    border:1px solid rgba(255,255,255,.15);
-    color:#fff; font-size:13px; cursor:pointer;
+    position:absolute; top:10px; right:10px; z-index:10;
+    width:28px; height:28px; border-radius:50%;
+    background:rgba(0,0,0,.5); backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,.12);
+    color:#fff; font-size:12px; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    opacity:0; transition:opacity .3s, background .3s;
-    pointer-events:none;
-  }
-  .video-card.sound-visible .card-mute-btn {
-    opacity:1;
+    opacity:.65; transition:opacity .25s, background .25s, border-color .25s;
     pointer-events:auto;
   }
-  .card-mute-btn:hover { background:rgba(200,164,92,.25); border-color:rgba(200,164,92,.4); }
+  .card-mute-btn:hover { opacity:1; background:rgba(200,164,92,.2); border-color:rgba(200,164,92,.35); }
+  .card-mute-btn.muted { opacity:.45; }
+  .video-card.playing .card-mute-btn { opacity:.8; }
+  .video-card.playing .card-mute-btn:hover { opacity:1; }
 
-  /* 点击播放覆盖层 */
-  .card-click-overlay {
-    position:absolute; inset:0; z-index:7;
-    display:flex; align-items:center; justify-content:center;
-    background:rgba(0,0,0,.25);
-    cursor:pointer;
-    transition:opacity .5s;
-    pointer-events:auto;
-  }
-  .video-card.playing .card-click-overlay { opacity:0; pointer-events:none; }
-  .click-play-circle {
-    width:56px; height:56px; border-radius:50%;
-    background:rgba(0,0,0,.6); backdrop-filter:blur(10px);
-    border:1.5px solid rgba(255,255,255,.2);
-    display:flex; align-items:center; justify-content:center;
-    transition:transform .35s, background .35s;
-  }
-  .card-click-overlay:hover .click-play-circle {
-    transform:scale(1.12);
-    background:rgba(200,164,92,.25);
-    border-color:rgba(200,164,92,.5);
+  /* 羽化边缘：叠加一层径向渐变让边缘和背景融合 */
+  .card-media::after {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse at center, transparent 50%, #111 100%);
+    pointer-events:none; z-index:5;
   }
 
   /* ===== ABOUT ===== */
@@ -1039,35 +1022,31 @@
       iframe.allowFullscreen = true;
       iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
       iframe.dataset.src = 'https://www.youtube-nocookie.com/embed/' + w.videoId
-        + '?autoplay=1&mute=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&loop=1&playlist=' + w.videoId;
+        + '?autoplay=1&mute=1&controls=0&disablekb=1&fs=0&iv_load_policy=3'
+        + '&modestbranding=1&rel=0&showinfo=0&autohide=1'
+        + '&playsinline=1&enablejsapi=1&loop=1&playlist=' + w.videoId;
 
-      /* 点击覆盖层：首次点击取消静音 + 显示声音按钮 */
-      var overlay = document.createElement('div');
-      overlay.className = 'card-click-overlay';
-      var playCircle = document.createElement('div');
-      playCircle.className = 'click-play-circle';
-      playCircle.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>';
-      overlay.appendChild(playCircle);
-
-      overlay.addEventListener('click', function(e){
-        e.stopPropagation();
-        /* 取消静音 */
+      /* 点击卡片：播放/暂停切换 */
+      card.addEventListener('click', function(e){
+        if(e.target.closest('.card-mute-btn')) return;
         try {
-          iframe.contentWindow.postMessage(
-            JSON.stringify({ event:'command', func:'unMute' }),
-            'https://www.youtube-nocookie.com'
-          );
-          iframe.contentWindow.postMessage(
-            JSON.stringify({ event:'command', func:'setVolume', args:[80] }),
-            'https://www.youtube-nocookie.com'
-          );
+          if(card.classList.contains('playing')){
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ event:'command', func:'pauseVideo' }),
+              'https://www.youtube-nocookie.com'
+            );
+            card.classList.remove('playing');
+          } else {
+            iframe.contentWindow.postMessage(
+              JSON.stringify({ event:'command', func:'playVideo' }),
+              'https://www.youtube-nocookie.com'
+            );
+            card.classList.add('playing');
+          }
         } catch(ex){}
-        card.classList.add('playing');
-        card.classList.add('sound-visible'); /* 显示静音按钮 */
-        overlay.style.display = 'none';
       });
 
-      /* 静音按钮 */
+      /* 静音按钮（右上角，始终可见） */
       var muteBtn = document.createElement('button');
       muteBtn.className = 'card-mute-btn';
       muteBtn.title = 'Unmute / Mute';
@@ -1088,7 +1067,6 @@
 
       media.appendChild(poster);
       media.appendChild(iframe);
-      media.appendChild(overlay);
       media.appendChild(muteBtn);
       card.appendChild(media);
 
@@ -1780,9 +1758,12 @@
         w.geY = Math.round(b.y);
         w.geW = Math.round(b.bw);
         w.geH = Math.round(b.bh);
-        /* 换算 gridSpan（取最近整列） */
+        /* 换算 gridSpan + gridCol */
         w.gridSpan = Math.max(1, Math.min(12, Math.round(b.bw / colW)));
-        delete w.gridCol;
+        w.gridCol = Math.max(1, Math.min(12, Math.floor(b.x / colW) + 1));
+        /* 防止超出右边界 */
+        if(w.gridCol + w.gridSpan > 13) w.gridCol = 13 - w.gridSpan;
+        if(w.gridCol < 1) w.gridCol = 1;
       }
     });
     /* 按 y 坐标重新排序 works（保证分页顺序合理） */
