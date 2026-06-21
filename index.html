@@ -321,7 +321,7 @@
     max-width:1500px; margin:0 auto;
   }
 
-  .video-card { pointer-events:auto; }
+  .video-card { pointer-events:auto; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; }
   .video-card .card-mute-btn { pointer-events:auto; }
 
   /* 16:9 容器 + 羽化边缘 */
@@ -469,18 +469,135 @@
   .contact-item:hover { color:#fff; }
   .contact-icon { flex-shrink:0; opacity:.5; }
 
+  /* 手机端关于区域社交链接（桌面隐藏） */
+  .about-social-mobile{ display:none; }
+
   footer { padding:56px 48px; text-align:center; border-top:1px solid rgba(255,255,255,.04); }
   .footer-copy { color:rgba(255,255,255,.07); font-size:11px; letter-spacing:.1em; }
 
+  /* ============================== */
+  /* ===== 平板 (≤1024px) ===== */
+  /* ============================== */
+  @media(max-width:1024px){
+    .nav{ padding:24px 32px; }
+    .nav-right{ gap:20px; }
+    .nav-social{ gap:14px; }
+    #works{ padding:100px 24px 140px; }
+    .works-grid{ gap:12px; }
+    #about{ padding:100px 32px 90px; }
+    .about-inner{ gap:50px; }
+    .about-avatar{ width:220px; height:220px; }
+  }
+
+  /* ============================== */
+  /* ===== 手机 (≤700px) ===== */
+  /* ============================== */
   @media(max-width:700px){
-    .works-grid{ grid-template-columns:1fr; gap:8px; padding:0 10px; }
-    .video-card:hover{ transform:none; }
-    #works{ padding:80px 8px 120px; margin-top:100vh; }
-    .works-header{ margin-bottom:48px; }
-    .about-inner{ flex-direction:column; gap:40px; text-align:center; }
-    .about-avatar{ width:180px; }
-    .nav{ padding:18px 20px; }
-    .nav-music-btn{ width:28px; height:28px; font-size:10px; }
+    /* ---- 导航栏 ---- */
+    .nav{ padding:14px 16px; }
+    .nav.scrolled{ padding-top:10px; padding-bottom:10px; }
+    .nav-logo{ font-size:16px; }
+    .nav-right{ gap:10px; }
+    /* 隐藏社交图标 — 手机上空间不够，社交链接移到关于区域 */
+    .nav-social{ display:none; }
+    .nav-link{ font-size:11px; letter-spacing:.06em; }
+    .nav-lang{ font-size:10px; padding:4px 10px; }
+    .nav-music-btn{ width:30px; height:30px; font-size:10px; }
+
+    /* ---- Hero ---- */
+    .hero-title{ font-size:clamp(3rem,18vw,6rem); }
+    .hero-sub{ font-size:10px; letter-spacing:.28em; margin-top:24px; }
+    .scroll-hint{ bottom:36px; }
+    .scroll-line{ height:40px; }
+    .scroll-text{ font-size:9px; }
+
+    /* ---- Works ---- */
+    #works{ padding:70px 12px 80px; margin-top:100vh; }
+    .works-header{ margin-bottom:40px; }
+    .works-label{ font-size:9px; letter-spacing:.3em; margin-bottom:10px; }
+    .works-title{ font-size:1.3rem; }
+    .works-grid{ grid-template-columns:1fr; gap:10px; }
+
+    /* ---- 视频卡片：触屏适配 ---- */
+    .video-card:hover{ transform:none !important; box-shadow:none !important; }
+    /* 播放指示器在手机上始终半透明可见（无 hover） */
+    .card-play-indicator{
+      opacity:.5;
+      width:44px; height:44px; font-size:16px;
+    }
+    .video-card.playing .card-play-indicator{ opacity:0 !important; }
+    /* 静音按钮在手机上更大，方便点击 */
+    .card-mute-btn{ width:36px; height:36px; font-size:15px; opacity:.75; }
+    /* 序号字体 */
+    .card-index{ font-size:10px; top:8px; left:10px; }
+    /* 叠加文字 */
+    .card-overlay{ padding:14px 12px; }
+    .card-cat{ font-size:8px; letter-spacing:.25em; }
+    .card-name{ font-size:12px; }
+
+    /* ---- About ---- */
+    #about{ padding:70px 20px 60px; }
+    .about-inner{ flex-direction:column; gap:32px; text-align:center; }
+    .about-avatar{ width:160px; height:160px; }
+    .about-avatar-placeholder{ width:160px !important; height:160px !important; font-size:11px; }
+    .about-tag{ font-size:10px; letter-spacing:.3em; margin-bottom:14px; }
+    .about-bio{ font-size:14px; line-height:1.7; margin-bottom:28px; }
+    .about-contact{ align-items:center; }
+    .contact-item{ font-size:12px; }
+    /* 手机端显示社交链接 */
+    .about-social-mobile{
+      display:flex; gap:24px; margin-top:8px;
+    }
+    .about-social-mobile a{
+      color:rgba(255,255,255,.3); transition:color .3s;
+      display:flex; align-items:center;
+    }
+    .about-social-mobile a:hover{ color:#c8a45c; }
+
+    /* ---- 分页 ---- */
+    .pagination-wrap{ gap:6px; padding:32px 12px 60px; }
+    .page-btn{ min-width:34px; height:34px; font-size:12px; padding:0 10px; }
+
+    /* ---- Footer ---- */
+    footer{ padding:36px 20px; }
+    .footer-copy{ font-size:10px; }
+
+    /* ---- Admin 面板 ---- */
+    .admin-panel{ padding:24px 16px 100px; }
+    .admin-panel-header{ margin-bottom:28px; }
+    .admin-panel-header h1{ font-size:20px; }
+    .admin-section{ padding:20px 16px; margin-bottom:18px; }
+    .admin-section h2{ font-size:14px; margin-bottom:16px; }
+    .admin-field input, .admin-field textarea, .admin-field select{ font-size:13px; padding:10px 12px; }
+    .admin-field label{ font-size:11px; }
+    .admin-row{ flex-direction:column; gap:0; }
+    .admin-row .admin-field{ margin-bottom:16px; }
+    .admin-video-item{ flex-direction:column; align-items:stretch; gap:12px; padding:14px; }
+    .admin-video-item .admin-field{ margin-bottom:8px; }
+    .admin-remove-btn{ align-self:flex-end; }
+    .admin-save-all{ bottom:20px; right:16px; padding:14px 28px; font-size:13px; }
+    .admin-modal{ padding:32px 24px; width:100%; }
+    .admin-modal h2{ font-size:18px; }
+    .admin-actions{ flex-direction:column; align-items:stretch; }
+    .admin-actions button{ width:100%; }
+  }
+
+  /* ============================== */
+  /* ===== 小屏手机 (≤380px) ===== */
+  /* ============================== */
+  @media(max-width:380px){
+    .nav-logo{ font-size:14px; }
+    .nav-right{ gap:6px; }
+    .nav-link{ display:none; }
+    .hero-title{ font-size:2.5rem; }
+    .hero-sub{ font-size:9px; letter-spacing:.22em; }
+    .works-title{ font-size:1.1rem; }
+    .card-mute-btn{ width:32px; height:32px; font-size:13px; }
+    .card-play-indicator{ width:38px; height:38px; font-size:14px; }
+    .about-avatar{ width:130px; height:130px; }
+    .about-avatar-placeholder{ width:130px !important; height:130px !important; }
+    .about-bio{ font-size:13px; }
+    .page-btn{ min-width:30px; height:30px; font-size:11px; padding:0 8px; }
   }
 
   /* ===== 分页按钮 ===== */
@@ -715,6 +832,18 @@
           </span>
           <a href="mailto:hello@aigosling.com" style="color:inherit; text-decoration:none;" id="aboutEmailLink">hello@aigosling.com</a>
         </div>
+        <!-- 手机端社交链接（导航栏隐藏后在关于区域显示） -->
+        <div class="about-social-mobile">
+          <a href="https://douyin.com" target="_blank" aria-label="Douyin" id="aboutDouyinMobile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.88-2.5 2.89 2.89 0 0 1 2.88-2.5c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15.96a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V9.31a8.27 8.27 0 0 0 4.76 1.49V7.4a4.85 4.85 0 0 1-1-3.71z"/></svg>
+          </a>
+          <a href="https://youtube.com" target="_blank" aria-label="YouTube" id="aboutYoutubeMobile">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+          <a href="https://x.com" target="_blank" aria-label="X" id="aboutXMobile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -784,6 +913,13 @@
     if(d) d.href = siteData.social.douyin || 'https://douyin.com';
     if(y) y.href = siteData.social.youtube || 'https://youtube.com';
     if(x) x.href = siteData.social.x || 'https://x.com';
+    /* 手机端关于区域社交链接 */
+    var dm = document.getElementById('aboutDouyinMobile');
+    var ym = document.getElementById('aboutYoutubeMobile');
+    var xm = document.getElementById('aboutXMobile');
+    if(dm) dm.href = siteData.social.douyin || 'https://douyin.com';
+    if(ym) ym.href = siteData.social.youtube || 'https://youtube.com';
+    if(xm) xm.href = siteData.social.x || 'https://x.com';
   }
   function applyAboutContent(){
     var emailLink = document.getElementById('aboutEmailLink');
